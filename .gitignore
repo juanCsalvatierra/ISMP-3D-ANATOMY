@@ -1,0 +1,64 @@
+# ===== Carpetas de dependencias =====
+node_modules/
+.pnp
+.pnp.js
+
+# ===== Build y output =====
+.next/
+out/
+build/
+dist/
+.turbo/
+
+# ===== Logs =====
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# ===== Environment =====
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ===== IDE =====
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# ===== TypeScript =====
+next-env.d.ts
+*.tsbuildinfo
+
+# ===== Testing =====
+coverage/
+.nyc_output/
+
+# ===== Base de datos =====
+.env.database
+*.sql
+/data/
+
+# ===== Uploads =====
+/uploads/
+/public/uploads/
+/backend/uploads/
+
+# ===== Prisma =====
+prisma/migrations/
+
+# ===== Node =====
+.npm
+.eslintcache

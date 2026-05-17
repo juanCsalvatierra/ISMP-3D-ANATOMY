@@ -1,0 +1,97 @@
+[
+  {
+    "id": "thorax-ap-xray",
+    "title": "Tórax AP — Radiografía",
+    "type": "xray",
+    "system": "skeleton",
+    "systemLabel": "Esqueleto",
+    "linkedStructures": [
+      { "name": "Clavícula", "viewer": "skeleton", "key": "clavicle" },
+      { "name": "Costillas", "viewer": "skeleton", "key": "rib" },
+      { "name": "Esternón", "viewer": "skeleton", "key": "sternum" },
+      { "name": "Columna vertebral", "viewer": "skeleton", "key": "vertebra" }
+    ],
+    "slices": 1,
+    "notes": "Proyección anteroposterior del tórax. Permite visualizar la silueta cardíaca, campos pulmonares y arcos costales.",
+    "thumbnail": null
+  },
+  {
+    "id": "skull-lateral-xray",
+    "title": "Cráneo Lateral — Radiografía",
+    "type": "xray",
+    "system": "skeleton",
+    "systemLabel": "Esqueleto",
+    "linkedStructures": [
+      { "name": "Frontal", "viewer": "skeleton", "key": "frontal_bone" },
+      { "name": "Parietal", "viewer": "skeleton", "key": "parietal_bone" },
+      { "name": "Occipital", "viewer": "skeleton", "key": "occipital_bone" },
+      { "name": "Mandíbula", "viewer": "skeleton", "key": "mandible" }
+    ],
+    "slices": 1,
+    "notes": "Vista lateral del cráneo. Permite evaluar la bóveda craneal, la sella turcica y la unión cráneo-cervical.",
+    "thumbnail": null
+  },
+  {
+    "id": "knee-ap-xray",
+    "title": "Rodilla AP — Radiografía",
+    "type": "xray",
+    "system": "skeleton",
+    "systemLabel": "Esqueleto",
+    "linkedStructures": [
+      { "name": "Fémur", "viewer": "skeleton", "key": "femur" },
+      { "name": "Tibia", "viewer": "skeleton", "key": "tibia" },
+      { "name": "Rótula", "viewer": "skeleton", "key": "patella" },
+      { "name": "Peroné", "viewer": "skeleton", "key": "fibula" }
+    ],
+    "slices": 1,
+    "notes": "Proyección anteroposterior de la articulación de la rodilla. Evaluación del espacio articular y contornos óseos.",
+    "thumbnail": null
+  },
+  {
+    "id": "shoulder-ap-xray",
+    "title": "Hombro AP — Radiografía",
+    "type": "xray",
+    "system": "skeleton",
+    "systemLabel": "Esqueleto",
+    "linkedStructures": [
+      { "name": "Húmero", "viewer": "skeleton", "key": "humerus" },
+      { "name": "Clavícula", "viewer": "skeleton", "key": "clavicle" },
+      { "name": "Escápula", "viewer": "skeleton", "key": "scapula" }
+    ],
+    "slices": 1,
+    "notes": "Proyección anteroposterior del hombro. Evaluación de la articulación glenohumeral, acromion y espacio subacromial.",
+    "thumbnail": null
+  },
+  {
+    "id": "spine-lumbar-xray",
+    "title": "Columna Lumbar AP — Radiografía",
+    "type": "xray",
+    "system": "skeleton",
+    "systemLabel": "Esqueleto",
+    "linkedStructures": [
+      { "name": "L1", "viewer": "skeleton", "key": "L1" },
+      { "name": "L2", "viewer": "skeleton", "key": "L2" },
+      { "name": "L3", "viewer": "skeleton", "key": "L3" },
+      { "name": "L4", "viewer": "skeleton", "key": "L4" },
+      { "name": "L5", "viewer": "skeleton", "key": "L5" }
+    ],
+    "slices": 1,
+    "notes": "Proyección anteroposterior de la columna lumbar. Evaluación de alineación, espacios intervertebrales y procesos articulares.",
+    "thumbnail": null
+  },
+  {
+    "id": "arm-muscles-ct",
+    "title": "Brazo — Tomografía (TC)",
+    "type": "ct",
+    "system": "muscles",
+    "systemLabel": "Músculos",
+    "linkedStructures": [
+      { "name": "Bíceps braquial", "viewer": "muscles", "key": "biceps_brachii" },
+      { "name": "Tríceps braquial", "viewer": "muscles", "key": "triceps_brachii" },
+      { "name": "Braquial anterior", "viewer": "muscles", "key": "brachialis" }
+    ],
+    "slices": 32,
+    "notes": "Cortes axiales de TC del brazo. Permite evaluar la morfología muscular, diferenciación de tejidos y relaciones anatómicas del compartimento anterior y posterior.",
+    "thumbnail": null
+  }
+]
