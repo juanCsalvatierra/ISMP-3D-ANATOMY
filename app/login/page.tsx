@@ -2,16 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useUserStore, ROLE_LABELS, type Role } from "@/app/store/userStore";
-import { useUsersStore, findByEmail } from "@/app/store/usersStore";
-
-const ROLES: Role[] = ["estudiante", "docente", "admin"];
-
-const ROLE_DESCRIPTIONS: Record<Role, string> = {
-  estudiante: "Acceso a cuestionarios e historial de resultados.",
-  docente: "Creación de cuestionarios y seguimiento de estudiantes.",
-  admin: "Gestión de usuarios, contenido y cuestionarios.",
-};
+import { useUserStore, type Role } from "@/app/store/userStore";
 
 const ROLE_REDIRECTS: Record<Role, string> = {
   estudiante: "/",
@@ -22,14 +13,12 @@ const ROLE_REDIRECTS: Record<Role, string> = {
 export default function LoginPage() {
   const router = useRouter();
   const login = useUserStore((s) => s.login);
-  const users = useUsersStore((s) => s.users);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<Role>("estudiante");
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !password.trim()) {
       setError("Completa correo y contraseña para continuar.");
@@ -37,13 +26,28 @@ export default function LoginPage() {
     }
     setError(null);
 
-    const existing = findByEmail(users, email);
-    const finalRole: Role = existing?.role ?? role;
-    const finalCarrera =
-      finalRole === "estudiante" ? existing?.carreraId : undefined;
+    try {
+      const res = await fetch("http://localhost:3000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    login(email.trim(), password, finalRole, finalCarrera);
-    router.push(ROLE_REDIRECTS[finalRole]);
+      const data = await res.json();
+
+      if (data.success) {
+        const roleFromDB: Role = data.user.role;
+
+        login(email.trim(), password, roleFromDB, undefined);
+
+        router.push(ROLE_REDIRECTS[roleFromDB]);
+      } else {
+        setError("Correo o contraseña incorrectos");
+      }
+    } catch (error) {
+      console.error(error);
+      setError("No se pudo conectar al backend");
+    }
   };
 
   return (
@@ -110,54 +114,6 @@ export default function LoginPage() {
             />
           </div>
 
-          <div className="flex flex-col gap-2">
-            <span
-              className="text-xs uppercase tracking-wider"
-              style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
-            >
-              Rol
-            </span>
-            <div
-              className="grid grid-cols-3 gap-1 p-1 rounded-lg"
-              style={{ background: "var(--bg-canvas)", border: "1px solid var(--border-subtle)" }}
-            >
-              {ROLES.map((r) => {
-                const active = role === r;
-                return (
-                  <button
-                    type="button"
-                    key={r}
-                    onClick={() => setRole(r)}
-                    className="py-2 px-2 rounded-md text-sm transition-colors"
-                    style={{
-                      fontFamily: "var(--font-ibm-plex-sans)",
-                      fontWeight: 500,
-                      background: active ? "var(--accent)" : "transparent",
-                      color: active ? "white" : "var(--text-secondary)",
-                    }}
-                  >
-                    {ROLE_LABELS[r]}
-                  </button>
-                );
-              })}
-            </div>
-            <p
-              className="text-xs leading-relaxed"
-              style={{ fontFamily: "var(--font-ibm-plex-serif)", color: "var(--text-muted)" }}
-            >
-              {ROLE_DESCRIPTIONS[role]}
-            </p>
-          </div>
-
-          {role === "estudiante" && (
-            <p
-              className="text-xs leading-relaxed"
-              style={{ fontFamily: "var(--font-ibm-plex-serif)", color: "var(--text-muted)" }}
-            >
-              La carrera la asigna el administrador. Si tu correo no figura en el sistema, vas a ver un aviso al ingresar a Cuestionarios.
-            </p>
-          )}
-
           {error && (
             <p
               className="text-sm"
@@ -170,13 +126,6 @@ export default function LoginPage() {
           <button type="submit" className="btn-primary w-full justify-center">
             Ingresar
           </button>
-
-          <p
-            className="text-xs text-center"
-            style={{ fontFamily: "var(--font-ibm-plex-serif)", color: "var(--text-muted)" }}
-          >
-            Sesión simulada — aún no hay backend. Cualquier correo y contraseña funciona.
-          </p>
         </form>
 
         <div className="mt-6 text-center">

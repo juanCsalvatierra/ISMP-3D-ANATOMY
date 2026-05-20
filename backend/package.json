@@ -1,0 +1,17 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "> 🚧 **Placeholder** — Este directorio está reservado para el backend del proyecto y será implementado por un equipo separado. Por ahora, el frontend opera de forma autónoma con datos locales (JSON) y persistencia client-side (`localStorage`).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "pg": "^8.21.0"
+  }
+}
