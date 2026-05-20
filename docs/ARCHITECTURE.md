@@ -1,119 +1,96 @@
 # ISMP Anatomy - Arquitectura del Proyecto
 
+> **Backend: Supabase** (Auth + Postgres + Storage). No hay servicio Node.js intermedio; el frontend habla directo con Supabase y la autorización vive en la base vía RLS. Detalle completo en [SUPABASE.md](SUPABASE.md).
+
+---
+
 ## Diagrama General
 
 ```
-┌─────────────────────────────────────┐
-│      FRONTEND (Next.js)             │
-│  - 3D Viewer (Three.js + Fiber)     │
-│  - Auth UI                          │
-│  - Quiz Interface                   │
-│  - Image Gallery                    │
-│  Puerto: 3000                       │
-└──────────────┬──────────────────────┘
+┌─────────────────────────────────────────┐
+│      FRONTEND (Next.js 16 App Router)   │
+│  - 3D Viewer (Three.js + Fiber)         │
+│  - Auth UI (Supabase)                   │
+│  - Quiz Interface                       │
+│  - Image Gallery                        │
+│  - middleware.ts (refresh + role gate)  │
+│  Puerto: 3000                           │
+└──────────────┬──────────────────────────┘
                │
-          API REST
-        (JWT Auth)
-        http://localhost:3001
+       @supabase/ssr  (cookie httpOnly)
+       @supabase/supabase-js
                │
-┌──────────────▼──────────────────────┐
-│      BACKEND (NestJS)               │
-│  - Auth Service                     │
-│  - Anatomy Service                  │
-│  - Quiz Service                     │
-│  - File Upload Service              │
-│  - User Management                  │
-│  Puerto: 3001                       │
-└──────────────┬──────────────────────┘
-               │
-┌──────────────▼──────────────────────┐
-│      DATABASE (PostgreSQL)          │
-│  - Users (students + teachers)      │
-│  - Quizzes & Answers                │
-│  - Anatomy Metadata                 │
-│  - Images Metadata                  │
-│  Puerto: 5432                       │
-└─────────────────────────────────────┘
+┌──────────────▼──────────────────────────┐
+│      SUPABASE (gestionado)              │
+│  ┌────────────┐  ┌──────────────────┐   │
+│  │   Auth     │  │  Postgres + RLS  │   │
+│  │  (email/   │  │  profiles        │   │
+│  │   pwd, JWT │  │  carreras        │   │
+│  │   con role)│  │  materias        │   │
+│  └────────────┘  │  cuestionarios   │   │
+│  ┌────────────┐  │  preguntas       │   │
+│  │  Storage   │  │  intentos        │   │
+│  │ (imágenes) │  │  respuestas      │   │
+│  └────────────┘  └──────────────────┘   │
+│  Access Token Hook → role en JWT        │
+└─────────────────────────────────────────┘
 ```
 
 ---
 
 ## Flujo de Autenticación
 
-1. Usuario entra email/password en Frontend
-2. Frontend POST a `/api/auth/login`
-3. Backend valida credenciales en BD
-4. Backend devuelve JWT token + datos usuario
-5. Frontend almacena token en localStorage
-6. Requests posteriores incluyen token en header `Authorization: Bearer <token>`
-7. Backend valida JWT en cada request protegido
-8. Logout elimina token del cliente
+1. Usuario ingresa email/password en `/login`.
+2. Frontend llama `supabase.auth.signInWithPassword(...)`.
+3. Supabase Auth valida y emite JWT que incluye `user_role` y `carrera_id` (inyectados por el **custom access token hook**).
+4. `@supabase/ssr` persiste la sesión en cookie httpOnly.
+5. `middleware.ts` refresca la sesión en cada request y lee `user_role` del JWT para gatear `/admin/**`, `/docente/**`, `/mis-cuestionarios`.
+6. RLS en Postgres usa `auth.uid()` y `auth.jwt()->>'user_role'` como única fuente de verdad para autorización.
+7. Logout: `supabase.auth.signOut()` limpia la cookie.
 
 ---
 
 ## Flujo de Quiz
 
-1. Frontend GET `/api/quizzes/:id` - obtiene preguntas
-2. Usuario contesta en Frontend
-3. Frontend POST `/api/quizzes/:id/submit` con respuestas
-4. Backend valida respuestas y calcula puntuación
-5. Backend guarda resultado en BD
-6. Backend devuelve feedback inmediato
-7. Frontend muestra resultado y estadísticas
+1. Frontend consulta `from('cuestionarios').select('*, preguntas(*)').eq('id', id)`. RLS deja pasar a cualquier autenticado.
+2. Usuario contesta en el cliente.
+3. Al finalizar, llamada a RPC `submit_attempt({ cuestionario_id, answers })`. La función Postgres valida server-side, calcula `score`, persiste `intentos` + `respuestas` en una transacción y devuelve el resultado.
+4. Frontend muestra resultado y refresca la lista de intentos vía TanStack Query.
 
 ---
 
-## Flujo de Upload de Imágenes Médicas
+## Flujo de Upload de Imágenes Médicas (futuro)
 
-1. Frontend selecciona archivo (validación client-side)
-2. Frontend POST `/api/images/upload` con FormData + token
-3. Backend valida tamaño/tipo
-4. Backend guarda archivo en disk/S3
-5. Backend guarda metadata en BD
-6. Frontend recibe URL/ID de imagen
-7. Imagen se muestra en gallery vinculada a anatomía
+1. Frontend selecciona archivo (validación cliente).
+2. `supabase.storage.from('imaging').upload(path, file)` con path `{user_id}/...`.
+3. Política de Storage permite escritura solo en la propia carpeta.
+4. Metadata se persiste en `imaging_studies` con FK a `profiles`.
+5. Lectura vía signed URL de corta duración.
 
 ---
 
-## Módulos del Backend (Por crear)
+## Modelo de datos (resumen)
 
-### Auth Module
-- POST `/api/auth/login` - Login
-- POST `/api/auth/register` - Registro
-- POST `/api/auth/refresh` - Refresh token
-- GET `/api/auth/me` - Obtener usuario actual
-- POST `/api/auth/logout` - Logout
+Schema completo en [SUPABASE.md §2](SUPABASE.md). Tablas principales en `public`:
 
-### Users Module
-- GET `/api/users/:id` - Obtener perfil
-- PUT `/api/users/:id` - Actualizar perfil
-- GET `/api/users` - Listar usuarios (solo admin)
-- Manejo de roles: student, teacher, admin
+- `profiles` — 1:1 con `auth.users`. Campos: `role` (enum `estudiante|docente|admin`), `carrera_id`.
+- `carreras`, `materias`, `carrera_materias` — catálogo académico (mismos slugs que [app/domain/academic.ts](../app/domain/academic.ts)).
+- `cuestionarios`, `preguntas` — autoría docente.
+- `intentos`, `respuestas` — historial por usuario.
 
-### Anatomy Module
-- GET `/api/anatomy/skeleton` - Datos del esqueleto
-- GET `/api/anatomy/muscles` - Datos de músculos
-- GET `/api/anatomy/organs` - Datos de órganos
-- GET `/api/anatomy/search` - Búsqueda de estructuras
+Trigger `on_auth_user_created` inserta automáticamente un `profiles` con rol default `estudiante` al alta de un `auth.users`.
 
-### Quizzes Module
-- GET `/api/quizzes` - Listar cuestionarios
-- GET `/api/quizzes/:id` - Obtener quiz con preguntas
-- POST `/api/quizzes/:id/submit` - Enviar respuestas
-- GET `/api/quizzes/:id/results` - Resultados de usuario
+---
 
-### Images Module
-- POST `/api/images/upload` - Subir imagen
-- GET `/api/images/:id` - Obtener metadatos
-- GET `/api/images` - Listar imágenes
-- DELETE `/api/images/:id` - Eliminar imagen
+## Autorización (RLS)
 
-### Common Module
-- Middlewares (logging, error handling)
-- Guards (JWT, roles)
-- Decoradores personalizados
-- Excepciones globales
-- Interceptores
+Reglas centrales (detalle SQL en [SUPABASE.md §4](SUPABASE.md)):
+
+- `profiles`: usuario lee/edita el suyo (sin tocar `role`); admin todo.
+- `cuestionarios`: SELECT autenticados; INSERT/UPDATE/DELETE solo autor o admin; INSERT exige `role in ('docente','admin')`.
+- `preguntas`: gateadas a través del cuestionario padre.
+- `intentos`: estudiante ve los suyos; docente ve los de sus cuestionarios; admin todo. INSERT solo si `user_id = auth.uid()`.
+- `respuestas`: gateadas a través del `intento` padre.
 
 ---
 
@@ -124,110 +101,66 @@
 │         Usuario en Navegador            │
 └────────────────┬────────────────────────┘
                  │
-        ┌────────▼────────┐
-        │  Next.js Pages  │  /skeleton, /muscles, /organs, /quiz
-        └────────┬────────┘
+        ┌────────▼─────────┐
+        │  Next.js Pages   │   /skeleton, /muscles, /cuestionarios, ...
+        └────────┬─────────┘
                  │
-    ┌────────────┼────────────┐
-    │            │            │
-┌───▼──┐  ┌─────▼──┐  ┌─────▼──────┐
-│ 3D   │  │ Zustand│  │ API Calls  │
-│Scene │  │ Store  │  │ (axios)    │
-└──────┘  └────────┘  └────────────┘
-    │            │            │
-    └────────────┼────────────┘
-                 │
-        ┌────────▼────────┐
-        │   Components    │  InfoPanel, MeshVisibilityPanel, etc.
-        └─────────────────┘
+   ┌─────────────┼────────────────┐
+   │             │                │
+┌──▼──┐   ┌─────▼────┐   ┌───────▼──────┐
+│ 3D  │   │ Zustand  │   │ TanStack     │
+│Scene│   │ (UI only)│   │ Query →      │
+└─────┘   └──────────┘   │ Supabase     │
+                         └───────┬──────┘
+                                 │
+                         ┌───────▼──────┐
+                         │ Supabase     │
+                         │ (Auth+DB+RLS)│
+                         └──────────────┘
 ```
 
 ---
 
-## Flujo de Datos Backend
+## Estado Frontend
 
-```
-┌──────────────────────────────────────┐
-│      HTTP Request (Postman/Client)   │
-└────────────────┬─────────────────────┘
-                 │
-        ┌────────▼────────┐
-        │  Controllers    │  Define routes y params
-        └────────┬────────┘
-                 │
-        ┌────────▼────────┐
-        │  Pipes/Guards   │  Validación, Auth, Roles
-        └────────┬────────┘
-                 │
-        ┌────────▼────────┐
-        │   Services      │  Lógica de negocio
-        └────────┬────────┘
-                 │
-        ┌────────▼────────┐
-        │   Repositories  │  Acceso a BD (Prisma)
-        └────────┬────────┘
-                 │
-        ┌────────▼────────┐
-        │   PostgreSQL    │  Persistencia
-        └────────┬────────┘
-                 │
-    ┌────────────▼────────────┐
-    │  Response JSON (Success  │
-    │  or Error)              │
-    └─────────────────────────┘
-```
+Zustand queda restringido a UI local; el estado servidor migra a TanStack Query sobre Supabase.
 
----
+### Zustand (UI)
+- `useAnatomyStore` — `hovered`, `selected: AnatomyItem | null`, `selectedUuid`, `isolated`.
+- `useCameraStore` — `target`, `position`, `isMoving`, `setFocus()`.
+- `useMeshStore` — `groups`, `toggleGroup(key, visible)`.
 
-## Estado Frontend (Zustand)
-
-### useAnatomyStore
-- `hovered: string | null` - Mesh al que hace hover
-- `selected: AnatomyItem | null` - Estructura seleccionada
-- `selectedUuid: string | null` - UUID del mesh seleccionado
-- `isolated: string | null` - UUID del mesh aislado
-
-### useCameraStore
-- `target: THREE.Vector3` - Punto a mirar
-- `position: THREE.Vector3` - Posición de cámara
-- `isMoving: boolean` - Está animando
-- `setFocus(target, position)` - Animar cámara
-
-### useMeshStore
-- `groups: MeshGroup[]` - Grupos de mallas por categoría
-- `toggleGroup(key, visible)` - Mostrar/ocultar grupo
+### A reemplazar por Supabase + TanStack Query
+- `userStore`, `usersStore` → `supabase.auth` + queries sobre `profiles`.
+- `cuestionarioBankStore` → queries sobre `cuestionarios` / `preguntas`.
+- `cuestionarioHistoryStore` → queries sobre `intentos` / `respuestas`.
 
 ---
 
 ## Seguridad
 
-- Frontend: Token JWT en localStorage (vulnerable a XSS)
-- Backend: Validar JWT en cada request protegido
-- CORS: Permitir solo http://localhost:3000 en dev
-- HTTPS: Requerido en producción
-- Roles: Student, Teacher, Admin con permisos granulares
-- Validación: Siempre server-side, nunca confiar en client-side
+- Sesión en **cookie httpOnly** (gestionada por `@supabase/ssr`) — no localStorage, no vulnerable a XSS de robo de token.
+- RLS es la fuente de verdad de autorización. Nunca confiar en filtros del cliente.
+- `service_role_key` **solo** en server (Route Handlers, scripts). Nunca en bundle cliente.
+- HTTPS forzado en producción.
+- Validación adicional en RPCs para operaciones críticas (cálculo de score server-side).
 
 ---
 
-## Performance Considerations
+## Performance
 
-- **Frontend**: Lazy loading de componentes, memoización de stores
-- **Backend**: Índices en BD, caching de quizzes/anatomía
-- **Database**: Índices en `id`, `email`, `quizId`
-- **API**: Paginación en endpoints que devuelven listas
+- **Frontend**: lazy loading, memoización de stores Zustand.
+- **Supabase**: índices automáticos en PKs/FKs; agregar manualmente índices en `cuestionarios.materia_id`, `cuestionarios.autor_id`, `intentos.user_id`, `intentos.cuestionario_id`.
+- **Paginación**: para historial de intentos usar `range()` o cursor (`gt('created_at', ...)`).
 
 ---
 
 ## Error Handling
 
 ### Frontend
-- Try-catch en async calls
-- Toast/modal para errores al usuario
-- Log de errores a consola en dev
+- Try-catch en mutaciones; toasts para errores.
+- Códigos Postgres comunes a manejar: `42501` (RLS denegó), `23505` (unique violation), `23503` (FK violation).
 
-### Backend
-- Throw excepciones específicas (NotFoundException, UnauthorizedException)
-- Interceptor global convierte a JSON standard
-- Log de errores a archivo/console en dev
-
+### Supabase
+- RLS rechaza con `42501` antes de tocar la tabla.
+- RPCs lanzan `raise exception` con mensajes descriptivos.

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-ISMP Anatomy — Next.js 16 + React 19 educational platform for interactive 3D anatomy. The repo currently contains only the frontend; `backend/` is an empty placeholder intended to be filled by a separate team (NestJS + PostgreSQL + Prisma per [docs/STACK.md](docs/STACK.md) / [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)). The frontend runs standalone with local JSON data and Zustand state — there is no live backend to call yet.
+ISMP Anatomy — Next.js 16 + React 19 educational platform for interactive 3D anatomy. **Backend: Supabase** (Auth + Postgres + RLS) — no hay servidor Node.js intermedio. Ver [docs/SUPABASE.md](docs/SUPABASE.md). Hoy el frontend corre standalone con JSON local + Zustand+localStorage como mocks, mientras se hace la migración por fases (auth → users → cuestionarios → intentos).
 
 User-facing strings and most domain terminology are in **Spanish** (e.g. `cuestionarios`, `docente`). Preserve language when editing UI copy.
 
@@ -53,11 +53,12 @@ Shared types (quiz/academic shapes) in [app/domain/academic.ts](app/domain/acade
 ### Styling
 Tailwind CSS v4 (PostCSS plugin, no `tailwind.config` file — configured via [postcss.config.mjs](postcss.config.mjs) and [app/globals.css](app/globals.css)). Fonts: IBM Plex Sans/Serif/Mono loaded in [app/layout.tsx](app/layout.tsx) via CSS variables.
 
-## Backend integration (not yet implemented)
+## Backend integration (Supabase, migración en curso)
 
-[docs/BACKEND_API.md](docs/BACKEND_API.md) and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) describe the planned REST contract (JWT auth, `NEXT_PUBLIC_API_URL` → `http://localhost:3001`). Until the backend exists, features (auth, quiz persistence, user lists) run on client-side mocks / localStorage. When wiring real API calls, read these docs first and don't invent endpoints.
+[docs/SUPABASE.md](docs/SUPABASE.md) y [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) describen la solución definitiva: Supabase Auth + Postgres con RLS, integrado vía `@supabase/ssr` en el App Router. Mientras la migración no esté completa, auth/quizzes/usuarios siguen sobre mocks Zustand+localStorage. Al cablear features reales: leer SUPABASE.md primero, usar RLS como fuente de verdad de autorización, nunca `service_role_key` en código cliente, y no inventar endpoints REST (todo va por `supabase-js` o RPC).
+
+Variables esperadas en `.env.local`: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (solo server).
 
 ## Conventions
 
 - TypeScript strict mode is on ([tsconfig.json](tsconfig.json)); avoid `any` — anatomy/quiz data is heavily typed.
-- The empty top-level [backend/](backend/) directory is intentional (reserved for the NestJS team) — do not delete it or move frontend code into it.

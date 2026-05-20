@@ -51,7 +51,7 @@ Plataforma educativa interactiva de **anatomía 3D** construida con Next.js 16 y
 | Markdown | `react-markdown` |
 | Lint | ESLint 9 (`eslint-config-next`, flat config) |
 
-> Backend planificado (no incluido): NestJS + PostgreSQL + Prisma. Ver [docs/STACK.md](docs/STACK.md) y [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+> Backend definitivo: **Supabase** (Auth + Postgres + RLS). No hay servidor Node.js intermedio. Ver [docs/SUPABASE.md](docs/SUPABASE.md), [docs/STACK.md](docs/STACK.md) y [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ---
 
@@ -121,12 +121,11 @@ ismp-3d-anatomy/
 │   ├── globals.css               # Tailwind v4
 │   ├── layout.tsx                # Layout raíz (fuentes IBM Plex)
 │   └── page.tsx                  # Home
-├── backend/                      # Placeholder (reservado para equipo NestJS)
 ├── docs/                         # Documentación del proyecto
 │   ├── README.md                 # Índice de docs
 │   ├── ARCHITECTURE.md           # Arquitectura general
 │   ├── STACK.md                  # Stack tecnológico
-│   ├── BACKEND_API.md            # Contrato REST planificado
+│   ├── SUPABASE.md               # Backend (Supabase Auth + Postgres + RLS)
 │   └── ROLES_ROADMAP.md          # Roles y roadmap
 ├── public/models/                # Modelos GLB
 ├── CLAUDE.md                     # Guía para asistentes de IA
@@ -172,7 +171,7 @@ Todo el estado cross-cutting vive en stores Zustand bajo [app/store/](app/store/
 | `anatomyStore` | `hovered`, `selected` (`AnatomyItem`), `selectedUuid`, `isolated`, visibilidad de etiquetas. |
 | `cameraStore` | Posición / target de la cámara + `setFocus` (animación). |
 | `meshStore` | Toggle de visibilidad por grupo de mallas. |
-| `userStore`, `usersStore` | Estado de auth/usuario (client-only mientras no haya backend). |
+| `userStore`, `usersStore` | Estado de auth/usuario (client-only mientras se migra a Supabase). |
 | `cuestionarioBankStore` | Autoría de cuestionarios (persistido en `localStorage`). |
 | `cuestionarioHistoryStore` | Historial de intentos (persistido en `localStorage`). |
 | `useHydrated` | Hook guard para SSR/CSR cuando se lee estado persistido. |
@@ -202,16 +201,23 @@ Los metadatos jerárquicos (estructura → nombres de mallas) son **JSON estáti
 
 ---
 
-## Backend (planificado)
+## Backend (Supabase)
 
-El directorio [backend/](backend/) está **intencionalmente vacío**: reservado para el equipo de NestJS. No eliminarlo ni mover código de frontend dentro.
+Backend: **Supabase** (Auth + Postgres + Storage), con **Row Level Security** como única fuente de verdad de autorización. El frontend Next.js habla directo vía `@supabase/ssr` y `supabase-js`; no hay servicio Node.js intermedio.
 
-El contrato REST planificado (JWT, `NEXT_PUBLIC_API_URL` → `http://localhost:3001`) está documentado en:
+Documentación:
 
-- [docs/BACKEND_API.md](docs/BACKEND_API.md)
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- [docs/SUPABASE.md](docs/SUPABASE.md) — schema SQL, políticas RLS, custom access token hook, integración con App Router y plan de migración por fases.
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — flujos de auth/quiz/upload sobre Supabase.
 
-Mientras no exista backend, las features de auth, persistencia de cuestionarios y listados de usuarios operan sobre mocks client-side / `localStorage`. **Al cablear llamadas reales, leer esos documentos primero y no inventar endpoints.**
+Mientras la migración no esté completa, auth, persistencia de cuestionarios y listados de usuarios operan sobre mocks client-side / `localStorage`. **Al cablear llamadas reales, leer SUPABASE.md primero**: usar `supabase-js` o RPC, nunca `service_role_key` en bundle cliente, nunca confiar en filtros del cliente para autorización (la RLS manda).
+
+Variables de entorno esperadas en `.env.local`:
+```
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...   # solo server, nunca exponer
+```
 
 ---
 
@@ -227,8 +233,8 @@ Mientras no exista backend, las features de auth, persistencia de cuestionarios 
 ## Documentación adicional
 
 - [docs/](docs/) — índice de toda la documentación del proyecto.
-  - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — arquitectura completa (frontend + backend planificado).
+  - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — arquitectura completa (Next.js + Supabase).
   - [docs/STACK.md](docs/STACK.md) — stack tecnológico detallado.
-  - [docs/BACKEND_API.md](docs/BACKEND_API.md) — contrato REST planificado.
+  - [docs/SUPABASE.md](docs/SUPABASE.md) — backend definitivo: schema, RLS y plan de migración.
   - [docs/ROLES_ROADMAP.md](docs/ROLES_ROADMAP.md) — roles y roadmap.
 - [CLAUDE.md](CLAUDE.md) — guía para asistentes de IA trabajando en el repo.

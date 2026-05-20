@@ -31,15 +31,24 @@ Páginas del admin que quedan como placeholder en [app/admin/page.tsx](../admin/
 1. **`/admin/carreras`** — Configurar carreras y asignación de materias.
    - UI: tabla de carreras + checkbox grid para asignar materias.
    - Store: ampliar `useUsersStore` o crear `useCarrerasStore` (hoy las carreras viven hardcodeadas en `academic.ts`).
-2. **`/admin/contenido`** — Edición de descripciones del `anatomy.final.builded.json` (no es prioritario; vincular cuando exista backend).
-3. **Vista admin de cuestionarios global** — Actualmente el admin reutiliza `/docente` (ve todos por ser autor solo de los propios). Cuando haya backend, agregar `/admin/cuestionarios` con tabla cross-docente y acción "transferir autoría".
+2. **`/admin/contenido`** — Edición de descripciones del `anatomy.final.builded.json` (no es prioritario; persistir en Supabase cuando se migre).
+3. **Vista admin de cuestionarios global** — Actualmente el admin reutiliza `/docente` (ve todos por ser autor solo de los propios). Tras migrar a Supabase, agregar `/admin/cuestionarios` con tabla cross-docente (la RLS permite SELECT a admin sobre todos) y acción "transferir autoría" (UPDATE de `autor_id`, solo admin).
 
 ---
 
-## Migración a backend
+## Migración a backend (Supabase)
 
-Ver [BACKEND_API.md](BACKEND_API.md) para el detalle de:
-- Modelo Prisma sugerido.
-- Endpoints REST y mapeo store → endpoint.
-- Estrategia de migración paso a paso (feature flag `NEXT_PUBLIC_USE_BACKEND`).
-- Recomendación: migrar a TanStack Query para estado servidor; dejar Zustand solo para UI local (anatomía 3D, cámara, capas).
+El backend del proyecto es **Supabase** (Auth + Postgres + RLS). Ver [SUPABASE.md](SUPABASE.md) para:
+
+- Schema SQL completo (`profiles`, `carreras`, `materias`, `cuestionarios`, `preguntas`, `intentos`, `respuestas`).
+- Custom access token hook que inyecta `user_role` y `carrera_id` en el JWT.
+- Políticas RLS por tabla.
+- Mapeo store mock → Supabase y plan de migración por fases (auth → users → cuestionarios → intentos).
+- Recomendación: TanStack Query para estado servidor; Zustand solo para UI local (anatomía 3D, cámara, capas).
+
+### Impacto sobre los stores actuales
+- `userStore` → `supabase.auth` + hook `useUser()` que lee `profiles`.
+- `usersStore` → queries sobre `profiles` (admin gestiona roles desde aquí).
+- `cuestionarioBankStore` → queries/mutaciones sobre `cuestionarios` y `preguntas` (con RPC `create_cuestionario` para atomicidad).
+- `cuestionarioHistoryStore` → queries sobre `intentos` y `respuestas` (con RPC `submit_attempt` para cálculo server-side del score).
+- `RoleGate` cliente queda como fallback UX; el guard real pasa a [middleware.ts](../middleware.ts) leyendo `user_role` del JWT.
