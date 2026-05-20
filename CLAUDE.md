@@ -17,7 +17,7 @@ npm run start      # Run prod build
 npm run lint       # ESLint (flat config, eslint-config-next)
 ```
 
-No test runner is configured.
+No test runner is configured. Requires Node ≥ 20.
 
 ## Architecture
 
