@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum Role {
+  ADMIN
+  DOCENTE
+  ESTUDIANTE
+}
+
+enum Formato {
+  MULTIPLE
+  TRUEFALSE
+  IDENTIFICATION
+  LABELING
+}
+
+// ─── Modelos ─────────────────────────────────────────────────────────────────
+
+model User {
+  id            String         @id @default(cuid())
+  name          String
+  email         String         @unique
+  passwordHash  String
+  role          Role
+  carreraId     String?
+  carrera       Carrera?       @relation(fields: [carreraId], references: [id])
+  cuestionarios Cuestionario[] @relation("Autor")
+  attempts      Attempt[]
+  createdAt     DateTime       @default(now())
+}
+
+model Carrera {
+  id       String    @id @default(cuid())
+  slug     String    @unique
+  label    String
+  materias Materia[] @relation("CarreraMaterias")
+  usuarios User[]
+}
+
+model Materia {
+  id            String         @id @default(cuid())
+  slug          String         @unique
+  label         String
+  carreras      Carrera[]      @relation("CarreraMaterias")
+  cuestionarios Cuestionario[]
+}
+
+model Cuestionario {
+  id          String     @id @default(cuid())
+  titulo      String
+  descripcion String     @default("")
+  materiaId   String
+  materia     Materia    @relation(fields: [materiaId], references: [id])
+  formato     Formato
+  autorId     String
+  autor       User       @relation("Autor", fields: [autorId], references: [id])
+  preguntas   Question[]
+  attempts    Attempt[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Question {
+  id             String       @id @default(cuid())
+  cuestionarioId String
+  cuestionario   Cuestionario @relation(fields: [cuestionarioId], references: [id], onDelete: Cascade)
+  orden          Int
+  texto          String
+  opciones       String[]
+  correct        Int
+  explicacion    String       @default("")
+}
+
+model Attempt {
+  id             String      @id @default(cuid())
+  userId         String?
+  user           User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  cuestionarioId String
+  cuestionario   Cuestionario @relation(fields: [cuestionarioId], references: [id], onDelete: Cascade)
+  materiaSlug    String
+  formato        Formato
+  score          Int
+  total          Int
+  completedAt    DateTime    @default(now())
+  answers        AnswerLog[]
+}
+
+model AnswerLog {
+  id         String  @id @default(cuid())
+  attemptId  String
+  attempt    Attempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  questionId String
+  selected   Int
+  correct    Boolean
+}
