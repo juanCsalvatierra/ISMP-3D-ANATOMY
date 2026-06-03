@@ -9,7 +9,7 @@ import { RolesGuard } from './guards/roles.guard';
   imports: [
     JwtModule.register({
       secret: process.env.JWT_SECRET ?? 'secreto_temporal',
-      signOptions: { expiresIn: '12h' },
+      signOptions: { expiresIn: '0.5h' },
     }),
   ],
   controllers: [AuthController],
