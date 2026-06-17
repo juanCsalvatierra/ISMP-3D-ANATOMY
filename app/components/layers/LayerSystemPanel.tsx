@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useMeshStore } from "../../store/meshStore";
 import { capitalize } from "../../utils/capitalize";
+import { LAYER_PRESETS } from "../../utils/layerPresets";
 
 const CATEGORY_ORDER = [
   "Cara y cabeza",
@@ -49,28 +50,15 @@ export function LayerSystemPanel() {
     setActivePreset(null);
   };
 
+  // OCP: la lógica de cada preset vive en LAYER_PRESETS (utils/layerPresets.ts).
+  // Agregar un nuevo preset no requiere modificar este componente.
   const applyPreset = (preset: string) => {
     setActivePreset(preset);
-    if (preset === "all") {
-      groups.forEach((g) => toggleGroup(g.key, true));
-      setVisibility({});
-    } else if (preset === "bones") {
-      const next: Record<string, boolean> = {};
-      groups.forEach((g) => {
-        const show = !g.key.toLowerCase().includes("muscle") && !g.key.toLowerCase().includes("organ");
-        next[g.key] = show;
-        toggleGroup(g.key, show);
-      });
-      setVisibility(next);
-    } else if (preset === "no-face") {
-      const next: Record<string, boolean> = {};
-      groups.forEach((g) => {
-        const hide = (g.category ?? "Otros") === "Cara y cabeza";
-        next[g.key] = !hide;
-        toggleGroup(g.key, !hide);
-      });
-      setVisibility(next);
-    }
+    const presetFn = LAYER_PRESETS[preset];
+    if (!presetFn) return;
+    const next = presetFn(groups);
+    Object.entries(next).forEach(([key, visible]) => toggleGroup(key, visible));
+    setVisibility(next);
   };
 
   const toggleOpen = (category: string) => {
