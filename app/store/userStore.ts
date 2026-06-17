@@ -1,6 +1,7 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import type { CarreraId } from "@/app/domain/academic";
+import type { AuthProvider } from "@/app/types/authProvider";
+import { localAuthProvider } from "@/app/providers/localAuthProvider";
 
 export type Role = "admin" | "docente" | "estudiante";
 
@@ -14,41 +15,34 @@ export type User = {
 
 type State = {
   currentUser: User | null;
-  login: (email: string, password: string, role: Role, carreraId?: CarreraId) => void;
-  logout: () => void;
-  updateCurrentUser: (patch: Partial<User>) => void;
+  login: (email: string, password: string, role: Role, carreraId?: CarreraId) => Promise<void>;
+  logout: () => Promise<void>;
+  updateCurrentUser: (patch: Partial<User>) => Promise<void>;
 };
 
-function nameFromEmail(email: string) {
-  const local = email.split("@")[0] || "Usuario";
-  return local
-    .replace(/[._-]+/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase());
+// DIP: el store depende de la abstracción AuthProvider, no de localStorage directamente.
+// Para migrar a Supabase: createUserStore(supabaseAuthProvider).
+export function createUserStore(auth: AuthProvider) {
+  return create<State>()((set) => ({
+    currentUser: null,
+    login: async (email, password, role, carreraId) => {
+      const user = await auth.login(email, password, role, carreraId);
+      set({ currentUser: user });
+    },
+    logout: async () => {
+      await auth.logout();
+      set({ currentUser: null });
+    },
+    updateCurrentUser: async (patch) => {
+      const user = await auth.updateUser(patch);
+      set({ currentUser: user });
+    },
+  }));
 }
 
-export const useUserStore = create<State>()(
-  persist(
-    (set) => ({
-      currentUser: null,
-      login: (email, _password, role, carreraId) =>
-        set({
-          currentUser: {
-            id: crypto.randomUUID(),
-            name: nameFromEmail(email),
-            email,
-            role,
-            carreraId: role === "estudiante" ? carreraId : undefined,
-          },
-        }),
-      logout: () => set({ currentUser: null }),
-      updateCurrentUser: (patch) =>
-        set((state) => ({
-          currentUser: state.currentUser ? { ...state.currentUser, ...patch } : null,
-        })),
-    }),
-    { name: "ismp-user" }
-  )
-);
+// Instancia por defecto con el proveedor local (mock).
+// Reemplazar por createUserStore(supabaseAuthProvider) al integrar Supabase.
+export const useUserStore = createUserStore(localAuthProvider);
 
 export const ROLE_LABELS: Record<Role, string> = {
   admin: "Administrador",

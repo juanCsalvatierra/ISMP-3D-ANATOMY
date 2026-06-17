@@ -9,13 +9,29 @@ import {
 } from "@/app/store/cuestionarioBankStore";
 import { MATERIAS, MATERIA_IDS, type MateriaId } from "@/app/domain/academic";
 
-type Props = {
+// ISP: los tipos están segregados por responsabilidad.
+// Un consumidor de solo lectura usa CuestionarioReadFormProps sin necesitar autorId ni onSubmit.
+// Un consumidor de edición usa CuestionarioEditFormProps con todo.
+
+type CuestionarioFormBase = {
   initial?: Cuestionario;
+};
+
+type AutorInfo = {
   autorId: string;
   autorNombre: string;
+};
+
+type CuestionarioFormActions = {
   onSubmit: (input: CuestionarioInput) => void;
   onCancel: () => void;
 };
+
+export type CuestionarioEditFormProps = CuestionarioFormBase & AutorInfo & CuestionarioFormActions;
+export type CuestionarioReadFormProps = CuestionarioFormBase;
+
+/** @deprecated Usar CuestionarioEditForm */
+type Props = CuestionarioEditFormProps;
 
 const FORMATOS: CuestionarioFormato[] = ["multiple", "truefalse", "identification"];
 
@@ -37,13 +53,14 @@ function emptyQuestion(formato: CuestionarioFormato): Question {
   };
 }
 
-export function CuestionarioForm({
+// CuestionarioEditForm: formulario completo con lógica de autor y guardado.
+export function CuestionarioEditForm({
   initial,
   autorId,
   autorNombre,
   onSubmit,
   onCancel,
-}: Props) {
+}: CuestionarioEditFormProps) {
   const [titulo, setTitulo] = useState(initial?.titulo ?? "");
   const [descripcion, setDescripcion] = useState(initial?.descripcion ?? "");
   const [materiaId, setMateriaId] = useState<MateriaId>(
@@ -296,5 +313,75 @@ export function CuestionarioForm({
         </button>
       </div>
     </form>
+  );
+}
+
+// Alias de compatibilidad — los importadores existentes siguen funcionando.
+export const CuestionarioForm = CuestionarioEditForm;
+
+// ISP: componente de solo lectura — no necesita autorId, autorNombre ni callbacks.
+export function CuestionarioReadForm({ initial }: CuestionarioReadFormProps) {
+  if (!initial) return null;
+  return (
+    <div className="flex flex-col gap-4">
+      <div
+        className="ui-panel rounded-2xl p-6 flex flex-col gap-2"
+        style={{ border: "1px solid var(--border-subtle)" }}
+      >
+        <h2
+          className="text-lg font-semibold"
+          style={{ fontFamily: "var(--font-ibm-plex-sans)", color: "var(--text-primary)" }}
+        >
+          {initial.titulo}
+        </h2>
+        {initial.descripcion && (
+          <p
+            className="text-sm"
+            style={{ color: "var(--text-secondary)", fontFamily: "var(--font-ibm-plex-serif)" }}
+          >
+            {initial.descripcion}
+          </p>
+        )}
+        <span
+          className="text-xs uppercase tracking-wider"
+          style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
+        >
+          {initial.preguntas.length} preguntas · {FORMATO_LABELS[initial.formato]}
+        </span>
+      </div>
+      <div className="flex flex-col gap-3">
+        {initial.preguntas.map((q, i) => (
+          <div
+            key={q.id}
+            className="ui-panel rounded-xl p-4 flex flex-col gap-2"
+            style={{ border: "1px solid var(--border-subtle)" }}
+          >
+            <span
+              className="text-xs uppercase tracking-wider"
+              style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
+            >
+              Pregunta {i + 1}
+            </span>
+            <p className="text-sm" style={{ color: "var(--text-primary)" }}>{q.question}</p>
+            <ul className="flex flex-col gap-1">
+              {q.options.map((opt, oi) => (
+                <li
+                  key={oi}
+                  className="text-xs px-2 py-1 rounded"
+                  style={{
+                    fontFamily: "var(--font-ibm-plex-mono)",
+                    background: oi === q.correct ? "rgba(194,47,47,0.08)" : "transparent",
+                    color: oi === q.correct ? "var(--accent)" : "var(--text-secondary)",
+                    fontWeight: oi === q.correct ? 600 : 400,
+                  }}
+                >
+                  {["A", "B", "C", "D"][oi]}. {opt}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

@@ -26,13 +26,13 @@ export const useMeshStore = create<State>((set: (partial: Partial<State>) => voi
     const group = get().groups.find((g) => g.key === key);
     if (!group) return;
 
+    // LSP: no se parchea mesh.raycast porque rompe el contrato de THREE.Mesh.
+    // mesh.visible = false ya excluye el objeto del raycaster internamente.
+    // mesh.layers mueve el objeto a una capa ignorada por el raycaster de la escena
+    // (que debe configurarse con raycaster.layers.set(0)).
     group.meshes.forEach((mesh: THREE.Mesh) => {
       mesh.visible = visible;
-      if (!visible) {
-        mesh.raycast = () => null; // 🔥 clave
-      } else {
-        mesh.raycast = THREE.Mesh.prototype.raycast;
-      }
+      mesh.layers.set(visible ? 0 : 1);
     });
   },
 }));
