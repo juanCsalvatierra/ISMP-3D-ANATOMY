@@ -1,0 +1,40 @@
+Método: POST
+URL: http://localhost:3001/auth/login
+Headers:
+  Content-Type: application/json
+Body (JSON):
+{
+  "email": "garcia@ismp.edu",
+  "password": "docente1234"
+}
+Respuesta esperada: 200 OK
+{
+  "token": "eyJ...",
+  "user": {
+    "id": "seed-docente-1",
+    "name": "Prof. García",
+    "email": "garcia@ismp.edu",
+    "role": "DOCENTE",
+    "carreraId": null
+  }
+}
+
+Método: GET
+URL: http://localhost:3001/auth/me
+Headers:
+  Authorization: Bearer <token del login>
+Respuesta esperada: 200 OK
+{
+  "id": "seed-docente-1",
+  "name": "Prof. García",
+  "email": "garcia@ismp.edu",
+  "role": "DOCENTE",
+  "carreraId": null,
+  "createdAt": "2026-05-26T..."
+}
+
+admin@ismp.edu    / admin1234   (ADMIN)
+garcia@ismp.edu   / docente1234 (DOCENTE)
+lopez@ismp.edu    / docente1234 (DOCENTE)
+juan@ismp.edu     / alumno1234  (ESTUDIANTE)
+
