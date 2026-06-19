@@ -1,6 +1,6 @@
 # ISMP Anatomy - Arquitectura del Proyecto
 
-> **Backend: Supabase** (Auth + Postgres + Storage). No hay servicio Node.js intermedio; el frontend habla directo con Supabase y la autorización vive en la base vía RLS. Detalle completo en [SUPABASE.md](SUPABASE.md).
+> **Backend: NestJS + Prisma + PostgreSQL** en `backend/` (puerto 3001). El frontend Next.js llama al backend vía REST con JWT. La autorización vive en guards de NestJS.
 
 ---
 
@@ -10,29 +10,31 @@
 ┌─────────────────────────────────────────┐
 │      FRONTEND (Next.js 16 App Router)   │
 │  - 3D Viewer (Three.js + Fiber)         │
-│  - Auth UI (Supabase)                   │
+│  - Auth UI                              │
 │  - Quiz Interface                       │
 │  - Image Gallery                        │
-│  - middleware.ts (refresh + role gate)  │
 │  Puerto: 3000                           │
 └──────────────┬──────────────────────────┘
                │
-       @supabase/ssr  (cookie httpOnly)
-       @supabase/supabase-js
+        REST HTTP + Bearer JWT
                │
 ┌──────────────▼──────────────────────────┐
-│      SUPABASE (gestionado)              │
+│      BACKEND (NestJS, puerto 3001)      │
 │  ┌────────────┐  ┌──────────────────┐   │
-│  │   Auth     │  │  Postgres + RLS  │   │
-│  │  (email/   │  │  profiles        │   │
-│  │   pwd, JWT │  │  carreras        │   │
-│  │   con role)│  │  materias        │   │
-│  └────────────┘  │  cuestionarios   │   │
-│  ┌────────────┐  │  preguntas       │   │
-│  │  Storage   │  │  intentos        │   │
-│  │ (imágenes) │  │  respuestas      │   │
-│  └────────────┘  └──────────────────┘   │
-│  Access Token Hook → role en JWT        │
+│  │ AuthModule │  │  UsersModule     │   │
+│  │  /auth/    │  │  /users/         │   │
+│  │  login     │  │  (admin only)    │   │
+│  │  me        │  └──────────────────┘   │
+│  └────────────┘  ┌──────────────────┐   │
+│                  │ CuestionariosModule│  │
+│                  │ /cuestionarios/   │   │
+│                  └──────────────────┘   │
+│  ┌──────────────────────────────────┐   │
+│  │  PrismaModule → PostgreSQL       │   │
+│  │  User, Carrera, Materia,         │   │
+│  │  Cuestionario, Question,         │   │
+│  │  Attempt, AnswerLog              │   │
+│  └──────────────────────────────────┘   │
 └─────────────────────────────────────────┘
 ```
 
@@ -41,56 +43,50 @@
 ## Flujo de Autenticación
 
 1. Usuario ingresa email/password en `/login`.
-2. Frontend llama `supabase.auth.signInWithPassword(...)`.
-3. Supabase Auth valida y emite JWT que incluye `user_role` y `carrera_id` (inyectados por el **custom access token hook**).
-4. `@supabase/ssr` persiste la sesión en cookie httpOnly.
-5. `middleware.ts` refresca la sesión en cada request y lee `user_role` del JWT para gatear `/admin/**`, `/docente/**`, `/mis-cuestionarios`.
-6. RLS en Postgres usa `auth.uid()` y `auth.jwt()->>'user_role'` como única fuente de verdad para autorización.
-7. Logout: `supabase.auth.signOut()` limpia la cookie.
+2. Frontend llama `POST /auth/login` con `{ email, password }`.
+3. Backend valida con bcrypt, emite JWT con payload `{ sub, email, role, carreraId }`.
+4. Frontend almacena el token y lo adjunta como `Authorization: Bearer <token>` en cada request.
+5. `RoleGate` cliente lee el rol del store para gatear rutas; el guard real es `JwtGuard` + `RolesGuard` en NestJS.
+6. Logout: el frontend descarta el token (no hay invalidación server-side por ahora).
 
 ---
 
 ## Flujo de Quiz
 
-1. Frontend consulta `from('cuestionarios').select('*, preguntas(*)').eq('id', id)`. RLS deja pasar a cualquier autenticado.
+1. Frontend llama `GET /cuestionarios?materiaId=<id>`. El `JwtGuard` valida el token.
 2. Usuario contesta en el cliente.
-3. Al finalizar, llamada a RPC `submit_attempt({ cuestionario_id, answers })`. La función Postgres valida server-side, calcula `score`, persiste `intentos` + `respuestas` en una transacción y devuelve el resultado.
-4. Frontend muestra resultado y refresca la lista de intentos vía TanStack Query.
-
----
-
-## Flujo de Upload de Imágenes Médicas (futuro)
-
-1. Frontend selecciona archivo (validación cliente).
-2. `supabase.storage.from('imaging').upload(path, file)` con path `{user_id}/...`.
-3. Política de Storage permite escritura solo en la propia carpeta.
-4. Metadata se persiste en `imaging_studies` con FK a `profiles`.
-5. Lectura vía signed URL de corta duración.
+3. Al finalizar, llamada a `POST /intentos` (pendiente de implementar en el backend). El backend calcula el `score`, persiste `Attempt` + `AnswerLog` y devuelve el resultado.
+4. Frontend muestra el resultado y refresca el historial.
 
 ---
 
 ## Modelo de datos (resumen)
 
-Schema completo en [SUPABASE.md §2](SUPABASE.md). Tablas principales en `public`:
+Schema completo en `backend/prisma/schema.prisma`. Modelos principales:
 
-- `profiles` — 1:1 con `auth.users`. Campos: `role` (enum `estudiante|docente|admin`), `carrera_id`.
-- `carreras`, `materias`, `carrera_materias` — catálogo académico (mismos slugs que [app/domain/academic.ts](../app/domain/academic.ts)).
-- `cuestionarios`, `preguntas` — autoría docente.
-- `intentos`, `respuestas` — historial por usuario.
+- `User` — id (cuid), email, passwordHash, role (ADMIN|DOCENTE|ESTUDIANTE), carreraId.
+- `Carrera`, `Materia` — catálogo académico. Slugs deben coincidir con `app/domain/academic.ts`.
+- `Cuestionario`, `Question` — autoría docente. `Question.opciones` es `String[]`.
+- `Attempt`, `AnswerLog` — historial de intentos por usuario.
 
-Trigger `on_auth_user_created` inserta automáticamente un `profiles` con rol default `estudiante` al alta de un `auth.users`.
+IDs: `cuid` (generados por Prisma). Fechas: `DateTime` (ISO-8601 al cliente).
 
 ---
 
-## Autorización (RLS)
+## Autorización
 
-Reglas centrales (detalle SQL en [SUPABASE.md §4](SUPABASE.md)):
+Los guards en `backend/src/auth/guards/`:
 
-- `profiles`: usuario lee/edita el suyo (sin tocar `role`); admin todo.
-- `cuestionarios`: SELECT autenticados; INSERT/UPDATE/DELETE solo autor o admin; INSERT exige `role in ('docente','admin')`.
-- `preguntas`: gateadas a través del cuestionario padre.
-- `intentos`: estudiante ve los suyos; docente ve los de sus cuestionarios; admin todo. INSERT solo si `user_id = auth.uid()`.
-- `respuestas`: gateadas a través del `intento` padre.
+- `JwtGuard` — verifica la firma y expiración del JWT en cada request protegido.
+- `RolesGuard` — lee el decorador `@Roles(...)` del endpoint y compara con `payload.role`.
+
+Reglas por recurso:
+- `GET /cuestionarios` — cualquier autenticado.
+- `POST/PATCH/DELETE /cuestionarios/:id` — solo autor (`autorId === user.sub`) o ADMIN.
+- `GET/POST/PATCH/DELETE /users` — solo ADMIN.
+- `GET /auth/me` — cualquier autenticado.
+
+El cliente **no** es la fuente de verdad de autorización. El RoleGate frontend es solo UX.
 
 ---
 
@@ -102,20 +98,15 @@ Reglas centrales (detalle SQL en [SUPABASE.md §4](SUPABASE.md)):
 └────────────────┬────────────────────────┘
                  │
         ┌────────▼─────────┐
-        │  Next.js Pages   │   /skeleton, /muscles, /cuestionarios, ...
+        │  Next.js Pages   │
         └────────┬─────────┘
                  │
    ┌─────────────┼────────────────┐
    │             │                │
 ┌──▼──┐   ┌─────▼────┐   ┌───────▼──────┐
-│ 3D  │   │ Zustand  │   │ TanStack     │
-│Scene│   │ (UI only)│   │ Query →      │
-└─────┘   └──────────┘   │ Supabase     │
-                         └───────┬──────┘
-                                 │
-                         ┌───────▼──────┐
-                         │ Supabase     │
-                         │ (Auth+DB+RLS)│
+│ 3D  │   │ Zustand  │   │  fetch/      │
+│Scene│   │ (UI only)│   │  REST calls  │
+└─────┘   └──────────┘   │  → :3001     │
                          └──────────────┘
 ```
 
@@ -123,44 +114,37 @@ Reglas centrales (detalle SQL en [SUPABASE.md §4](SUPABASE.md)):
 
 ## Estado Frontend
 
-Zustand queda restringido a UI local; el estado servidor migra a TanStack Query sobre Supabase.
+Zustand queda restringido a UI local. El estado servidor migra a llamadas REST al backend.
 
-### Zustand (UI)
+### Zustand (UI permanente)
 - `useAnatomyStore` — `hovered`, `selected: AnatomyItem | null`, `selectedUuid`, `isolated`.
 - `useCameraStore` — `target`, `position`, `isMoving`, `setFocus()`.
 - `useMeshStore` — `groups`, `toggleGroup(key, visible)`.
 
-### A reemplazar por Supabase + TanStack Query
-- `userStore`, `usersStore` → `supabase.auth` + queries sobre `profiles`.
-- `cuestionarioBankStore` → queries sobre `cuestionarios` / `preguntas`.
-- `cuestionarioHistoryStore` → queries sobre `intentos` / `respuestas`.
+### A reemplazar por llamadas al backend
+| Store actual (mock) | Reemplazo |
+|---------------------|-----------|
+| `userStore.login()` | `POST /auth/login` → JWT |
+| `userStore.user` | `GET /auth/me` + JWT payload |
+| `usersStore.*` | `GET/PATCH/DELETE /users` (admin) |
+| `cuestionarioBankStore.cuestionarios` | `GET /cuestionarios` |
+| `cuestionarioBankStore.create/update/remove` | `POST/PATCH/DELETE /cuestionarios` |
+| `cuestionarioHistoryStore.addAttempt` | `POST /intentos` (pendiente en backend) |
+| `cuestionarioHistoryStore.attempts` | `GET /intentos/me` (pendiente en backend) |
 
 ---
 
 ## Seguridad
 
-- Sesión en **cookie httpOnly** (gestionada por `@supabase/ssr`) — no localStorage, no vulnerable a XSS de robo de token.
-- RLS es la fuente de verdad de autorización. Nunca confiar en filtros del cliente.
-- `service_role_key` **solo** en server (Route Handlers, scripts). Nunca en bundle cliente.
-- HTTPS forzado en producción.
-- Validación adicional en RPCs para operaciones críticas (cálculo de score server-side).
+- JWT firmado con `JWT_SECRET` (HS256). No exponer en localStorage sin HTTPS.
+- `passwordHash` nunca viaja al cliente.
+- `JwtGuard` + `RolesGuard` son la fuente de verdad de autorización.
+- CORS en NestJS configurado para aceptar solo `http://localhost:3000` en desarrollo.
 
 ---
 
 ## Performance
 
-- **Frontend**: lazy loading, memoización de stores Zustand.
-- **Supabase**: índices automáticos en PKs/FKs; agregar manualmente índices en `cuestionarios.materia_id`, `cuestionarios.autor_id`, `intentos.user_id`, `intentos.cuestionario_id`.
-- **Paginación**: para historial de intentos usar `range()` o cursor (`gt('created_at', ...)`).
-
----
-
-## Error Handling
-
-### Frontend
-- Try-catch en mutaciones; toasts para errores.
-- Códigos Postgres comunes a manejar: `42501` (RLS denegó), `23505` (unique violation), `23503` (FK violation).
-
-### Supabase
-- RLS rechaza con `42501` antes de tocar la tabla.
-- RPCs lanzan `raise exception` con mensajes descriptivos.
+- **Frontend**: lazy loading de modelos GLB, memoización de stores Zustand.
+- **Backend**: índices en `User.email`, `Cuestionario.autorId`, `Cuestionario.materiaId`, `Attempt.userId`, `Attempt.cuestionarioId` — agregar en migraciones si no están.
+- Para historial de intentos con volumen, paginar con `skip`/`take` de Prisma.

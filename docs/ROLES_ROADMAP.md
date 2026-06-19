@@ -1,54 +1,53 @@
 # Roadmap — Roles y vistas
 
-## Estado actual (mayo 2026)
+## Estado actual (junio 2026)
 
 | Rol         | Ruta home          | Estado     |
 |-------------|--------------------|------------|
-| estudiante  | `/`                | ✅ Completo |
-| docente     | `/docente`         | ✅ Completo (CRUD de cuestionarios + resultados de alumnos) |
-| admin       | `/admin`           | 🟡 Esqueleto + `/admin/usuarios` completo (CRUD de usuarios) |
+| estudiante  | `/`                | ✅ Completo (mock) |
+| docente     | `/docente`         | ✅ Completo (mock) — CRUD de cuestionarios + resultados de alumnos |
+| admin       | `/admin`           | 🟡 Parcial — `/admin/usuarios` completo (mock); `/admin/carreras` y `/admin/contenido` son stubs |
 
-Dominio académico modelado en [app/domain/academic.ts](../domain/academic.ts):
+Dominio académico modelado en [app/domain/academic.ts](../app/domain/academic.ts):
 
 - **Carreras**: Instrumentación Quirúrgica (Anatomía I, II), Radiología (Anatomía I–IV).
 - **Materias**: Anatomía I, II, III, IV.
 - **Cuestionarios**: pertenecen a una materia, los crea un docente/admin.
 
-Stores persistidos (Zustand + `localStorage`):
-- [app/store/userStore.ts](../store/userStore.ts) — sesión actual con `carreraId` opcional.
-- [app/store/usersStore.ts](../store/usersStore.ts) — CRUD de usuarios (seedeado).
-- [app/store/cuestionarioBankStore.ts](../store/cuestionarioBankStore.ts) — CRUD de cuestionarios (seedeado con 3 cuestionarios).
-- [app/store/cuestionarioHistoryStore.ts](../store/cuestionarioHistoryStore.ts) — intentos por usuario y cuestionario.
+Stores actuales (Zustand + `localStorage`, mocks):
+- [app/store/userStore.ts](../app/store/userStore.ts) — sesión actual.
+- [app/store/usersStore.ts](../app/store/usersStore.ts) — CRUD de usuarios (seedeado con 7 usuarios).
+- [app/store/cuestionarioBankStore.ts](../app/store/cuestionarioBankStore.ts) — CRUD de cuestionarios (seedeado con 3 cuestionarios).
+- [app/store/cuestionarioHistoryStore.ts](../app/store/cuestionarioHistoryStore.ts) — intentos por usuario.
 
-Guards: [app/components/auth/RoleGate.tsx](../components/auth/RoleGate.tsx) protege `/admin/**`, `/docente/**` y `/mis-cuestionarios`.
+Guards cliente: [app/components/auth/RoleGate.tsx](../app/components/auth/RoleGate.tsx) protege `/admin/**`, `/docente/**` y `/mis-cuestionarios`.
 
 ---
 
 ## Pendientes (admin)
 
-Páginas del admin que quedan como placeholder en [app/admin/page.tsx](../admin/page.tsx):
-
-1. **`/admin/carreras`** — Configurar carreras y asignación de materias.
-   - UI: tabla de carreras + checkbox grid para asignar materias.
-   - Store: ampliar `useUsersStore` o crear `useCarrerasStore` (hoy las carreras viven hardcodeadas en `academic.ts`).
-2. **`/admin/contenido`** — Edición de descripciones del `anatomy.final.builded.json` (no es prioritario; persistir en Supabase cuando se migre).
-3. **Vista admin de cuestionarios global** — Actualmente el admin reutiliza `/docente` (ve todos por ser autor solo de los propios). Tras migrar a Supabase, agregar `/admin/cuestionarios` con tabla cross-docente (la RLS permite SELECT a admin sobre todos) y acción "transferir autoría" (UPDATE de `autor_id`, solo admin).
+1. **`/admin/carreras`** — Configurar carreras y asignación de materias (hoy hardcodeadas en `academic.ts`; al migrar al backend vienen de la DB).
+2. **`/admin/contenido`** — Edición de descripciones del `anatomy.final.builded.json` (no prioritario).
+3. **Vista admin de cuestionarios global** — Actualmente el admin reutiliza `/docente` (ve solo los propios). Agregar `/admin/cuestionarios` con tabla cross-docente usando `GET /cuestionarios` (el backend devuelve todos si el rol es ADMIN).
 
 ---
 
-## Migración a backend (Supabase)
+## Integración con backend (NestJS)
 
-El backend del proyecto es **Supabase** (Auth + Postgres + RLS). Ver [SUPABASE.md](SUPABASE.md) para:
+El backend del proyecto es **NestJS + Prisma + PostgreSQL** en `backend/`. Ver [BACKEND.md](BACKEND.md) para:
 
-- Schema SQL completo (`profiles`, `carreras`, `materias`, `cuestionarios`, `preguntas`, `intentos`, `respuestas`).
-- Custom access token hook que inyecta `user_role` y `carrera_id` en el JWT.
-- Políticas RLS por tabla.
-- Mapeo store mock → Supabase y plan de migración por fases (auth → users → cuestionarios → intentos).
-- Recomendación: TanStack Query para estado servidor; Zustand solo para UI local (anatomía 3D, cámara, capas).
+- Schema Prisma completo (`User`, `Carrera`, `Materia`, `Cuestionario`, `Question`, `Attempt`, `AnswerLog`).
+- Endpoints disponibles y pendientes.
+- Plan de integración por fases (auth → users → cuestionarios → intentos).
 
 ### Impacto sobre los stores actuales
-- `userStore` → `supabase.auth` + hook `useUser()` que lee `profiles`.
-- `usersStore` → queries sobre `profiles` (admin gestiona roles desde aquí).
-- `cuestionarioBankStore` → queries/mutaciones sobre `cuestionarios` y `preguntas` (con RPC `create_cuestionario` para atomicidad).
-- `cuestionarioHistoryStore` → queries sobre `intentos` y `respuestas` (con RPC `submit_attempt` para cálculo server-side del score).
-- `RoleGate` cliente queda como fallback UX; el guard real pasa a [middleware.ts](../middleware.ts) leyendo `user_role` del JWT.
+
+| Store mock actual | Reemplazo |
+|-------------------|-----------|
+| `userStore.login()` | `POST /auth/login` → JWT via `nestAuthProvider` |
+| `userStore.user` | Payload del JWT + `GET /auth/me` |
+| `usersStore.*` | `GET/PATCH/DELETE /users` (solo ADMIN) |
+| `cuestionarioBankStore.*` | `GET/POST/PATCH/DELETE /cuestionarios` |
+| `cuestionarioHistoryStore.*` | `POST /intentos` + `GET /intentos/me` (pendiente en backend) |
+
+`RoleGate` cliente queda como fallback UX. El guard real es `JwtGuard` + `RolesGuard` en NestJS. Cuando se agregue `middleware.ts` en el frontend, el gating server-side leerá el JWT directamente.

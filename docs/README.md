@@ -4,16 +4,16 @@
 
 ## Arquitectura y stack
 
-- [ARCHITECTURE.md](ARCHITECTURE.md) — Arquitectura completa (Next.js + Supabase).
-- [STACK.md](STACK.md) — Stack tecnológico detallado y decisiones técnicas.
+- [ARCHITECTURE.md](ARCHITECTURE.md) — Arquitectura completa (Next.js + NestJS).
+- [STACK.md](STACK.md) — Stack tecnológico detallado y variables de entorno.
 
 ## Backend
 
-- [SUPABASE.md](SUPABASE.md) — Backend: schema SQL, RLS, roles, custom access token hook, integración con Next.js App Router y plan de migración desde los mocks Zustand+localStorage.
+- [BACKEND.md](BACKEND.md) — Backend NestJS: schema Prisma, endpoints, guards, plan de integración con el frontend por fases.
 
 ## Roadmap y roles
 
-- [ROLES_ROADMAP.md](ROLES_ROADMAP.md) — Gating por rol (estudiante / `docente` / `admin`) y plan de evolución sobre Supabase.
+- [ROLES_ROADMAP.md](ROLES_ROADMAP.md) — Gating por rol (estudiante / `docente` / `admin`) y estado actual de las vistas.
 
 ---
 
