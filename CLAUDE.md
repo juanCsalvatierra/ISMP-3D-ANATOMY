@@ -53,12 +53,32 @@ Shared types (quiz/academic shapes) in [app/domain/academic.ts](app/domain/acade
 ### Styling
 Tailwind CSS v4 (PostCSS plugin, no `tailwind.config` file — configured via [postcss.config.mjs](postcss.config.mjs) and [app/globals.css](app/globals.css)). Fonts: IBM Plex Sans/Serif/Mono loaded in [app/layout.tsx](app/layout.tsx) via CSS variables.
 
+## Auth abstraction layer
+
+Auth is decoupled via `AuthProvider` interface (`app/types/authProvider.ts`). The active implementation is `localAuthProvider` (`app/providers/localAuthProvider.ts`), which uses `localStorage`. When Supabase auth is wired, create a `supabaseAuthProvider` implementing the same interface — the store (`userStore`) consumes the provider, not a specific implementation.
+
+`app/components/auth/RoleGate.tsx` — client-side guard for `/admin/**`, `/docente/**`, `/mis-cuestionarios`. Once `middleware.ts` is added (planned), RoleGate becomes a UX fallback only.
+
 ## Backend integration (Supabase, migración en curso)
 
-[docs/SUPABASE.md](docs/SUPABASE.md) y [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) describen la solución definitiva: Supabase Auth + Postgres con RLS, integrado vía `@supabase/ssr` en el App Router. Mientras la migración no esté completa, auth/quizzes/usuarios siguen sobre mocks Zustand+localStorage. Al cablear features reales: leer SUPABASE.md primero, usar RLS como fuente de verdad de autorización, nunca `service_role_key` en código cliente, y no inventar endpoints REST (todo va por `supabase-js` o RPC).
+[docs/SUPABASE.md](docs/SUPABASE.md) y [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) describen la solución definitiva: Supabase Auth + Postgres con RLS, integrado vía `@supabase/ssr` en el App Router. La migración se hace por fases con feature flag `NEXT_PUBLIC_USE_SUPABASE=1` (auth → users → cuestionarios → intentos). Mientras no esté completa, auth/quizzes/usuarios siguen sobre mocks Zustand+localStorage.
+
+Al cablear features reales: leer SUPABASE.md primero, usar RLS como fuente de verdad de autorización, nunca `service_role_key` en código cliente, y no inventar endpoints REST (todo va por `supabase-js` o RPC). TanStack Query no está instalado aún — agregarlo cuando empiece la migración de servidor.
+
+La carpeta `backend/` (NestJS placeholder) **no aplica** — se elimina al completar la integración Supabase, per docs/SUPABASE.md §7.
 
 Variables esperadas en `.env.local`: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (solo server).
+
+Estructura destino para el cliente Supabase (no existe aún):
+```
+lib/supabase/
+  client.ts    # createBrowserClient — Client Components
+  server.ts    # createServerClient (cookies) — Server Components / Route Handlers
+  admin.ts     # createClient con service_role — server-only
+  types.ts     # generado con `supabase gen types typescript`
+```
 
 ## Conventions
 
 - TypeScript strict mode is on ([tsconfig.json](tsconfig.json)); avoid `any` — anatomy/quiz data is heavily typed.
+- `app/utils/layerPresets.ts` — visibility presets for 3D layer groups; `app/hooks/useViewerTabs.ts` — tab state for the viewer sidebar. Both are tightly coupled to the mesh group keys in `meshStore`.
