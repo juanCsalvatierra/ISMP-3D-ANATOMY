@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import type { CarreraId } from "@/app/domain/academic";
 import type { AuthProvider } from "@/app/types/authProvider";
-import { localAuthProvider } from "@/app/providers/localAuthProvider";
+import { nestAuthProvider } from "@/app/providers/nestAuthProvider";
 
 export type Role = "admin" | "docente" | "estudiante";
 
@@ -15,16 +15,20 @@ export type User = {
 
 type State = {
   currentUser: User | null;
+  /** Restore session on mount (reads token + cached user from localStorage). */
+  init: () => Promise<void>;
   login: (email: string, password: string, role: Role, carreraId?: CarreraId) => Promise<void>;
   logout: () => Promise<void>;
   updateCurrentUser: (patch: Partial<User>) => Promise<void>;
 };
 
-// DIP: el store depende de la abstracción AuthProvider, no de localStorage directamente.
-// Para migrar a Supabase: createUserStore(supabaseAuthProvider).
 export function createUserStore(auth: AuthProvider) {
   return create<State>()((set) => ({
     currentUser: null,
+    init: async () => {
+      const user = await auth.getUser();
+      set({ currentUser: user });
+    },
     login: async (email, password, role, carreraId) => {
       const user = await auth.login(email, password, role, carreraId);
       set({ currentUser: user });
@@ -40,9 +44,7 @@ export function createUserStore(auth: AuthProvider) {
   }));
 }
 
-// Instancia por defecto con el proveedor local (mock).
-// Reemplazar por createUserStore(supabaseAuthProvider) al integrar Supabase.
-export const useUserStore = createUserStore(localAuthProvider);
+export const useUserStore = createUserStore(nestAuthProvider);
 
 export const ROLE_LABELS: Record<Role, string> = {
   admin: "Administrador",
