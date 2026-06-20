@@ -1,0 +1,143 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  DOCENTE
+  ESTUDIANTE
+}
+
+enum EstadoUsuario {
+  PENDIENTE
+  ACTIVO
+}
+
+enum Formato {
+  MULTIPLE
+  TRUEFALSE
+  IDENTIFICATION
+  LABELING
+}
+
+model User {
+  id             String        @id @default(cuid())
+  name           String
+  email          String        @unique
+  passwordHash   String
+  role           Role
+  estado         EstadoUsuario @default(PENDIENTE)
+  activationCode String?       @unique
+  carreraId      String?
+  createdAt      DateTime      @default(now())
+
+  carrera   Carrera?   @relation(fields: [carreraId], references: [id], onDelete: SetNull)
+  attempts  Attempt[]
+  questions Question[]
+}
+
+model Carrera {
+  id    String @id @default(cuid())
+  slug  String @unique
+  label String
+
+  users    User[]
+  materias Materia[] @relation("CarreraMaterias")
+}
+
+model Materia {
+  id    String @id @default(cuid())
+  slug  String @unique
+  label String
+
+  carreras     Carrera[]         @relation("CarreraMaterias")
+  questionRefs QuestionMateria[]
+  attempts     Attempt[]
+}
+
+// ─── Banco de preguntas (independiente) ──────────────────────────────────────
+
+model Question {
+  id          String   @id @default(cuid())
+  texto       String
+  opciones    String[]
+  correct     Int
+  explicacion String   @default("")
+  formato     Formato
+  autorId     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  autor            User              @relation(fields: [autorId], references: [id])
+  materias         QuestionMateria[]
+  answerLogs       AnswerLog[]
+  attemptQuestions AttemptQuestion[]
+}
+
+// Tabla pivot: Question ↔ Materia con campo unidad
+// unidad = 0 significa "toda la materia"
+model QuestionMateria {
+  questionId String
+  materiaId  String
+  unidad     Int    @default(0)
+
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  materia  Materia  @relation(fields: [materiaId], references: [id], onDelete: Cascade)
+
+  @@id([questionId, materiaId])
+}
+
+// ─── Intento (snapshot completo de la sesión) ────────────────────────────────
+
+model Attempt {
+  id          String    @id @default(cuid())
+  userId      String?
+  materiaId   String
+  unidad      Int       @default(0)
+  cantidad    Int
+  nota        Float?
+  completado  Boolean   @default(false)
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  user             User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+  materia          Materia           @relation(fields: [materiaId], references: [id])
+  attemptQuestions AttemptQuestion[]
+  answerLogs       AnswerLog[]
+}
+
+// Preguntas asignadas al intento (snapshot al momento del start)
+model AttemptQuestion {
+  id         String @id @default(cuid())
+  attemptId  String
+  questionId String
+  orden      Int
+
+  attempt  Attempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id])
+
+  @@unique([attemptId, questionId])
+}
+
+// ─── Log de respuestas (snapshot de cada pregunta en el intento) ─────────────
+
+model AnswerLog {
+  id         String  @id @default(cuid())
+  attemptId  String
+  questionId String
+  selected   Int
+  correct    Boolean
+
+  // Snapshot de la pregunta al momento del intento
+  textoSnapshot    String
+  opcionesSnapshot String[]
+  correctSnapshot  Int
+
+  attempt  Attempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id])
+}
