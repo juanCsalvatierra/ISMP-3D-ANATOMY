@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useUserStore, type Role } from "@/app/store/userStore";
+import { ApiError } from "@/app/lib/api";
 
 const ROLE_REDIRECTS: Record<Role, string> = {
   estudiante: "/",
@@ -16,6 +17,7 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -25,28 +27,21 @@ export default function LoginPage() {
       return;
     }
     setError(null);
+    setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:3000/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (data.success) {
-        const roleFromDB: Role = data.user.role;
-
-        login(email.trim(), password, roleFromDB, undefined);
-
-        router.push(ROLE_REDIRECTS[roleFromDB]);
+      // nestAuthProvider ignores the role param and reads it from the backend response
+      await login(email.trim(), password, "estudiante");
+      const user = useUserStore.getState().currentUser;
+      router.push(ROLE_REDIRECTS[user!.role]);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
       } else {
-        setError("Correo o contraseña incorrectos");
+        setError("No se pudo conectar al servidor. Intentá más tarde.");
       }
-    } catch (error) {
-      console.error(error);
-      setError("No se pudo conectar al backend");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -123,8 +118,8 @@ export default function LoginPage() {
             </p>
           )}
 
-          <button type="submit" className="btn-primary w-full justify-center">
-            Ingresar
+          <button type="submit" className="btn-primary w-full justify-center" disabled={loading}>
+            {loading ? "Ingresando…" : "Ingresar"}
           </button>
         </form>
 

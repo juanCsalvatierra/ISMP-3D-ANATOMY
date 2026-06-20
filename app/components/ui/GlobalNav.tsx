@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UserMenu } from "./UserMenu";
 import { useUserStore } from "@/app/store/userStore";
 
@@ -17,6 +17,11 @@ export function GlobalNav() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const currentUser = useUserStore((s) => s.currentUser);
   const logout = useUserStore((s) => s.logout);
+  const init = useUserStore((s) => s.init);
+
+  useEffect(() => {
+    init();
+  }, [init]);
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -178,6 +183,15 @@ export function GlobalNav() {
                       {currentUser.email} · {currentUser.role}
                     </p>
                   </div>
+                  {currentUser.role === "admin" && (
+                    <Link
+                      href="/admin/usuarios"
+                      onClick={() => setMobileOpen(false)}
+                      className="ui-link text-sm"
+                    >
+                      Usuarios
+                    </Link>
+                  )}
                   {currentUser.role === "estudiante" && (
                     <Link
                       href="/mis-cuestionarios"
@@ -188,9 +202,10 @@ export function GlobalNav() {
                     </Link>
                   )}
                   <button
-                    onClick={() => {
-                      logout();
+                    onClick={async () => {
+                      await logout();
                       setMobileOpen(false);
+                      window.location.href = "/login";
                     }}
                     className="btn-secondary self-start"
                   >

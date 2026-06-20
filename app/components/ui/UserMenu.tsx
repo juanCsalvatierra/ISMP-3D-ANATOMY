@@ -70,10 +70,10 @@ export function UserMenu() {
       ? [{ label: "Crear cuestionario", href: "/docente/cuestionarios/nuevo" }]
       : [];
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     setOpen(false);
-    router.push("/");
+    router.push("/login");
   };
 
   return (
@@ -147,6 +147,16 @@ export function UserMenu() {
                 style={{ fontFamily: "var(--font-ibm-plex-sans)", color: "var(--text-primary)" }}
               >
                 {roleHomeLink.label}
+              </Link>
+            )}
+            {currentUser.role === "admin" && (
+              <Link
+                href="/admin/usuarios"
+                onClick={() => setOpen(false)}
+                className="px-4 py-2 text-sm transition-colors"
+                style={{ fontFamily: "var(--font-ibm-plex-sans)", color: "var(--text-primary)" }}
+              >
+                Usuarios
               </Link>
             )}
             {studentLinks.map((l) => (
