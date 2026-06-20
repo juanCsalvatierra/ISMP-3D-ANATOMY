@@ -15,6 +15,11 @@ enum Role {
   ESTUDIANTE
 }
 
+enum EstadoUsuario {
+  PENDIENTE
+  ACTIVO
+}
+
 enum Formato {
   MULTIPLE
   TRUEFALSE
@@ -25,79 +30,118 @@ enum Formato {
 // ─── Modelos ─────────────────────────────────────────────────────────────────
 
 model User {
-  id            String         @id @default(cuid())
-  name          String
-  email         String         @unique
-  passwordHash  String
-  role          Role
-  carreraId     String?
-  carrera       Carrera?       @relation(fields: [carreraId], references: [id])
-  cuestionarios Cuestionario[] @relation("Autor")
-  attempts      Attempt[]
-  createdAt     DateTime       @default(now())
+  id             String        @id @default(cuid())
+  name           String
+  email          String        @unique
+  passwordHash   String
+  role           Role
+  estado         EstadoUsuario @default(PENDIENTE)
+  activationCode String?       @unique
+  carreraId      String?
+  createdAt      DateTime      @default(now())
+
+  carrera   Carrera?   @relation(fields: [carreraId], references: [id], onDelete: SetNull)
+  attempts  Attempt[]
+  questions Question[]
 }
 
 model Carrera {
-  id       String    @id @default(cuid())
-  slug     String    @unique
-  label    String
+  id    String @id @default(cuid())
+  slug  String @unique
+  label String
+
+  users    User[]
   materias Materia[] @relation("CarreraMaterias")
-  usuarios User[]
 }
 
 model Materia {
-  id            String         @id @default(cuid())
-  slug          String         @unique
-  label         String
-  carreras      Carrera[]      @relation("CarreraMaterias")
-  cuestionarios Cuestionario[]
+  id    String @id @default(cuid())
+  slug  String @unique
+  label String
+
+  carreras     Carrera[]         @relation("CarreraMaterias")
+  questionRefs QuestionMateria[]
+  attempts     Attempt[]
 }
 
-model Cuestionario {
-  id          String     @id @default(cuid())
-  titulo      String
-  descripcion String     @default("")
-  materiaId   String
-  materia     Materia    @relation(fields: [materiaId], references: [id])
-  formato     Formato
-  autorId     String
-  autor       User       @relation("Autor", fields: [autorId], references: [id])
-  preguntas   Question[]
-  attempts    Attempt[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-}
+// ─── Banco de preguntas (independiente) ──────────────────────────────────────
 
 model Question {
-  id             String       @id @default(cuid())
-  cuestionarioId String
-  cuestionario   Cuestionario @relation(fields: [cuestionarioId], references: [id], onDelete: Cascade)
-  orden          Int
-  texto          String
-  opciones       String[]
-  correct        Int
-  explicacion    String       @default("")
+  id          String   @id @default(cuid())
+  texto       String
+  opciones    String[]
+  correct     Int
+  explicacion String   @default("")
+  formato     Formato
+  autorId     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  autor            User              @relation(fields: [autorId], references: [id])
+  materias         QuestionMateria[]
+  answerLogs       AnswerLog[]
+  attemptQuestions AttemptQuestion[]
 }
 
-model Attempt {
-  id             String      @id @default(cuid())
-  userId         String?
-  user           User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
-  cuestionarioId String
-  cuestionario   Cuestionario @relation(fields: [cuestionarioId], references: [id], onDelete: Cascade)
-  materiaSlug    String
-  formato        Formato
-  score          Int
-  total          Int
-  completedAt    DateTime    @default(now())
-  answers        AnswerLog[]
+// Tabla pivot: Question ↔ Materia con campo unidad
+// unidad = 0 significa "toda la materia"
+model QuestionMateria {
+  questionId String
+  materiaId  String
+  unidad     Int    @default(0)
+
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  materia  Materia  @relation(fields: [materiaId], references: [id], onDelete: Cascade)
+
+  @@id([questionId, materiaId])
 }
+
+// ─── Intento (snapshot completo de la sesión) ────────────────────────────────
+
+model Attempt {
+  id          String    @id @default(cuid())
+  userId      String?
+  materiaId   String
+  unidad      Int       @default(0)
+  cantidad    Int
+  nota        Float?
+  completado  Boolean   @default(false)
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  user             User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+  materia          Materia           @relation(fields: [materiaId], references: [id])
+  attemptQuestions AttemptQuestion[]
+  answerLogs       AnswerLog[]
+}
+
+// Preguntas asignadas al intento (snapshot al momento del start)
+model AttemptQuestion {
+  id         String @id @default(cuid())
+  attemptId  String
+  questionId String
+  orden      Int
+
+  attempt  Attempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id])
+
+  @@unique([attemptId, questionId])
+}
+
+// ─── Log de respuestas (snapshot de cada pregunta en el intento) ─────────────
 
 model AnswerLog {
   id         String  @id @default(cuid())
   attemptId  String
-  attempt    Attempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
   questionId String
   selected   Int
   correct    Boolean
+
+  // Snapshot de la pregunta al momento del intento
+  textoSnapshot    String
+  opcionesSnapshot String[]
+  correctSnapshot  Int
+
+  attempt  Attempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id])
 }

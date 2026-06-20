@@ -49,7 +49,12 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales incorrectas');
     }
 
-    // 4. Generar el JWT con el id, email y role del usuario
+    // 4. Verificar que el usuario esté activo
+    if (user.estado === 'PENDIENTE') {
+      throw new UnauthorizedException('Tu cuenta está pendiente de activación. Contactá a un administrador.');
+    }
+
+    // 5. Generar el JWT con el id, email y role del usuario
     const payload = {
       sub: user.id,
       email: user.email,

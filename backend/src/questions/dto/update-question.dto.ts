@@ -1,48 +1,36 @@
 import {
   IsString,
-  IsOptional,
-  IsEnum,
   IsArray,
   IsInt,
+  IsEnum,
+  IsOptional,
   Min,
-  ValidateNested,
   ArrayMinSize,
+  ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Formato } from '@prisma/client';
+import { QuestionMateriaDto } from './create-question.dto';
 
 export class UpdateQuestionDto {
   @IsOptional()
   @IsString()
-  texto?: string;
+  question?: string;
 
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  opciones?: string[];
+  @ArrayMinSize(2)
+  options?: string[];
 
   @IsOptional()
   @IsInt()
   @Min(0)
-  correcta?: number;
+  correct?: number;
 
   @IsOptional()
   @IsString()
-  explicacion?: string;
-}
-
-export class UpdateCuestionarioDto {
-  @IsOptional()
-  @IsString()
-  titulo?: string;
-
-  @IsOptional()
-  @IsString()
-  descripcion?: string;
-
-  @IsOptional()
-  @IsString()
-  materiaId?: string;
+  explanation?: string;
 
   @IsOptional()
   @IsEnum(Formato)
@@ -52,6 +40,6 @@ export class UpdateCuestionarioDto {
   @IsArray()
   @ArrayMinSize(1)
   @ValidateNested({ each: true })
-  @Type(() => UpdateQuestionDto)
-  preguntas?: UpdateQuestionDto[];
+  @Type(() => QuestionMateriaDto)
+  materias?: QuestionMateriaDto[];
 }
