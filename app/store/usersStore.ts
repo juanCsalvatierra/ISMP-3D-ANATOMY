@@ -26,7 +26,7 @@ function mapUser(u: BackendUser): ManagedUser {
 }
 
 type CreateInput = Omit<ManagedUser, "id"> & { password: string };
-type UpdateInput = Partial<Omit<ManagedUser, "id">>;
+type UpdateInput = Partial<Omit<ManagedUser, "id">> & { password?: string };
 
 type State = {
   users: ManagedUser[];
@@ -103,6 +103,7 @@ export const useUsersStore = create<State>()((set) => ({
     if (patch.dni !== undefined) payload.dni = patch.dni || null;
     if (patch.role !== undefined) payload.role = patch.role.toUpperCase();
     if (patch.carreraIds !== undefined) payload.carreraIds = patch.carreraIds;
+    if (patch.password) payload.password = patch.password;
     const data = await api.patch<BackendUser>(`/users/${id}`, payload);
     const updated = mapUser(data);
     set((state) => ({

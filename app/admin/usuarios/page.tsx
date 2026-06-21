@@ -92,7 +92,7 @@ function UsuariosView() {
 
   const handleSave = async () => {
     if (!draft) return;
-    if (!draft.name.trim() || !draft.email.trim()) {
+    if (!draft.id && (!draft.name.trim() || !draft.email.trim())) {
       setError("Nombre y email son obligatorios.");
       return;
     }
@@ -100,8 +100,12 @@ function UsuariosView() {
       setError("La contraseña es obligatoria para nuevos usuarios.");
       return;
     }
-    if (!draft.id && draft.password !== draft.confirmPassword) {
+    if (draft.password && draft.password !== draft.confirmPassword) {
       setError("Las contraseñas no coinciden.");
+      return;
+    }
+    if (draft.password && draft.password.length < 6) {
+      setError("La contraseña debe tener al menos 6 caracteres.");
       return;
     }
 
@@ -110,11 +114,9 @@ function UsuariosView() {
     try {
       if (draft.id) {
         await updateUser(draft.id, {
-          name: draft.name.trim(),
-          email: draft.email.trim(),
-          dni: draft.dni.trim() || undefined,
           role: draft.role,
           carreraIds: draft.carreraIds,
+          ...(draft.password ? { password: draft.password } : {}),
         });
       } else {
         await createUser({
@@ -340,91 +342,121 @@ function UsuariosView() {
               </h2>
 
               <div className="flex flex-col gap-4">
-                {/* Nombre */}
-                <div className="flex flex-col gap-1">
-                  <label
-                    className="text-xs uppercase tracking-wider"
-                    style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
+                {/* En modo edición: info de solo lectura */}
+                {draft.id ? (
+                  <div
+                    className="rounded-lg px-4 py-3 flex flex-col gap-1"
+                    style={{ background: "var(--bg-canvas)", border: "1px solid var(--border-subtle)" }}
                   >
-                    Nombre *
-                  </label>
-                  <input
-                    className="ui-input"
-                    value={draft.name}
-                    onChange={(e) => setDraft({ ...draft, name: e.target.value })}
-                  />
-                </div>
-
-                {/* DNI */}
-                <div className="flex flex-col gap-1">
-                  <label
-                    className="text-xs uppercase tracking-wider"
-                    style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
-                  >
-                    DNI
-                  </label>
-                  <input
-                    className="ui-input"
-                    placeholder="Ej: 30123456"
-                    value={draft.dni}
-                    onChange={(e) => setDraft({ ...draft, dni: e.target.value })}
-                  />
-                </div>
-
-                {/* Email */}
-                <div className="flex flex-col gap-1">
-                  <label
-                    className="text-xs uppercase tracking-wider"
-                    style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
-                  >
-                    Email *
-                  </label>
-                  <input
-                    type="email"
-                    className="ui-input"
-                    value={draft.email}
-                    onChange={(e) => setDraft({ ...draft, email: e.target.value })}
-                  />
-                </div>
-
-                {/* Contraseña (solo al crear) */}
-                {!draft.id && (
+                    <span
+                      className="text-xs uppercase tracking-wider mb-1"
+                      style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
+                    >
+                      Información de la cuenta
+                    </span>
+                    <span
+                      className="text-sm font-medium"
+                      style={{ fontFamily: "var(--font-ibm-plex-sans)", color: "var(--text-primary)" }}
+                    >
+                      {draft.name}
+                    </span>
+                    <span
+                      className="text-sm"
+                      style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-secondary)" }}
+                    >
+                      {draft.email}
+                    </span>
+                    {draft.dni && (
+                      <span
+                        className="text-sm"
+                        style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
+                      >
+                        DNI: {draft.dni}
+                      </span>
+                    )}
+                  </div>
+                ) : (
                   <>
+                    {/* Nombre */}
                     <div className="flex flex-col gap-1">
                       <label
                         className="text-xs uppercase tracking-wider"
-                        style={{
-                          fontFamily: "var(--font-ibm-plex-mono)",
-                          color: "var(--text-muted)",
-                        }}
+                        style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
                       >
-                        Contraseña *
+                        Nombre *
                       </label>
                       <input
-                        type="password"
                         className="ui-input"
-                        value={draft.password}
-                        onChange={(e) => setDraft({ ...draft, password: e.target.value })}
+                        value={draft.name}
+                        onChange={(e) => setDraft({ ...draft, name: e.target.value })}
                       />
                     </div>
+
+                    {/* DNI */}
                     <div className="flex flex-col gap-1">
                       <label
                         className="text-xs uppercase tracking-wider"
-                        style={{
-                          fontFamily: "var(--font-ibm-plex-mono)",
-                          color: "var(--text-muted)",
-                        }}
+                        style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
                       >
-                        Confirmar contraseña *
+                        DNI
                       </label>
                       <input
-                        type="password"
                         className="ui-input"
-                        value={draft.confirmPassword}
-                        onChange={(e) => setDraft({ ...draft, confirmPassword: e.target.value })}
+                        placeholder="Ej: 30123456"
+                        value={draft.dni}
+                        onChange={(e) => setDraft({ ...draft, dni: e.target.value })}
+                      />
+                    </div>
+
+                    {/* Email */}
+                    <div className="flex flex-col gap-1">
+                      <label
+                        className="text-xs uppercase tracking-wider"
+                        style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
+                      >
+                        Email *
+                      </label>
+                      <input
+                        type="email"
+                        className="ui-input"
+                        value={draft.email}
+                        onChange={(e) => setDraft({ ...draft, email: e.target.value })}
                       />
                     </div>
                   </>
+                )}
+
+                {/* Contraseña: obligatoria al crear, opcional al editar */}
+                <div className="flex flex-col gap-1">
+                  <label
+                    className="text-xs uppercase tracking-wider"
+                    style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
+                  >
+                    {draft.id ? "Nueva contraseña (opcional)" : "Contraseña *"}
+                  </label>
+                  <input
+                    type="password"
+                    className="ui-input"
+                    placeholder={draft.id ? "Dejar en blanco para no cambiar" : ""}
+                    value={draft.password}
+                    onChange={(e) => setDraft({ ...draft, password: e.target.value })}
+                  />
+                </div>
+                {(draft.password || !draft.id) && (
+                  <div className="flex flex-col gap-1">
+                    <label
+                      className="text-xs uppercase tracking-wider"
+                      style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
+                    >
+                      Confirmar contraseña {!draft.id && "*"}
+                    </label>
+                    <input
+                      type="password"
+                      className="ui-input"
+                      value={draft.confirmPassword}
+                      onChange={(e) => setDraft({ ...draft, confirmPassword: e.target.value })}
+                    />
+                  </div>
                 )}
 
                 {/* Rol */}
