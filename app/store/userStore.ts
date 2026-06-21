@@ -2,6 +2,20 @@ import { create } from "zustand";
 import type { AuthProvider } from "@/app/types/authProvider";
 import { nestAuthProvider } from "@/app/providers/nestAuthProvider";
 
+// Lee sincrónicamente desde localStorage para evitar el flash de redirección a /login.
+// Usa las mismas claves que nestAuthProvider y api.ts.
+function readUserSync(): User | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const token = localStorage.getItem("ismp-token");
+    if (!token) return null;
+    const raw = localStorage.getItem("ismp-user");
+    return raw ? (JSON.parse(raw) as User) : null;
+  } catch {
+    return null;
+  }
+}
+
 export type Role = "admin" | "docente" | "estudiante";
 
 export type EstadoUsuario = "PENDIENTE" | "ACTIVO";
@@ -27,7 +41,7 @@ type State = {
 
 export function createUserStore(auth: AuthProvider) {
   return create<State>()((set) => ({
-    currentUser: null,
+    currentUser: readUserSync(),
     init: async () => {
       const user = await auth.getUser();
       set({ currentUser: user });
