@@ -45,9 +45,9 @@ export class AttemptsController {
   @Get()
   findAll(
     @Query('materiaId') materiaId: string | undefined,
-    @CurrentUser() user: { sub: string; role: Role; carreraId?: string },
+    @CurrentUser() user: { sub: string; role: Role; carreraIds: string[] },
   ) {
-    return this.attemptsService.findAll(materiaId, user.role, user.carreraId);
+    return this.attemptsService.findAll(materiaId, user.role, user.carreraIds ?? []);
   }
 
   // GET /attempts/me → intentos propios completados (Estudiante)

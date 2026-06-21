@@ -201,27 +201,11 @@ export class AttemptsService {
   }
 
   // ─── Ver todos los intentos completados (Docente/Admin) ─────────────────
-  async findAll(materiaId: string | undefined, role: Role, carreraId?: string) {
-    if (!materiaId) {
-      if (role !== Role.ADMIN) {
-        throw new ForbiddenException('Se requiere materiaId para docentes');
-      }
-      return this.prisma.attempt.findMany({
-        where: { completado: true },
-        include: {
-          user:    { select: { id: true, name: true, email: true } },
-          materia: { select: { id: true, slug: true, label: true } },
-        },
-        orderBy: { completedAt: 'desc' },
-      });
-    }
-
-    if (role === Role.DOCENTE) {
+  async findAll(materiaId: string | undefined, role: Role, carreraIds: string[]) {
+    // Si se filtra por materia y el usuario es docente, validar acceso
+    if (materiaId && role === Role.DOCENTE && carreraIds.length > 0) {
       const materia = await this.prisma.materia.findFirst({
-        where: {
-          id:       materiaId,
-          carreras: { some: { id: carreraId } },
-        },
+        where: { id: materiaId, carreras: { some: { id: { in: carreraIds } } } },
       });
       if (!materia) {
         throw new ForbiddenException('No tenés acceso a esta materia');
@@ -229,7 +213,10 @@ export class AttemptsService {
     }
 
     return this.prisma.attempt.findMany({
-      where: { completado: true, materiaId },
+      where: {
+        completado: true,
+        ...(materiaId ? { materiaId } : {}),
+      },
       include: {
         user:    { select: { id: true, name: true, email: true } },
         materia: { select: { id: true, slug: true, label: true } },
