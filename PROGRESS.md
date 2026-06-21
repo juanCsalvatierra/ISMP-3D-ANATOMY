@@ -76,31 +76,70 @@
 
 ## Epic 2 — Módulo de Cuestionarios (Vista Estudiante)
 
-### ⏳ Feature 2.1 — Generación Aleatoria de Exámenes de Práctica
-**Estado:** No implementada en frontend. Backend completo (`POST /attempts/start`, `POST /attempts/:id/answer`).
+### ✅ Feature 2.1 — Generación Aleatoria de Exámenes de Práctica
+**Commit:** `bdb3760`
 
-**Pendiente (frontend):**
-- Form de configuración: Materia (select), Unidad (select dinámico), Cantidad (1–30)
-- Flujo server-driven de sesión: start → render pregunta → answer → feedback → siguiente → resultados
-- Eliminar dependencia de `cuestionarioHistoryStore` (localStorage)
+- `/cuestionarios/generar`: form con selector de Materia (`GET /materias`), Unidad dinámica (`GET /materias/:id/unidades`, incluye "Todas") y Cantidad (1–30)
+- Submit → `POST /attempts/start` → redirige a la sesión con la primera pregunta
+- `/cuestionarios/intentos/[attemptId]`: sesión server-driven completa
+  - Estado inicial desde `sessionStorage` (sin useEffect para evitar cascading renders)
+  - Máquina de estados: question → feedback → question … → finished
+  - Cada respuesta llama `POST /attempts/:id/answer { questionId, selected }`
+  - Maneja `tipo: 'continua'` (muestra feedback + avanza) y `tipo: 'finalizado'` (nota, correctas/total, feedback de última pregunta)
+- `/cuestionarios` simplificado: solo muestra card "Generar examen" para estudiantes; docentes/admins ven "Agregar pregunta al banco"
+- Eliminada toda dependencia de `cuestionarioBankStore` y `cuestionarioHistoryStore` en el flujo de exámenes
 
-**Bloqueado por:** endpoints de catálogo `GET /materias` y unidades por materia (Fase 0.4, sin implementar en backend).
+**Gap pendiente:** ninguno.
 
 ---
 
 ## Epic 3 — Gestión de Preguntas (Docente / Admin)
 
-### ⏳ Feature 3.1 — Alta de pregunta
-**Estado:** Backend completo (`POST /questions`). Frontend tiene forma vieja (modelo `Cuestionario` eliminado) → necesita rehacerse.
+### ✅ Feature 3.1 — Alta de pregunta
+**Commit:** `bdb3760`
 
-### ⏳ Feature 3.2 — Añadir pregunta a unidad existente
-**Estado:** Backend cubierto por el mismo `POST /questions`. Falta select dinámico de unidades y UI adaptada.
+- `/docente/cuestionarios/nuevo` reescrito para `POST /questions`
+- Campos: Materia (select desde `GET /materias`), Unidad (select dinámico: unidades existentes + "Nueva unidad…"), Formato (Múltiple / V-F), Pregunta, Opciones con marcador de correcta, Explicación opcional
+- Tras guardar, el form se limpia y el select de unidades se refresca automáticamente
+- El botón "Guardar pregunta" muestra contador de preguntas guardadas en la sesión
 
-### ⏳ Feature 3.3 — Panel de Mantenimiento (listar / modificar / eliminar)
-**Estado:** Backend completo (`GET/PATCH/DELETE /questions`). Falta toda la UI jerárquica Materia → Unidad → Preguntas.
+**Gap pendiente:** ninguno.
 
-### ⏳ Feature 3.4 — Analítica docente *(extra-spec)*
-**Estado:** Backend completo (`GET /attempts`, `/attempts/student`, `/attempts/:id`). Dashboard docente usa mocks.
+---
+
+### ✅ Feature 3.2 — Añadir pregunta a unidad existente
+**Commit:** `bdb3760`
+
+- Cubierto por el mismo formulario de F3.1: el select de Unidad muestra las unidades ya existentes para la materia elegida
+- Al seleccionar "Nueva unidad…" aparece un input numérico para crear una nueva
+
+**Gap pendiente:** ninguno.
+
+---
+
+### ✅ Feature 3.3 — Panel de Mantenimiento (listar / modificar / eliminar)
+**Commit:** `bdb3760`
+
+- Panel docente (`/docente`) reescrito: lista "Mis preguntas" desde `GET /questions`, filtradas por `autor.id`
+- Cada pregunta muestra: texto (truncado), materia, unidad, formato
+- Botón "Editar" → `/docente/cuestionarios/[id]/editar` (reescrito para `GET + PATCH /questions/:id`)
+  - Formulario precargado con todos los campos incluyendo selector de unidad
+  - Permite cambiar materia, unidad, formato, pregunta, opciones y explicación
+- Botón "Eliminar" → `DELETE /questions/:id` con confirmación, sin recargar página
+
+**Gap pendiente:** ninguno.
+
+---
+
+### ✅ Feature 3.4 — Analítica docente *(extra-spec)*
+**Commit:** `bdb3760`
+
+- Panel docente (`/docente`) muestra resultados desde `GET /attempts` (backend real)
+- Tabla: Alumno, Materia, Unidad, Nota (%), Fecha
+- Stats: mis preguntas, intentos totales, promedio global
+- Eliminada toda dependencia de `cuestionarioHistoryStore` y `usersStore` (localStorage)
+
+**Gap pendiente:** ninguno.
 
 ---
 
@@ -111,8 +150,8 @@
 | `app/lib/api.ts` — cliente HTTP centralizado con token | ✅ |
 | Adapter de roles UPPER ↔ lower | ✅ |
 | `nestAuthProvider` — login/logout/getUser real | ✅ |
-| Reconciliación stores front ↔ modelo backend (banco de preguntas) | ⏳ Pendiente |
-| `GET /materias`, `GET /carreras`, unidades por materia (backend) | ⏳ Pendiente |
+| `GET /materias`, `GET /carreras`, unidades por materia (backend) | ✅ (`CatalogModule`) |
+| Reconciliación stores front ↔ modelo backend (banco de preguntas) | ✅ |
 | Fix `seed-cuestionarios.ts` roto | ⏳ Pendiente |
 
 ---
@@ -136,8 +175,8 @@
 | 1.3 Crear usuario | ✅ | ✅ (falta DNI schema) |
 | 1.4 Editar usuario | ✅ | ✅ |
 | 1.5 Registro + activación | ✅ | ✅ |
-| 2.1 Examen aleatorio | ⏳ | ✅ (falta catálogos) |
-| 3.1 Alta pregunta | ⏳ | ✅ |
-| 3.2 Añadir pregunta | ⏳ | ✅ |
-| 3.3 Panel mantenimiento | ⏳ | ✅ |
-| 3.4 Analítica docente | ⏳ | ✅ |
+| 2.1 Examen aleatorio | ✅ | ✅ |
+| 3.1 Alta pregunta | ✅ | ✅ |
+| 3.2 Añadir pregunta | ✅ | ✅ |
+| 3.3 Panel mantenimiento | ✅ | ✅ |
+| 3.4 Analítica docente | ✅ | ✅ |
