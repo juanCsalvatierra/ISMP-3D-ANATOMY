@@ -32,7 +32,7 @@
 - Botones "Editar" y "Eliminar" por fila
 - Botón "Activar" para usuarios PENDIENTE → abre modal de F1.5
 
-**Gap pendiente:** búsqueda por `DNI` (la spec lo pide; el backend no tiene el campo aún).
+**Gap pendiente:** ninguno.
 
 ---
 
@@ -44,7 +44,7 @@
 - Submit → `POST /users` (solo admin)
 - Selección múltiple de carreras con checkboxes
 
-**Gap pendiente:** el backend aún no tiene `dni` como campo de `User` (migración Prisma pendiente); el form lo envía pero el backend lo ignora.
+**Gap pendiente:** ninguno.
 
 ---
 
@@ -56,7 +56,7 @@
 - Nombre, Email y DNI se muestran como información de solo lectura
 - Submit → `PATCH /users/:id`
 
-**Gap pendiente:** depende de multi-carrera en el backend (actualmente funciona; si se migra a N:M habrá que revisar el DTO).
+**Gap pendiente:** ninguno.
 
 ---
 
@@ -171,8 +171,8 @@
 | Feature | Frontend | Backend |
 |---|---|---|
 | 1.1 Navbar | ✅ | ✅ |
-| 1.2 Panel usuarios | ✅ | ✅ (falta DNI) |
-| 1.3 Crear usuario | ✅ | ✅ (falta DNI schema) |
+| 1.2 Panel usuarios | ✅ | ✅ |
+| 1.3 Crear usuario | ✅ | ✅ |
 | 1.4 Editar usuario | ✅ | ✅ |
 | 1.5 Registro + activación | ✅ | ✅ |
 | 2.1 Examen aleatorio | ✅ | ✅ |
