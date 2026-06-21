@@ -11,6 +11,7 @@ type BackendUser = {
   email: string;
   role: string;
   dni?: string | null;
+  estado?: "PENDIENTE" | "ACTIVO";
   carreras?: { carreraId: string }[];
 };
 
@@ -21,6 +22,7 @@ function mapUser(u: BackendUser): ManagedUser {
     email: u.email,
     role: u.role ? toFrontendRole(u.role as Parameters<typeof toFrontendRole>[0]) : "estudiante",
     dni: u.dni ?? undefined,
+    estado: u.estado,
     carreraIds: u.carreras?.map((c) => c.carreraId as CarreraId) ?? [],
   };
 }
@@ -37,6 +39,7 @@ type State = {
   create: (input: CreateInput) => Promise<string>;
   update: (id: string, patch: UpdateInput) => Promise<void>;
   remove: (id: string) => Promise<void>;
+  activate: (code: string) => Promise<void>;
 };
 
 export const useUsersStore = create<State>()((set) => ({
@@ -114,6 +117,12 @@ export const useUsersStore = create<State>()((set) => ({
   remove: async (id) => {
     await api.delete(`/users/${id}`);
     set((state) => ({ users: state.users.filter((u) => u.id !== id) }));
+  },
+
+  activate: async (code) => {
+    await api.post("/users/activate", { code });
+    const data = await api.get<BackendUser[]>("/users");
+    set({ users: data.map(mapUser) });
   },
 }));
 

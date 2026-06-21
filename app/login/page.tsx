@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useUserStore, type Role } from "@/app/store/userStore";
@@ -14,11 +14,22 @@ const ROLE_REDIRECTS: Record<Role, string> = {
 export default function LoginPage() {
   const router = useRouter();
   const login = useUserStore((s) => s.login);
+  const init = useUserStore((s) => s.init);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    init().then(() => {
+      const user = useUserStore.getState().currentUser;
+      if (user) {
+        router.replace(ROLE_REDIRECTS[user.role]);
+      }
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,7 +134,16 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="mt-6 text-center">
+        <div className="mt-6 flex flex-col items-center gap-3">
+          <p
+            className="text-sm"
+            style={{ fontFamily: "var(--font-ibm-plex-serif)", color: "var(--text-muted)" }}
+          >
+            ¿Primera vez?{" "}
+            <Link href="/register" className="ui-link">
+              Registrarse como estudiante
+            </Link>
+          </p>
           <Link href="/" className="ui-link text-sm">
             ← Volver al inicio
           </Link>

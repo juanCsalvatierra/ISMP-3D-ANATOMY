@@ -5,6 +5,8 @@ import { nestAuthProvider } from "@/app/providers/nestAuthProvider";
 
 export type Role = "admin" | "docente" | "estudiante";
 
+export type EstadoUsuario = "PENDIENTE" | "ACTIVO";
+
 export type User = {
   id: string;
   name: string;
@@ -12,6 +14,7 @@ export type User = {
   role: Role;
   dni?: string;
   carreraIds?: CarreraId[];
+  estado?: EstadoUsuario;
 };
 
 type State = {

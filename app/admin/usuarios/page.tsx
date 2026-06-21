@@ -7,6 +7,8 @@ import { CARRERAS, CARRERA_IDS, type CarreraId } from "@/app/domain/academic";
 
 const ROLES: Role[] = ["estudiante", "docente", "admin"];
 
+type FiltroEstado = Role | "all" | "pendiente";
+
 type Draft = {
   id?: string;
   name: string;
@@ -37,20 +39,31 @@ function UsuariosView() {
   const createUser = useUsersStore((s) => s.create);
   const updateUser = useUsersStore((s) => s.update);
   const removeUser = useUsersStore((s) => s.remove);
+  const activateUser = useUsersStore((s) => s.activate);
 
-  const [filtroRol, setFiltroRol] = useState<Role | "all">("all");
+  const [filtro, setFiltro] = useState<FiltroEstado>("all");
   const [query, setQuery] = useState("");
   const [draft, setDraft] = useState<Draft | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [activateTarget, setActivateTarget] = useState<ManagedUser | null>(null);
+  const [activateCode, setActivateCode] = useState("");
+  const [activateError, setActivateError] = useState<string | null>(null);
+  const [activating, setActivating] = useState(false);
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
 
+  const pendingCount = users.filter((u) => u.estado === "PENDIENTE").length;
+
   const filtered =
-    filtroRol === "all" ? users : users.filter((u) => u.role === filtroRol);
+    filtro === "all"
+      ? users
+      : filtro === "pendiente"
+        ? users.filter((u) => u.estado === "PENDIENTE")
+        : users.filter((u) => u.role === filtro);
 
   const handleQueryChange = (value: string) => {
     setQuery(value);
@@ -146,6 +159,29 @@ function UsuariosView() {
     }
   };
 
+  const startActivate = (u: ManagedUser) => {
+    setActivateTarget(u);
+    setActivateCode("");
+    setActivateError(null);
+  };
+
+  const handleActivate = async () => {
+    if (!activateCode.trim()) {
+      setActivateError("Ingresá el código de activación.");
+      return;
+    }
+    setActivating(true);
+    setActivateError(null);
+    try {
+      await activateUser(activateCode.trim().toUpperCase());
+      setActivateTarget(null);
+    } catch (err) {
+      setActivateError(err instanceof Error ? err.message : "Código inválido o ya utilizado.");
+    } finally {
+      setActivating(false);
+    }
+  };
+
   return (
     <main style={{ background: "var(--bg-page)", minHeight: "calc(100vh - 48px)" }}>
       <div className="max-w-5xl mx-auto px-6 py-10">
@@ -188,15 +224,15 @@ function UsuariosView() {
           )}
         </div>
 
-        {/* Role filter tabs */}
+        {/* Filter tabs */}
         <div className="flex flex-wrap gap-2 mb-4">
-          {(["all", ...ROLES] as const).map((r) => {
-            const active = filtroRol === r;
+          {(["all", "pendiente", ...ROLES] as const).map((r) => {
+            const active = filtro === r;
             return (
               <button
                 key={r}
-                onClick={() => setFiltroRol(r)}
-                className="px-3 py-1 rounded-md text-sm transition-colors"
+                onClick={() => setFiltro(r)}
+                className="px-3 py-1 rounded-md text-sm transition-colors flex items-center gap-1.5"
                 style={{
                   fontFamily: "var(--font-ibm-plex-sans)",
                   background: active ? "var(--accent)" : "var(--bg-panel)",
@@ -204,7 +240,24 @@ function UsuariosView() {
                   border: "1px solid var(--border-subtle)",
                 }}
               >
-                {r === "all" ? "Todos" : ROLE_LABELS[r]}
+                {r === "all"
+                  ? "Todos"
+                  : r === "pendiente"
+                    ? "Pendientes"
+                    : ROLE_LABELS[r]}
+                {r === "pendiente" && pendingCount > 0 && (
+                  <span
+                    className="rounded-full text-xs px-1.5 py-0.5 font-medium"
+                    style={{
+                      background: active
+                        ? "rgba(255,255,255,0.25)"
+                        : "color-mix(in srgb, var(--accent) 20%, transparent)",
+                      color: active ? "white" : "var(--accent)",
+                    }}
+                  >
+                    {pendingCount}
+                  </span>
+                )}
               </button>
             );
           })}
@@ -239,6 +292,7 @@ function UsuariosView() {
                   <th className="text-left px-4 py-2 font-medium">DNI</th>
                   <th className="text-left px-4 py-2 font-medium">Email</th>
                   <th className="text-left px-4 py-2 font-medium">Rol</th>
+                  <th className="text-left px-4 py-2 font-medium">Estado</th>
                   <th className="text-left px-4 py-2 font-medium">Carrera(s)</th>
                   <th className="text-right px-4 py-2 font-medium">Acciones</th>
                 </tr>
@@ -247,7 +301,7 @@ function UsuariosView() {
                 {loading ? (
                   <tr>
                     <td
-                      colSpan={6}
+                      colSpan={7}
                       className="px-4 py-6 text-center"
                       style={{ color: "var(--text-muted)" }}
                     >
@@ -257,7 +311,7 @@ function UsuariosView() {
                 ) : filtered.length === 0 ? (
                   <tr>
                     <td
-                      colSpan={6}
+                      colSpan={7}
                       className="px-4 py-6 text-center"
                       style={{ color: "var(--text-muted)" }}
                     >
@@ -291,6 +345,26 @@ function UsuariosView() {
                       <td className="px-4 py-2" style={{ color: "var(--text-secondary)" }}>
                         {ROLE_LABELS[u.role]}
                       </td>
+                      <td className="px-4 py-2">
+                        <span
+                          className="px-2 py-0.5 rounded-full text-xs font-medium"
+                          style={
+                            u.estado === "PENDIENTE"
+                              ? {
+                                  background: "color-mix(in srgb, #f59e0b 15%, transparent)",
+                                  color: "#d97706",
+                                  border: "1px solid color-mix(in srgb, #f59e0b 30%, transparent)",
+                                }
+                              : {
+                                  background: "color-mix(in srgb, #22c55e 15%, transparent)",
+                                  color: "#16a34a",
+                                  border: "1px solid color-mix(in srgb, #22c55e 30%, transparent)",
+                                }
+                          }
+                        >
+                          {u.estado === "PENDIENTE" ? "Pendiente" : "Activo"}
+                        </span>
+                      </td>
                       <td className="px-4 py-2" style={{ color: "var(--text-secondary)" }}>
                         {u.carreraIds && u.carreraIds.length > 0
                           ? u.carreraIds
@@ -299,9 +373,19 @@ function UsuariosView() {
                           : "—"}
                       </td>
                       <td className="px-4 py-2 text-right">
-                        <button className="btn-ghost mr-2" onClick={() => startEdit(u)}>
-                          Editar
-                        </button>
+                        {u.estado === "PENDIENTE" ? (
+                          <button
+                            className="btn-ghost mr-2"
+                            style={{ color: "#d97706" }}
+                            onClick={() => startActivate(u)}
+                          >
+                            Activar
+                          </button>
+                        ) : (
+                          <button className="btn-ghost mr-2" onClick={() => startEdit(u)}>
+                            Editar
+                          </button>
+                        )}
                         <button
                           className="btn-ghost"
                           style={{ color: "var(--accent)" }}
@@ -317,6 +401,77 @@ function UsuariosView() {
             </table>
           </div>
         </div>
+
+        {/* Activate modal */}
+        {activateTarget && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center px-4"
+            style={{ background: "rgba(0,0,0,0.6)" }}
+            onClick={() => setActivateTarget(null)}
+          >
+            <div
+              className="ui-panel rounded-2xl p-6 w-full"
+              style={{
+                border: "1px solid var(--border-subtle)",
+                maxWidth: "420px",
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h2
+                className="text-lg font-semibold mb-1"
+                style={{ fontFamily: "var(--font-ibm-plex-sans)", color: "var(--text-primary)" }}
+              >
+                Activar cuenta
+              </h2>
+              <p
+                className="text-sm mb-5"
+                style={{ fontFamily: "var(--font-ibm-plex-serif)", color: "var(--text-muted)" }}
+              >
+                Ingresá el código de activación que el estudiante{" "}
+                <strong style={{ color: "var(--text-secondary)" }}>{activateTarget.name}</strong>{" "}
+                recibió al registrarse.
+              </p>
+
+              <div className="flex flex-col gap-1 mb-4">
+                <label
+                  className="text-xs uppercase tracking-wider"
+                  style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
+                >
+                  Código de activación
+                </label>
+                <input
+                  className="ui-input"
+                  placeholder="Ej: A1B2C3D4"
+                  value={activateCode}
+                  onChange={(e) => setActivateCode(e.target.value.toUpperCase())}
+                  style={{ fontFamily: "var(--font-ibm-plex-mono)", letterSpacing: "0.1em" }}
+                  maxLength={8}
+                  autoFocus
+                />
+              </div>
+
+              {activateError && (
+                <p className="text-sm mb-3" style={{ color: "var(--accent)" }}>
+                  {activateError}
+                </p>
+              )}
+
+              <div className="flex justify-end gap-3">
+                <button className="btn-secondary" onClick={() => setActivateTarget(null)}>
+                  Cancelar
+                </button>
+                <button
+                  className="btn-primary"
+                  onClick={handleActivate}
+                  disabled={activating}
+                  style={{ background: "#d97706" }}
+                >
+                  {activating ? "Activando…" : "Activar cuenta"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Create / Edit modal */}
         {draft && (
