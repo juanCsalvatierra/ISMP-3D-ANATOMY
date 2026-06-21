@@ -162,7 +162,7 @@
 |---|---|---|
 | `User.dni` (unique, nullable) | F1.2 / F1.3 | ✅ Ya en schema y migraciones |
 | `User ↔ Carrera` N:M (`UserCarrera`) | F1.3 / F1.4 | ✅ Ya en schema y migraciones |
-| JWT payload con `carreraId` | F2.1 | ⏳ Pendiente (workaround: `/auth/me`) |
+| JWT payload con `carreraIds` (array N:M) | F2.1 | ✅ Incluido en payload del token |
 
 ---
 
