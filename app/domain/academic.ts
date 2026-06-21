@@ -1,22 +1,26 @@
-export type CarreraId = "instrumentacion" | "radiologia";
-export type MateriaId = "anatomia-1" | "anatomia-2" | "anatomia-3" | "anatomia-4";
+export type CarreraId = "carrera-iq" | "carrera-rad" | "carrera-hem";
+export type MateriaId = "mat-anat1" | "mat-anat2" | "mat-anat3" | "mat-anat4";
 
 export const CARRERAS: Record<CarreraId, { label: string; materias: MateriaId[] }> = {
-  instrumentacion: {
+  "carrera-iq": {
     label: "Instrumentación Quirúrgica",
-    materias: ["anatomia-1", "anatomia-2"],
+    materias: ["mat-anat1", "mat-anat2"],
   },
-  radiologia: {
+  "carrera-rad": {
     label: "Radiología",
-    materias: ["anatomia-1", "anatomia-2", "anatomia-3", "anatomia-4"],
+    materias: ["mat-anat1", "mat-anat2", "mat-anat3", "mat-anat4"],
+  },
+  "carrera-hem": {
+    label: "Hemoterapia",
+    materias: ["mat-anat1"],
   },
 };
 
 export const MATERIAS: Record<MateriaId, { label: string }> = {
-  "anatomia-1": { label: "Anatomía I" },
-  "anatomia-2": { label: "Anatomía II" },
-  "anatomia-3": { label: "Anatomía III" },
-  "anatomia-4": { label: "Anatomía IV" },
+  "mat-anat1": { label: "Anatomía I" },
+  "mat-anat2": { label: "Anatomía II" },
+  "mat-anat3": { label: "Anatomía III" },
+  "mat-anat4": { label: "Anatomía IV" },
 };
 
 export const CARRERA_IDS = Object.keys(CARRERAS) as CarreraId[];

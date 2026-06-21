@@ -62,7 +62,7 @@ export class UsersService {
       SELECT id, name, email, "carreraId" FROM "User"
       WHERE role = 'ESTUDIANTE'
         AND (
-          unaccent(lower(name)) ILIKE unaccent(lower(${term}))
+          name ILIKE ${term}
           OR email ILIKE ${term}
         )
       ORDER BY name ASC

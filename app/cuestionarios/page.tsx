@@ -18,7 +18,7 @@ export default function CuestionariosHubPage() {
   const cuestionarios = useCuestionarioBankStore((s) => s.cuestionarios);
 
   const defaultCarrera: CarreraId =
-    currentUser?.carreraId ?? "instrumentacion";
+    currentUser?.carreraId ?? "carrera-iq";
   const [carreraSel, setCarreraSel] = useState<CarreraId>(defaultCarrera);
 
   const carreraId: CarreraId =

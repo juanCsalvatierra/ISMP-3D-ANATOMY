@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RoleGate } from "@/app/components/auth/RoleGate";
 import { useUsersStore, type ManagedUser } from "@/app/store/usersStore";
 import { ROLE_LABELS, type Role } from "@/app/store/userStore";
@@ -11,6 +11,7 @@ type Draft = {
   id?: string;
   name: string;
   email: string;
+  password: string;
   role: Role;
   carreraId?: CarreraId;
 };
@@ -18,24 +19,45 @@ type Draft = {
 const EMPTY: Draft = {
   name: "",
   email: "",
+  password: "",
   role: "estudiante",
-  carreraId: "instrumentacion",
+  carreraId: "carrera-iq",
 };
 
 function UsuariosView() {
   const users = useUsersStore((s) => s.users);
-  const create = useUsersStore((s) => s.create);
-  const update = useUsersStore((s) => s.update);
-  const remove = useUsersStore((s) => s.remove);
+  const loading = useUsersStore((s) => s.loading);
+  const storeError = useUsersStore((s) => s.error);
+  const fetchUsers = useUsersStore((s) => s.fetch);
+  const searchUsers = useUsersStore((s) => s.search);
+  const createUser = useUsersStore((s) => s.create);
+  const updateUser = useUsersStore((s) => s.update);
+  const removeUser = useUsersStore((s) => s.remove);
 
   const [filtroRol, setFiltroRol] = useState<Role | "all">("all");
+  const [query, setQuery] = useState("");
   const [draft, setDraft] = useState<Draft | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const filtered = useMemo(
-    () => (filtroRol === "all" ? users : users.filter((u) => u.role === filtroRol)),
-    [users, filtroRol]
-  );
+  // Load users on mount
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  // Filter by role client-side (after a search the backend already filtered; this handles the tab)
+  const filtered =
+    filtroRol === "all" ? users : users.filter((u) => u.role === filtroRol);
+
+  // Debounce search input
+  const handleQueryChange = (value: string) => {
+    setQuery(value);
+    if (searchTimer.current) clearTimeout(searchTimer.current);
+    searchTimer.current = setTimeout(() => {
+      searchUsers(value);
+    }, 400);
+  };
 
   const startCreate = () => {
     setDraft({ ...EMPTY });
@@ -47,33 +69,59 @@ function UsuariosView() {
       id: u.id,
       name: u.name,
       email: u.email,
+      password: "",
       role: u.role,
-      carreraId: u.carreraId ?? "instrumentacion",
+      carreraId: u.carreraId ?? "carrera-iq",
     });
     setError(null);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!draft) return;
     if (!draft.name.trim() || !draft.email.trim()) {
       setError("Nombre y email son obligatorios.");
       return;
     }
-    const payload = {
-      name: draft.name.trim(),
-      email: draft.email.trim(),
-      role: draft.role,
-      carreraId: draft.role === "estudiante" ? draft.carreraId : undefined,
-    };
-    if (draft.id) update(draft.id, payload);
-    else create(payload);
-    setDraft(null);
+    if (!draft.id && !draft.password.trim()) {
+      setError("La contraseña es obligatoria para nuevos usuarios.");
+      return;
+    }
+
+    setSaving(true);
     setError(null);
+    try {
+      if (draft.id) {
+        const patch: Partial<Omit<ManagedUser, "id">> = {
+          name: draft.name.trim(),
+          email: draft.email.trim(),
+          role: draft.role,
+          carreraId: draft.role === "estudiante" ? draft.carreraId : undefined,
+        };
+        await updateUser(draft.id, patch);
+      } else {
+        await createUser({
+          name: draft.name.trim(),
+          email: draft.email.trim(),
+          password: draft.password,
+          role: draft.role,
+          carreraId: draft.role === "estudiante" ? draft.carreraId : undefined,
+        });
+      }
+      setDraft(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al guardar.");
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const handleDelete = (u: ManagedUser) => {
+  const handleDelete = async (u: ManagedUser) => {
     if (typeof window !== "undefined" && window.confirm(`¿Eliminar a ${u.name}?`)) {
-      remove(u.id);
+      try {
+        await removeUser(u.id);
+      } catch (err) {
+        alert(err instanceof Error ? err.message : "Error al eliminar.");
+      }
     }
   };
 
@@ -100,6 +148,26 @@ function UsuariosView() {
           </button>
         </div>
 
+        {/* Search */}
+        <div className="mb-4">
+          <input
+            className="ui-input max-w-sm"
+            type="search"
+            placeholder="Buscar por nombre o email…"
+            value={query}
+            onChange={(e) => handleQueryChange(e.target.value)}
+          />
+          {query && (
+            <span
+              className="ml-2 text-xs"
+              style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
+            >
+              Solo busca entre estudiantes
+            </span>
+          )}
+        </div>
+
+        {/* Role filter tabs */}
         <div className="flex flex-wrap gap-2 mb-4">
           {(["all", ...ROLES] as const).map((r) => {
             const active = filtroRol === r;
@@ -121,6 +189,20 @@ function UsuariosView() {
           })}
         </div>
 
+        {/* Error banner */}
+        {storeError && (
+          <div
+            className="mb-4 px-4 py-2 rounded-md text-sm"
+            style={{
+              background: "color-mix(in srgb, var(--accent) 15%, transparent)",
+              color: "var(--accent)",
+              border: "1px solid color-mix(in srgb, var(--accent) 30%, transparent)",
+            }}
+          >
+            {storeError}
+          </div>
+        )}
+
         <div
           className="ui-panel rounded-xl overflow-hidden"
           style={{ border: "1px solid var(--border-subtle)" }}
@@ -136,7 +218,17 @@ function UsuariosView() {
               </tr>
             </thead>
             <tbody>
-              {filtered.length === 0 ? (
+              {loading ? (
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="px-4 py-6 text-center"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    Cargando…
+                  </td>
+                </tr>
+              ) : filtered.length === 0 ? (
                 <tr>
                   <td
                     colSpan={5}
@@ -149,10 +241,15 @@ function UsuariosView() {
               ) : (
                 filtered.map((u) => (
                   <tr key={u.id} style={{ borderTop: "1px solid var(--border-subtle)" }}>
-                    <td className="px-4 py-2" style={{ color: "var(--text-primary)" }}>{u.name}</td>
+                    <td className="px-4 py-2" style={{ color: "var(--text-primary)" }}>
+                      {u.name}
+                    </td>
                     <td
                       className="px-4 py-2"
-                      style={{ color: "var(--text-secondary)", fontFamily: "var(--font-ibm-plex-mono)" }}
+                      style={{
+                        color: "var(--text-secondary)",
+                        fontFamily: "var(--font-ibm-plex-mono)",
+                      }}
                     >
                       {u.email}
                     </td>
@@ -160,7 +257,7 @@ function UsuariosView() {
                       {ROLE_LABELS[u.role]}
                     </td>
                     <td className="px-4 py-2" style={{ color: "var(--text-secondary)" }}>
-                      {u.carreraId ? CARRERAS[u.carreraId].label : "—"}
+                      {u.carreraId ? CARRERAS[u.carreraId as CarreraId]?.label ?? u.carreraId : "—"}
                     </td>
                     <td className="px-4 py-2 text-right">
                       <button className="btn-ghost mr-2" onClick={() => startEdit(u)}>
@@ -181,6 +278,7 @@ function UsuariosView() {
           </table>
         </div>
 
+        {/* Create / Edit modal */}
         {draft && (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center px-4"
@@ -229,6 +327,26 @@ function UsuariosView() {
                   />
                 </div>
 
+                {!draft.id && (
+                  <div className="flex flex-col gap-1">
+                    <label
+                      className="text-xs uppercase tracking-wider"
+                      style={{
+                        fontFamily: "var(--font-ibm-plex-mono)",
+                        color: "var(--text-muted)",
+                      }}
+                    >
+                      Contraseña
+                    </label>
+                    <input
+                      type="password"
+                      className="ui-input"
+                      value={draft.password}
+                      onChange={(e) => setDraft({ ...draft, password: e.target.value })}
+                    />
+                  </div>
+                )}
+
                 <div className="flex flex-col gap-1">
                   <label
                     className="text-xs uppercase tracking-wider"
@@ -253,7 +371,10 @@ function UsuariosView() {
                   <div className="flex flex-col gap-1">
                     <label
                       className="text-xs uppercase tracking-wider"
-                      style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
+                      style={{
+                        fontFamily: "var(--font-ibm-plex-mono)",
+                        color: "var(--text-muted)",
+                      }}
                     >
                       Carrera
                     </label>
@@ -283,8 +404,8 @@ function UsuariosView() {
                   <button className="btn-secondary" onClick={() => setDraft(null)}>
                     Cancelar
                   </button>
-                  <button className="btn-primary" onClick={handleSave}>
-                    Guardar
+                  <button className="btn-primary" onClick={handleSave} disabled={saving}>
+                    {saving ? "Guardando…" : "Guardar"}
                   </button>
                 </div>
               </div>

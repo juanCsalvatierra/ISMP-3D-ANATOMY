@@ -64,7 +64,7 @@ export function CuestionarioEditForm({
   const [titulo, setTitulo] = useState(initial?.titulo ?? "");
   const [descripcion, setDescripcion] = useState(initial?.descripcion ?? "");
   const [materiaId, setMateriaId] = useState<MateriaId>(
-    initial?.materiaId ?? "anatomia-1"
+    initial?.materiaId ?? "mat-anat1"
   );
   const [formato, setFormato] = useState<CuestionarioFormato>(
     initial?.formato && initial.formato !== "labeling" ? initial.formato : "multiple"
