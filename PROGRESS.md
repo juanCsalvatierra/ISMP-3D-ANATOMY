@@ -152,17 +152,17 @@
 | `nestAuthProvider` — login/logout/getUser real | ✅ |
 | `GET /materias`, `GET /carreras`, unidades por materia (backend) | ✅ (`CatalogModule`) |
 | Reconciliación stores front ↔ modelo backend (banco de preguntas) | ✅ |
-| Fix `seed-cuestionarios.ts` roto | ⏳ Pendiente |
+| Fix `seed-cuestionarios.ts` roto | ✅ Reescrito para modelo `Question` |
 
 ---
 
-## Cambios de esquema Prisma pendientes (backend)
+## Cambios de esquema Prisma
 
 | Campo | Feature | Estado |
 |---|---|---|
-| `User.dni` (unique) | F1.2 / F1.3 | ⏳ Pendiente |
-| `User ↔ Carrera` N:M | F1.3 / F1.4 | ⏳ Pendiente |
-| JWT payload con `carreraId` | F2.1 | ⏳ Pendiente |
+| `User.dni` (unique, nullable) | F1.2 / F1.3 | ✅ Ya en schema y migraciones |
+| `User ↔ Carrera` N:M (`UserCarrera`) | F1.3 / F1.4 | ✅ Ya en schema y migraciones |
+| JWT payload con `carreraId` | F2.1 | ⏳ Pendiente (workaround: `/auth/me`) |
 
 ---
 
