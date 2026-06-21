@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useUserStore, ROLE_LABELS, type Role } from "@/app/store/userStore";
-import { useHydrated } from "@/app/store/useHydrated";
 
 type Props = {
   allowedRoles: Role[];
@@ -13,15 +12,16 @@ type Props = {
 export function RoleGate({ allowedRoles, children }: Props) {
   const router = useRouter();
   const currentUser = useUserStore((s) => s.currentUser);
-  const hydrated = useHydrated();
+  const initialized = useUserStore((s) => s.initialized);
 
   useEffect(() => {
-    if (hydrated && !currentUser) {
+    if (initialized && !currentUser) {
       router.replace("/login");
     }
-  }, [hydrated, currentUser, router]);
+  }, [initialized, currentUser, router]);
 
-  if (!hydrated) {
+  // Esperar a que init() resuelva — evita redirección prematura a /login
+  if (!initialized) {
     return (
       <main
         style={{ background: "var(--bg-page)", minHeight: "calc(100vh - 48px)" }}

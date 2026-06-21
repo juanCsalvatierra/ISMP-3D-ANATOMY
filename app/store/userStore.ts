@@ -2,20 +2,6 @@ import { create } from "zustand";
 import type { AuthProvider } from "@/app/types/authProvider";
 import { nestAuthProvider } from "@/app/providers/nestAuthProvider";
 
-// Lee sincrónicamente desde localStorage para evitar el flash de redirección a /login.
-// Usa las mismas claves que nestAuthProvider y api.ts.
-function readUserSync(): User | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const token = localStorage.getItem("ismp-token");
-    if (!token) return null;
-    const raw = localStorage.getItem("ismp-user");
-    return raw ? (JSON.parse(raw) as User) : null;
-  } catch {
-    return null;
-  }
-}
-
 export type Role = "admin" | "docente" | "estudiante";
 
 export type EstadoUsuario = "PENDIENTE" | "ACTIVO";
@@ -32,6 +18,8 @@ export type User = {
 
 type State = {
   currentUser: User | null;
+  /** true una vez que init() resolvió — usar para evitar redirects prematuros */
+  initialized: boolean;
   /** Restore session on mount (reads token + cached user from localStorage). */
   init: () => Promise<void>;
   login: (email: string, password: string, role: Role) => Promise<void>;
@@ -41,14 +29,16 @@ type State = {
 
 export function createUserStore(auth: AuthProvider) {
   return create<State>()((set) => ({
-    currentUser: readUserSync(),
+    currentUser: null,
+    initialized: false,
     init: async () => {
       const user = await auth.getUser();
-      set({ currentUser: user });
+      // Actualización atómica: currentUser e initialized en el mismo set
+      set({ currentUser: user, initialized: true });
     },
     login: async (email, password, role) => {
       const user = await auth.login(email, password, role);
-      set({ currentUser: user });
+      set({ currentUser: user, initialized: true });
     },
     logout: async () => {
       await auth.logout();
