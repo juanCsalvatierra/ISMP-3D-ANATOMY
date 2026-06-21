@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { api, ApiError } from "@/app/lib/api";
-import { CARRERAS, CARRERA_IDS, type CarreraId } from "@/app/domain/academic";
+import { useCarreras } from "@/app/hooks/useCatalog";
 import { useUserStore } from "@/app/store/userStore";
 
 type FormState = {
@@ -11,7 +11,7 @@ type FormState = {
   email: string;
   password: string;
   confirmPassword: string;
-  carreraIds: CarreraId[];
+  carreraIds: string[];
 };
 
 const EMPTY: FormState = {
@@ -26,6 +26,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const currentUser = useUserStore((s) => s.currentUser);
   const init = useUserStore((s) => s.init);
+  const { carreras } = useCarreras();
 
   const [form, setForm] = useState<FormState>(EMPTY);
   const [error, setError] = useState<string | null>(null);
@@ -45,7 +46,7 @@ export default function RegisterPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const toggleCarrera = (cid: CarreraId) => {
+  const toggleCarrera = (cid: string) => {
     const has = form.carreraIds.includes(cid);
     setForm({
       ...form,
@@ -307,11 +308,11 @@ export default function RegisterPage() {
               Carrera(s) <span style={{ color: "var(--text-muted)" }}>(opcional)</span>
             </label>
             <div className="flex flex-col gap-2">
-              {CARRERA_IDS.map((cid) => {
-                const checked = form.carreraIds.includes(cid);
+              {carreras.map((c) => {
+                const checked = form.carreraIds.includes(c.id);
                 return (
                   <label
-                    key={cid}
+                    key={c.id}
                     className="flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors"
                     style={{
                       background: checked
@@ -329,10 +330,10 @@ export default function RegisterPage() {
                     <input
                       type="checkbox"
                       checked={checked}
-                      onChange={() => toggleCarrera(cid)}
+                      onChange={() => toggleCarrera(c.id)}
                       style={{ accentColor: "var(--accent)" }}
                     />
-                    <span className="text-sm">{CARRERAS[cid].label}</span>
+                    <span className="text-sm">{c.label}</span>
                   </label>
                 );
               })}

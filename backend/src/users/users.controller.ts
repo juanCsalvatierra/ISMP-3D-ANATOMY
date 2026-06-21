@@ -26,12 +26,12 @@ export class UsersController {
     return this.usersService.activate(code);
   }
 
-  // GET /users/search?search=maria → Docente y Admin
+  // GET /users/search?search=garcia&role=ESTUDIANTE → Docente y Admin
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.DOCENTE, Role.ADMIN)
   @Get('search')
-  search(@Query('search') search: string) {
-    return this.usersService.search(search);
+  search(@Query('search') search: string, @Query('role') role?: string) {
+    return this.usersService.search(search, role);
   }
 
   // GET /users → solo ADMIN

@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import type { CarreraId } from "@/app/domain/academic";
 import type { AuthProvider } from "@/app/types/authProvider";
 import { nestAuthProvider } from "@/app/providers/nestAuthProvider";
 
@@ -13,7 +12,7 @@ export type User = {
   email: string;
   role: Role;
   dni?: string;
-  carreraIds?: CarreraId[];
+  carreraIds?: string[];
   estado?: EstadoUsuario;
 };
 
@@ -21,7 +20,7 @@ type State = {
   currentUser: User | null;
   /** Restore session on mount (reads token + cached user from localStorage). */
   init: () => Promise<void>;
-  login: (email: string, password: string, role: Role, carreraId?: CarreraId) => Promise<void>;
+  login: (email: string, password: string, role: Role) => Promise<void>;
   logout: () => Promise<void>;
   updateCurrentUser: (patch: Partial<User>) => Promise<void>;
 };
@@ -33,8 +32,8 @@ export function createUserStore(auth: AuthProvider) {
       const user = await auth.getUser();
       set({ currentUser: user });
     },
-    login: async (email, password, role, carreraId) => {
-      const user = await auth.login(email, password, role, carreraId);
+    login: async (email, password, role) => {
+      const user = await auth.login(email, password, role);
       set({ currentUser: user });
     },
     logout: async () => {

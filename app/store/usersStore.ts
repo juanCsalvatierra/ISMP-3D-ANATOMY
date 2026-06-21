@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import type { Role, User } from "./userStore";
-import type { CarreraId } from "@/app/domain/academic";
 import { api, toFrontendRole } from "@/app/lib/api";
 
 export type ManagedUser = User;
@@ -23,7 +22,7 @@ function mapUser(u: BackendUser): ManagedUser {
     role: u.role ? toFrontendRole(u.role as Parameters<typeof toFrontendRole>[0]) : "estudiante",
     dni: u.dni ?? undefined,
     estado: u.estado,
-    carreraIds: u.carreras?.map((c) => c.carreraId as CarreraId) ?? [],
+    carreraIds: u.carreras?.map((c) => c.carreraId) ?? [],
   };
 }
 
@@ -135,6 +134,6 @@ export function filterByRole(users: ManagedUser[], role: Role) {
   return users.filter((u) => u.role === role);
 }
 
-export function filterByCarrera(users: ManagedUser[], carreraId: CarreraId) {
+export function filterByCarrera(users: ManagedUser[], carreraId: string) {
   return users.filter((u) => u.carreraIds?.includes(carreraId));
 }

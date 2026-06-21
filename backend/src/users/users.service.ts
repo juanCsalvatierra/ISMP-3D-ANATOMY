@@ -66,16 +66,17 @@ export class UsersService {
     return { message: `Usuario ${user.name} activado correctamente` };
   }
 
-  // ─── Buscar estudiantes por nombre o email (Docente/Admin) ────────────────
-  async search(search: string) {
+  // ─── Buscar usuarios por nombre, email o DNI (Docente/Admin) ───────────────
+  async search(search: string, role?: string) {
     if (!search) throw new NotFoundException('Se requiere el parámetro search');
 
     return this.prisma.user.findMany({
       where: {
-        role: 'ESTUDIANTE',
+        ...(role ? { role: role as any } : {}),
         OR: [
           { name: { contains: search, mode: 'insensitive' } },
           { email: { contains: search, mode: 'insensitive' } },
+          { dni: { contains: search, mode: 'insensitive' } },
         ],
       },
       select: USER_SELECT,

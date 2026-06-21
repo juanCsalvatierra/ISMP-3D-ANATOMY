@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { RoleGate } from "@/app/components/auth/RoleGate";
 import { useUsersStore, type ManagedUser } from "@/app/store/usersStore";
 import { ROLE_LABELS, type Role } from "@/app/store/userStore";
-import { CARRERAS, CARRERA_IDS, type CarreraId } from "@/app/domain/academic";
+import { useCarreras, type CarreraItem } from "@/app/hooks/useCatalog";
 
 const ROLES: Role[] = ["estudiante", "docente", "admin"];
 
@@ -17,7 +17,7 @@ type Draft = {
   password: string;
   confirmPassword: string;
   role: Role;
-  carreraIds: CarreraId[];
+  carreraIds: string[];
 };
 
 const EMPTY: Draft = {
@@ -40,6 +40,7 @@ function UsuariosView() {
   const updateUser = useUsersStore((s) => s.update);
   const removeUser = useUsersStore((s) => s.remove);
   const activateUser = useUsersStore((s) => s.activate);
+  const { carreras } = useCarreras();
 
   const [filtro, setFiltro] = useState<FiltroEstado>("all");
   const [query, setQuery] = useState("");
@@ -92,7 +93,7 @@ function UsuariosView() {
     setError(null);
   };
 
-  const toggleCarrera = (cid: CarreraId) => {
+  const toggleCarrera = (cid: string) => {
     if (!draft) return;
     const has = draft.carreraIds.includes(cid);
     setDraft({
@@ -210,18 +211,10 @@ function UsuariosView() {
           <input
             className="ui-input max-w-sm"
             type="search"
-            placeholder="Buscar por nombre o email…"
+            placeholder="Buscar por nombre, email o DNI…"
             value={query}
             onChange={(e) => handleQueryChange(e.target.value)}
           />
-          {query && (
-            <span
-              className="ml-2 text-xs"
-              style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
-            >
-              Solo busca entre estudiantes
-            </span>
-          )}
         </div>
 
         {/* Filter tabs */}
@@ -368,7 +361,7 @@ function UsuariosView() {
                       <td className="px-4 py-2" style={{ color: "var(--text-secondary)" }}>
                         {u.carreraIds && u.carreraIds.length > 0
                           ? u.carreraIds
-                              .map((c) => CARRERAS[c as CarreraId]?.label ?? c)
+                              .map((c) => carreras.find((x) => x.id === c)?.label ?? c)
                               .join(", ")
                           : "—"}
                       </td>
@@ -644,11 +637,11 @@ function UsuariosView() {
                     Carrera(s)
                   </label>
                   <div className="flex flex-col gap-2">
-                    {CARRERA_IDS.map((cid) => {
-                      const checked = draft.carreraIds.includes(cid);
+                    {carreras.map((c) => {
+                      const checked = draft.carreraIds.includes(c.id);
                       return (
                         <label
-                          key={cid}
+                          key={c.id}
                           className="flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors"
                           style={{
                             background: checked ? "color-mix(in srgb, var(--accent) 12%, transparent)" : "var(--bg-canvas)",
@@ -660,10 +653,10 @@ function UsuariosView() {
                           <input
                             type="checkbox"
                             checked={checked}
-                            onChange={() => toggleCarrera(cid)}
+                            onChange={() => toggleCarrera(c.id)}
                             style={{ accentColor: "var(--accent)" }}
                           />
-                          <span className="text-sm">{CARRERAS[cid].label}</span>
+                          <span className="text-sm">{c.label}</span>
                         </label>
                       );
                     })}
