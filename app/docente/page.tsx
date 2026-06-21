@@ -50,7 +50,9 @@ function DocenteDashboard() {
         return {
           ...a,
           alumno: u?.name ?? (a.userId ? "(usuario eliminado)" : "Anónimo"),
-          carrera: u?.carreraId ? CARRERAS[u.carreraId].label : "—",
+          carrera: u?.carreraIds?.length
+            ? u.carreraIds.map((c) => CARRERAS[c]?.label ?? c).join(", ")
+            : "—",
           cuestionarioTitulo: c?.titulo ?? "(eliminado)",
         };
       });

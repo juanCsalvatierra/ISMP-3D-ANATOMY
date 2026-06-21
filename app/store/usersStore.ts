@@ -10,7 +10,8 @@ type BackendUser = {
   name: string;
   email: string;
   role: string;
-  carreraId?: string | null;
+  dni?: string | null;
+  carreras?: { carreraId: string }[];
 };
 
 function mapUser(u: BackendUser): ManagedUser {
@@ -19,7 +20,8 @@ function mapUser(u: BackendUser): ManagedUser {
     name: u.name,
     email: u.email,
     role: u.role ? toFrontendRole(u.role as Parameters<typeof toFrontendRole>[0]) : "estudiante",
-    carreraId: (u.carreraId ?? undefined) as CarreraId | undefined,
+    dni: u.dni ?? undefined,
+    carreraIds: u.carreras?.map((c) => c.carreraId as CarreraId) ?? [],
   };
 }
 
@@ -84,9 +86,10 @@ export const useUsersStore = create<State>()((set) => ({
     const data = await api.post<BackendUser>("/users", {
       name: input.name,
       email: input.email,
+      ...(input.dni ? { dni: input.dni } : {}),
       password: input.password,
       role: input.role.toUpperCase(),
-      carreraId: input.carreraId ?? null,
+      carreraIds: input.carreraIds ?? [],
     });
     const newUser = mapUser(data);
     set((state) => ({ users: [newUser, ...state.users] }));
@@ -97,8 +100,9 @@ export const useUsersStore = create<State>()((set) => ({
     const payload: Record<string, unknown> = {};
     if (patch.name !== undefined) payload.name = patch.name;
     if (patch.email !== undefined) payload.email = patch.email;
+    if (patch.dni !== undefined) payload.dni = patch.dni || null;
     if (patch.role !== undefined) payload.role = patch.role.toUpperCase();
-    if (patch.carreraId !== undefined) payload.carreraId = patch.carreraId ?? null;
+    if (patch.carreraIds !== undefined) payload.carreraIds = patch.carreraIds;
     const data = await api.patch<BackendUser>(`/users/${id}`, payload);
     const updated = mapUser(data);
     set((state) => ({
@@ -122,5 +126,5 @@ export function filterByRole(users: ManagedUser[], role: Role) {
 }
 
 export function filterByCarrera(users: ManagedUser[], carreraId: CarreraId) {
-  return users.filter((u) => u.carreraId === carreraId);
+  return users.filter((u) => u.carreraIds?.includes(carreraId));
 }

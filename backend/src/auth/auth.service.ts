@@ -4,6 +4,16 @@ import * as bcrypt from 'bcryptjs';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginDto } from './dto/login.dto';
 
+const AUTH_USER_SELECT = {
+  id: true,
+  name: true,
+  email: true,
+  role: true,
+  dni: true,
+  carreras: { select: { carreraId: true } },
+  createdAt: true,
+} as const;
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -14,14 +24,7 @@ export class AuthService {
   async me(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        carreraId: true,
-        createdAt: true,
-      },
+      select: AUTH_USER_SELECT,
     });
 
     if (!user) {
@@ -32,29 +35,25 @@ export class AuthService {
   }
 
   async login(dto: LoginDto) {
-    // 1. Buscar el usuario por email en la BD
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email },
+      include: { carreras: { select: { carreraId: true } } },
     });
 
-    // 2. Si no existe, lanzar error
     if (!user) {
       throw new UnauthorizedException('Credenciales incorrectas');
     }
 
-    // 3. Comparar la password con el hash guardado en la BD
     const passwordMatch = await bcrypt.compare(dto.password, user.passwordHash);
 
     if (!passwordMatch) {
       throw new UnauthorizedException('Credenciales incorrectas');
     }
 
-    // 4. Verificar que el usuario esté activo
     if (user.estado === 'PENDIENTE') {
       throw new UnauthorizedException('Tu cuenta está pendiente de activación. Contactá a un administrador.');
     }
 
-    // 5. Generar el JWT con el id, email y role del usuario
     const payload = {
       sub: user.id,
       email: user.email,
@@ -63,7 +62,6 @@ export class AuthService {
 
     const token = await this.jwtService.signAsync(payload);
 
-    // 5. Devolver el token y los datos del usuario (sin el hash)
     return {
       token,
       user: {
@@ -71,7 +69,8 @@ export class AuthService {
         name: user.name,
         email: user.email,
         role: user.role,
-        carreraId: user.carreraId,
+        dni: user.dni,
+        carreras: user.carreras,
       },
     };
   }

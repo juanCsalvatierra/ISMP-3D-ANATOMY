@@ -10,7 +10,8 @@ type BackendUser = {
   name: string;
   email: string;
   role: string;
-  carreraId: string | null;
+  dni?: string | null;
+  carreras?: { carreraId: string }[];
 };
 
 type LoginResponse = {
@@ -24,8 +25,8 @@ function mapUser(backendUser: BackendUser): User {
     name: backendUser.name,
     email: backendUser.email,
     role: toFrontendRole(backendUser.role as "ADMIN" | "DOCENTE" | "ESTUDIANTE"),
-    // Phase 0.3: carreraId will be reconciled when academic.ts is updated to use DB ids
-    carreraId: (backendUser.carreraId ?? undefined) as CarreraId | undefined,
+    dni: backendUser.dni ?? undefined,
+    carreraIds: backendUser.carreras?.map((c) => c.carreraId as CarreraId) ?? undefined,
   };
 }
 

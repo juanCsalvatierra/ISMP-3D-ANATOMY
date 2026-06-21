@@ -18,18 +18,18 @@ export default function CuestionariosHubPage() {
   const cuestionarios = useCuestionarioBankStore((s) => s.cuestionarios);
 
   const defaultCarrera: CarreraId =
-    currentUser?.carreraId ?? "carrera-iq";
+    (currentUser?.carreraIds?.[0]) ?? "carrera-iq";
   const [carreraSel, setCarreraSel] = useState<CarreraId>(defaultCarrera);
 
   const carreraId: CarreraId =
-    currentUser?.role === "estudiante" && currentUser?.carreraId
-      ? currentUser.carreraId
+    currentUser?.role === "estudiante" && currentUser?.carreraIds?.[0]
+      ? currentUser.carreraIds[0]
       : carreraSel;
 
   const materias = useMemo(() => materiasDeCarrera(carreraId), [carreraId]);
 
   const sinCarrera =
-    hydrated && currentUser?.role === "estudiante" && !currentUser.carreraId;
+    hydrated && currentUser?.role === "estudiante" && !currentUser.carreraIds?.length;
 
   return (
     <main style={{ background: "var(--bg-page)", minHeight: "100vh" }}>

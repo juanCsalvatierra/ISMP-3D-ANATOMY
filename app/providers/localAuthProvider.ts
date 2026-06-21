@@ -26,7 +26,7 @@ export const localAuthProvider: AuthProvider = {
       name: nameFromEmail(email),
       email,
       role,
-      carreraId: role === "estudiante" ? carreraId : undefined,
+      carreraIds: role === "estudiante" && carreraId ? [carreraId] : undefined,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
     return user;

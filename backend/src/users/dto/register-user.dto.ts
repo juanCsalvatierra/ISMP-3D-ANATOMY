@@ -1,4 +1,4 @@
-import { IsEmail, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsArray, IsEmail, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class RegisterUserDto {
   @IsString()
@@ -12,6 +12,7 @@ export class RegisterUserDto {
   password!: string;
 
   @IsOptional()
-  @IsString()
-  carreraId: string;
+  @IsArray()
+  @IsString({ each: true })
+  carreraIds?: string[];
 }

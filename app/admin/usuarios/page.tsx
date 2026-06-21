@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { RoleGate } from "@/app/components/auth/RoleGate";
 import { useUsersStore, type ManagedUser } from "@/app/store/usersStore";
 import { ROLE_LABELS, type Role } from "@/app/store/userStore";
-import { CARRERAS, type CarreraId } from "@/app/domain/academic";
+import { CARRERAS, CARRERA_IDS, type CarreraId } from "@/app/domain/academic";
 
 const ROLES: Role[] = ["estudiante", "docente", "admin"];
 
@@ -11,17 +11,21 @@ type Draft = {
   id?: string;
   name: string;
   email: string;
+  dni: string;
   password: string;
+  confirmPassword: string;
   role: Role;
-  carreraId?: CarreraId;
+  carreraIds: CarreraId[];
 };
 
 const EMPTY: Draft = {
   name: "",
   email: "",
+  dni: "",
   password: "",
+  confirmPassword: "",
   role: "estudiante",
-  carreraId: "carrera-iq",
+  carreraIds: [],
 };
 
 function UsuariosView() {
@@ -41,16 +45,13 @@ function UsuariosView() {
   const [saving, setSaving] = useState(false);
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Load users on mount
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
 
-  // Filter by role client-side (after a search the backend already filtered; this handles the tab)
   const filtered =
     filtroRol === "all" ? users : users.filter((u) => u.role === filtroRol);
 
-  // Debounce search input
   const handleQueryChange = (value: string) => {
     setQuery(value);
     if (searchTimer.current) clearTimeout(searchTimer.current);
@@ -69,11 +70,24 @@ function UsuariosView() {
       id: u.id,
       name: u.name,
       email: u.email,
+      dni: u.dni ?? "",
       password: "",
+      confirmPassword: "",
       role: u.role,
-      carreraId: u.carreraId ?? "carrera-iq",
+      carreraIds: u.carreraIds ?? [],
     });
     setError(null);
+  };
+
+  const toggleCarrera = (cid: CarreraId) => {
+    if (!draft) return;
+    const has = draft.carreraIds.includes(cid);
+    setDraft({
+      ...draft,
+      carreraIds: has
+        ? draft.carreraIds.filter((c) => c !== cid)
+        : [...draft.carreraIds, cid],
+    });
   };
 
   const handleSave = async () => {
@@ -86,25 +100,30 @@ function UsuariosView() {
       setError("La contraseña es obligatoria para nuevos usuarios.");
       return;
     }
+    if (!draft.id && draft.password !== draft.confirmPassword) {
+      setError("Las contraseñas no coinciden.");
+      return;
+    }
 
     setSaving(true);
     setError(null);
     try {
       if (draft.id) {
-        const patch: Partial<Omit<ManagedUser, "id">> = {
+        await updateUser(draft.id, {
           name: draft.name.trim(),
           email: draft.email.trim(),
+          dni: draft.dni.trim() || undefined,
           role: draft.role,
-          carreraId: draft.role === "estudiante" ? draft.carreraId : undefined,
-        };
-        await updateUser(draft.id, patch);
+          carreraIds: draft.carreraIds,
+        });
       } else {
         await createUser({
           name: draft.name.trim(),
           email: draft.email.trim(),
+          dni: draft.dni.trim() || undefined,
           password: draft.password,
           role: draft.role,
-          carreraId: draft.role === "estudiante" ? draft.carreraId : undefined,
+          carreraIds: draft.carreraIds,
         });
       }
       setDraft(null);
@@ -207,75 +226,94 @@ function UsuariosView() {
           className="ui-panel rounded-xl overflow-hidden"
           style={{ border: "1px solid var(--border-subtle)" }}
         >
-          <table className="w-full text-sm" style={{ fontFamily: "var(--font-ibm-plex-sans)" }}>
-            <thead>
-              <tr style={{ background: "var(--bg-canvas)", color: "var(--text-muted)" }}>
-                <th className="text-left px-4 py-2 font-medium">Nombre</th>
-                <th className="text-left px-4 py-2 font-medium">Email</th>
-                <th className="text-left px-4 py-2 font-medium">Rol</th>
-                <th className="text-left px-4 py-2 font-medium">Carrera</th>
-                <th className="text-right px-4 py-2 font-medium">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="px-4 py-6 text-center"
-                    style={{ color: "var(--text-muted)" }}
-                  >
-                    Cargando…
-                  </td>
+          <div className="overflow-x-auto">
+            <table
+              className="w-full text-sm"
+              style={{ fontFamily: "var(--font-ibm-plex-sans)", minWidth: "640px" }}
+            >
+              <thead>
+                <tr style={{ background: "var(--bg-canvas)", color: "var(--text-muted)" }}>
+                  <th className="text-left px-4 py-2 font-medium">Nombre</th>
+                  <th className="text-left px-4 py-2 font-medium">DNI</th>
+                  <th className="text-left px-4 py-2 font-medium">Email</th>
+                  <th className="text-left px-4 py-2 font-medium">Rol</th>
+                  <th className="text-left px-4 py-2 font-medium">Carrera(s)</th>
+                  <th className="text-right px-4 py-2 font-medium">Acciones</th>
                 </tr>
-              ) : filtered.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="px-4 py-6 text-center"
-                    style={{ color: "var(--text-muted)" }}
-                  >
-                    Sin usuarios para este filtro.
-                  </td>
-                </tr>
-              ) : (
-                filtered.map((u) => (
-                  <tr key={u.id} style={{ borderTop: "1px solid var(--border-subtle)" }}>
-                    <td className="px-4 py-2" style={{ color: "var(--text-primary)" }}>
-                      {u.name}
-                    </td>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr>
                     <td
-                      className="px-4 py-2"
-                      style={{
-                        color: "var(--text-secondary)",
-                        fontFamily: "var(--font-ibm-plex-mono)",
-                      }}
+                      colSpan={6}
+                      className="px-4 py-6 text-center"
+                      style={{ color: "var(--text-muted)" }}
                     >
-                      {u.email}
-                    </td>
-                    <td className="px-4 py-2" style={{ color: "var(--text-secondary)" }}>
-                      {ROLE_LABELS[u.role]}
-                    </td>
-                    <td className="px-4 py-2" style={{ color: "var(--text-secondary)" }}>
-                      {u.carreraId ? CARRERAS[u.carreraId as CarreraId]?.label ?? u.carreraId : "—"}
-                    </td>
-                    <td className="px-4 py-2 text-right">
-                      <button className="btn-ghost mr-2" onClick={() => startEdit(u)}>
-                        Editar
-                      </button>
-                      <button
-                        className="btn-ghost"
-                        style={{ color: "var(--accent)" }}
-                        onClick={() => handleDelete(u)}
-                      >
-                        Eliminar
-                      </button>
+                      Cargando…
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : filtered.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={6}
+                      className="px-4 py-6 text-center"
+                      style={{ color: "var(--text-muted)" }}
+                    >
+                      Sin usuarios para este filtro.
+                    </td>
+                  </tr>
+                ) : (
+                  filtered.map((u) => (
+                    <tr key={u.id} style={{ borderTop: "1px solid var(--border-subtle)" }}>
+                      <td className="px-4 py-2" style={{ color: "var(--text-primary)" }}>
+                        {u.name}
+                      </td>
+                      <td
+                        className="px-4 py-2"
+                        style={{
+                          color: "var(--text-secondary)",
+                          fontFamily: "var(--font-ibm-plex-mono)",
+                        }}
+                      >
+                        {u.dni ?? "—"}
+                      </td>
+                      <td
+                        className="px-4 py-2"
+                        style={{
+                          color: "var(--text-secondary)",
+                          fontFamily: "var(--font-ibm-plex-mono)",
+                        }}
+                      >
+                        {u.email}
+                      </td>
+                      <td className="px-4 py-2" style={{ color: "var(--text-secondary)" }}>
+                        {ROLE_LABELS[u.role]}
+                      </td>
+                      <td className="px-4 py-2" style={{ color: "var(--text-secondary)" }}>
+                        {u.carreraIds && u.carreraIds.length > 0
+                          ? u.carreraIds
+                              .map((c) => CARRERAS[c as CarreraId]?.label ?? c)
+                              .join(", ")
+                          : "—"}
+                      </td>
+                      <td className="px-4 py-2 text-right">
+                        <button className="btn-ghost mr-2" onClick={() => startEdit(u)}>
+                          Editar
+                        </button>
+                        <button
+                          className="btn-ghost"
+                          style={{ color: "var(--accent)" }}
+                          onClick={() => handleDelete(u)}
+                        >
+                          Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Create / Edit modal */}
@@ -286,8 +324,12 @@ function UsuariosView() {
             onClick={() => setDraft(null)}
           >
             <div
-              className="ui-panel rounded-2xl p-6 max-w-md w-full"
-              style={{ border: "1px solid var(--border-subtle)" }}
+              className="ui-panel rounded-2xl p-6 w-full overflow-y-auto"
+              style={{
+                border: "1px solid var(--border-subtle)",
+                maxWidth: "480px",
+                maxHeight: "90vh",
+              }}
               onClick={(e) => e.stopPropagation()}
             >
               <h2
@@ -298,12 +340,13 @@ function UsuariosView() {
               </h2>
 
               <div className="flex flex-col gap-4">
+                {/* Nombre */}
                 <div className="flex flex-col gap-1">
                   <label
                     className="text-xs uppercase tracking-wider"
                     style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
                   >
-                    Nombre
+                    Nombre *
                   </label>
                   <input
                     className="ui-input"
@@ -312,12 +355,29 @@ function UsuariosView() {
                   />
                 </div>
 
+                {/* DNI */}
                 <div className="flex flex-col gap-1">
                   <label
                     className="text-xs uppercase tracking-wider"
                     style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
                   >
-                    Email
+                    DNI
+                  </label>
+                  <input
+                    className="ui-input"
+                    placeholder="Ej: 30123456"
+                    value={draft.dni}
+                    onChange={(e) => setDraft({ ...draft, dni: e.target.value })}
+                  />
+                </div>
+
+                {/* Email */}
+                <div className="flex flex-col gap-1">
+                  <label
+                    className="text-xs uppercase tracking-wider"
+                    style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
+                  >
+                    Email *
                   </label>
                   <input
                     type="email"
@@ -327,32 +387,53 @@ function UsuariosView() {
                   />
                 </div>
 
+                {/* Contraseña (solo al crear) */}
                 {!draft.id && (
-                  <div className="flex flex-col gap-1">
-                    <label
-                      className="text-xs uppercase tracking-wider"
-                      style={{
-                        fontFamily: "var(--font-ibm-plex-mono)",
-                        color: "var(--text-muted)",
-                      }}
-                    >
-                      Contraseña
-                    </label>
-                    <input
-                      type="password"
-                      className="ui-input"
-                      value={draft.password}
-                      onChange={(e) => setDraft({ ...draft, password: e.target.value })}
-                    />
-                  </div>
+                  <>
+                    <div className="flex flex-col gap-1">
+                      <label
+                        className="text-xs uppercase tracking-wider"
+                        style={{
+                          fontFamily: "var(--font-ibm-plex-mono)",
+                          color: "var(--text-muted)",
+                        }}
+                      >
+                        Contraseña *
+                      </label>
+                      <input
+                        type="password"
+                        className="ui-input"
+                        value={draft.password}
+                        onChange={(e) => setDraft({ ...draft, password: e.target.value })}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label
+                        className="text-xs uppercase tracking-wider"
+                        style={{
+                          fontFamily: "var(--font-ibm-plex-mono)",
+                          color: "var(--text-muted)",
+                        }}
+                      >
+                        Confirmar contraseña *
+                      </label>
+                      <input
+                        type="password"
+                        className="ui-input"
+                        value={draft.confirmPassword}
+                        onChange={(e) => setDraft({ ...draft, confirmPassword: e.target.value })}
+                      />
+                    </div>
+                  </>
                 )}
 
+                {/* Rol */}
                 <div className="flex flex-col gap-1">
                   <label
                     className="text-xs uppercase tracking-wider"
                     style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
                   >
-                    Rol
+                    Rol *
                   </label>
                   <select
                     className="ui-input"
@@ -367,32 +448,40 @@ function UsuariosView() {
                   </select>
                 </div>
 
-                {draft.role === "estudiante" && (
-                  <div className="flex flex-col gap-1">
-                    <label
-                      className="text-xs uppercase tracking-wider"
-                      style={{
-                        fontFamily: "var(--font-ibm-plex-mono)",
-                        color: "var(--text-muted)",
-                      }}
-                    >
-                      Carrera
-                    </label>
-                    <select
-                      className="ui-input"
-                      value={draft.carreraId ?? "instrumentacion"}
-                      onChange={(e) =>
-                        setDraft({ ...draft, carreraId: e.target.value as CarreraId })
-                      }
-                    >
-                      {(Object.keys(CARRERAS) as CarreraId[]).map((c) => (
-                        <option key={c} value={c}>
-                          {CARRERAS[c].label}
-                        </option>
-                      ))}
-                    </select>
+                {/* Carreras (multi-select checkboxes) */}
+                <div className="flex flex-col gap-2">
+                  <label
+                    className="text-xs uppercase tracking-wider"
+                    style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
+                  >
+                    Carrera(s)
+                  </label>
+                  <div className="flex flex-col gap-2">
+                    {CARRERA_IDS.map((cid) => {
+                      const checked = draft.carreraIds.includes(cid);
+                      return (
+                        <label
+                          key={cid}
+                          className="flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors"
+                          style={{
+                            background: checked ? "color-mix(in srgb, var(--accent) 12%, transparent)" : "var(--bg-canvas)",
+                            border: `1px solid ${checked ? "color-mix(in srgb, var(--accent) 40%, transparent)" : "var(--border-subtle)"}`,
+                            fontFamily: "var(--font-ibm-plex-sans)",
+                            color: "var(--text-primary)",
+                          }}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={checked}
+                            onChange={() => toggleCarrera(cid)}
+                            style={{ accentColor: "var(--accent)" }}
+                          />
+                          <span className="text-sm">{CARRERAS[cid].label}</span>
+                        </label>
+                      );
+                    })}
                   </div>
-                )}
+                </div>
 
                 {error && (
                   <p className="text-sm" style={{ color: "var(--accent)" }}>

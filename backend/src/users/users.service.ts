@@ -6,6 +6,17 @@ import { RegisterUserDto } from './dto/register-user.dto';
 import * as bcrypt from 'bcryptjs';
 import { randomBytes } from 'crypto';
 
+const USER_SELECT = {
+  id: true,
+  name: true,
+  email: true,
+  dni: true,
+  role: true,
+  estado: true,
+  carreras: { select: { carreraId: true } },
+  createdAt: true,
+} as const;
+
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
@@ -15,18 +26,20 @@ export class UsersService {
     const existing = await this.prisma.user.findUnique({ where: { email: dto.email } });
     if (existing) throw new ConflictException('El email ya está en uso');
 
-    const passwordHash    = await bcrypt.hash(dto.password, 10);
-    const activationCode  = randomBytes(4).toString('hex').toUpperCase();
+    const passwordHash   = await bcrypt.hash(dto.password, 10);
+    const activationCode = randomBytes(4).toString('hex').toUpperCase();
 
     await this.prisma.user.create({
       data: {
-        name:         dto.name,
-        email:        dto.email,
+        name:          dto.name,
+        email:         dto.email,
         passwordHash,
-        role:         'ESTUDIANTE',
-        carreraId:    dto.carreraId,
-        estado:       'PENDIENTE',
+        role:          'ESTUDIANTE',
+        estado:        'PENDIENTE',
         activationCode,
+        ...(dto.carreraIds?.length && {
+          carreras: { create: dto.carreraIds.map(carreraId => ({ carreraId })) },
+        }),
       },
     });
 
@@ -57,16 +70,17 @@ export class UsersService {
   async search(search: string) {
     if (!search) throw new NotFoundException('Se requiere el parámetro search');
 
-    const term = `%${search}%`;
-    return this.prisma.$queryRaw<{ id: string; name: string; email: string; carreraId: string | null }[]>`
-      SELECT id, name, email, "carreraId" FROM "User"
-      WHERE role = 'ESTUDIANTE'
-        AND (
-          name ILIKE ${term}
-          OR email ILIKE ${term}
-        )
-      ORDER BY name ASC
-    `;
+    return this.prisma.user.findMany({
+      where: {
+        role: 'ESTUDIANTE',
+        OR: [
+          { name: { contains: search, mode: 'insensitive' } },
+          { email: { contains: search, mode: 'insensitive' } },
+        ],
+      },
+      select: USER_SELECT,
+      orderBy: { name: 'asc' },
+    });
   }
 
   // ─── Listar usuarios ────────────────────────────────────────────────────────
@@ -74,16 +88,9 @@ export class UsersService {
     return this.prisma.user.findMany({
       where: {
         ...(role && { role: role as any }),
-        ...(carreraId && { carreraId }),
+        ...(carreraId && { carreras: { some: { carreraId } } }),
       },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        carreraId: true,
-        createdAt: true,
-      },
+      select: USER_SELECT,
     });
   }
 
@@ -91,14 +98,7 @@ export class UsersService {
   async findOne(id: string) {
     const user = await this.prisma.user.findUnique({
       where: { id },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        carreraId: true,
-        createdAt: true,
-      },
+      select: USER_SELECT,
     });
 
     if (!user) throw new NotFoundException(`Usuario con id ${id} no encontrado`);
@@ -108,68 +108,60 @@ export class UsersService {
 
   // ─── Crear usuario ──────────────────────────────────────────────────────────
   async create(dto: CreateUserDto) {
-    // Verificar que el email no esté en uso
     const existing = await this.prisma.user.findUnique({
       where: { email: dto.email },
     });
-
     if (existing) throw new ConflictException('El email ya está en uso');
 
-    // Hashear la contraseña antes de guardar
     const passwordHash = await bcrypt.hash(dto.password, 10);
 
     return this.prisma.user.create({
       data: {
         name: dto.name,
         email: dto.email,
+        dni: dto.dni,
         passwordHash,
         role: dto.role,
-        carreraId: dto.carreraId,
+        estado: 'ACTIVO',
+        ...(dto.carreraIds?.length && {
+          carreras: { create: dto.carreraIds.map(carreraId => ({ carreraId })) },
+        }),
       },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        carreraId: true,
-        createdAt: true,
-      },
+      select: USER_SELECT,
     });
   }
 
   // ─── Editar usuario ─────────────────────────────────────────────────────────
   async update(id: string, dto: UpdateUserDto) {
-    // Verificar que el usuario existe
     await this.findOne(id);
 
-    // Si viene nueva contraseña, hashearla
-    const data: any = { ...dto };
-    if (dto.password) {
-      data.passwordHash = await bcrypt.hash(dto.password, 10);
-      delete data.password;
+    const { password, carreraIds, ...rest } = dto;
+
+    const data: any = { ...rest };
+    if (password) {
+      data.passwordHash = await bcrypt.hash(password, 10);
+    }
+
+    if (carreraIds !== undefined) {
+      await this.prisma.userCarrera.deleteMany({ where: { userId: id } });
+      if (carreraIds.length > 0) {
+        await this.prisma.userCarrera.createMany({
+          data: carreraIds.map(carreraId => ({ userId: id, carreraId })),
+        });
+      }
     }
 
     return this.prisma.user.update({
       where: { id },
       data,
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        carreraId: true,
-        createdAt: true,
-      },
+      select: USER_SELECT,
     });
   }
 
   // ─── Borrar usuario ─────────────────────────────────────────────────────────
   async remove(id: string) {
-    // Verificar que el usuario existe
     await this.findOne(id);
-
     await this.prisma.user.delete({ where: { id } });
-
     return { message: `Usuario ${id} eliminado correctamente` };
   }
 }

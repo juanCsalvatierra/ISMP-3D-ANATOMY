@@ -16,7 +16,6 @@ const materias = [
   { id: 'mat-anat4', slug: 'anatomia-4', label: 'Anatomía 4' },
 ];
 
-// Materia ↔ Carrera
 const carreraMaterias: { carreraId: string; materiaId: string }[] = [
   { carreraId: 'carrera-rad', materiaId: 'mat-anat1' },
   { carreraId: 'carrera-rad', materiaId: 'mat-anat2' },
@@ -83,7 +82,9 @@ async function main() {
         passwordHash,
         role: u.role,
         estado: 'ACTIVO',
-        carreraId: u.carreraId ?? undefined,
+        ...(u.carreraId ? {
+          carreras: { create: [{ carreraId: u.carreraId }] },
+        } : {}),
       },
     });
     console.log(`  ✓ ${u.role.padEnd(10)} ${u.email}`);

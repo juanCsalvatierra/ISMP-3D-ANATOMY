@@ -10,7 +10,8 @@ export type User = {
   name: string;
   email: string;
   role: Role;
-  carreraId?: CarreraId;
+  dni?: string;
+  carreraIds?: CarreraId[];
 };
 
 type State = {

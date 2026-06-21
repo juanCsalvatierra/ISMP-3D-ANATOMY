@@ -33,24 +33,34 @@ model User {
   id             String        @id @default(cuid())
   name           String
   email          String        @unique
+  dni            String?       @unique
   passwordHash   String
   role           Role
   estado         EstadoUsuario @default(PENDIENTE)
   activationCode String?       @unique
-  carreraId      String?
   createdAt      DateTime      @default(now())
 
-  carrera   Carrera?   @relation(fields: [carreraId], references: [id], onDelete: SetNull)
+  carreras  UserCarrera[]
   attempts  Attempt[]
   questions Question[]
 }
 
+model UserCarrera {
+  userId    String
+  carreraId String
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  carrera Carrera @relation(fields: [carreraId], references: [id], onDelete: Cascade)
+
+  @@id([userId, carreraId])
+}
+
 model Carrera {
-  id    String @id @default(cuid())
+  id    String @id
   slug  String @unique
   label String
 
-  users    User[]
+  users    UserCarrera[]
   materias Materia[] @relation("CarreraMaterias")
 }
 
