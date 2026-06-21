@@ -67,7 +67,7 @@ export function UserMenu() {
 
   const teacherLinks =
     currentUser.role === "docente" || currentUser.role === "admin"
-      ? [{ label: "Crear cuestionario", href: "/docente/cuestionarios/nuevo" }]
+      ? [{ label: "Agregar pregunta", href: "/docente/cuestionarios/nuevo" }]
       : [];
 
   const handleLogout = async () => {
