@@ -15,8 +15,17 @@ export class AttemptsService {
   constructor(private readonly prisma: PrismaService) {}
 
   // ─── Iniciar intento ─────────────────────────────────────────────────────
-  async start(dto: StartAttemptDto, userId: string) {
+  async start(dto: StartAttemptDto, userId: string, role: Role, carreraIds: string[]) {
     const { materiaId, unidad, cantidad } = dto;
+
+    if (role === Role.ESTUDIANTE && carreraIds.length > 0) {
+      const materia = await this.prisma.materia.findFirst({
+        where: { id: materiaId, carreras: { some: { id: { in: carreraIds } } } },
+      });
+      if (!materia) {
+        throw new ForbiddenException('No tenés acceso a esa materia');
+      }
+    }
 
     const preguntas = await this.prisma.question.findMany({
       where: {

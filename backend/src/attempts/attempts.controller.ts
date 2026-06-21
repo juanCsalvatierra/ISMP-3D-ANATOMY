@@ -25,9 +25,9 @@ export class AttemptsController {
   @Post('start')
   start(
     @Body() dto: StartAttemptDto,
-    @CurrentUser() user: { sub: string },
+    @CurrentUser() user: { sub: string; role: Role; carreraIds: string[] },
   ) {
-    return this.attemptsService.start(dto, user.sub);
+    return this.attemptsService.start(dto, user.sub, user.role, user.carreraIds ?? []);
   }
 
   // POST /attempts/:id/answer → guarda respuesta, devuelve siguiente pregunta o resultado final
