@@ -1,3 +1,5 @@
+import { MOCKS_ENABLED, mockRequest } from "@/app/lib/mockApi";
+
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 const TOKEN_KEY = "ismp-token";
 
@@ -44,6 +46,16 @@ export class ApiError extends Error {
 // ── Core request ──────────────────────────────────────────────────────────────
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+  // Modo mock (NEXT_PUBLIC_USE_MOCKS=1): resolvemos sin tocar el backend.
+  if (MOCKS_ENABLED) {
+    try {
+      return await mockRequest<T>(path, init);
+    } catch (err) {
+      const status = (err as { status?: number }).status ?? 500;
+      throw new ApiError(status, (err as Error).message);
+    }
+  }
+
   const token = getToken();
   const headers: Record<string, string> = {
     "Content-Type": "application/json",

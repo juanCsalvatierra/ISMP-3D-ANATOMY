@@ -53,6 +53,9 @@ type PageState =
       materiaLabel: string;
       nextPregunta: PreguntaData | null;
       nextNumero: number;
+      // Si es la última pregunta, el resultado final ya viene en la respuesta;
+      // lo guardamos para mostrar el feedback antes de pasar a la pantalla final.
+      finalResultado: Resultado | null;
     }
   | {
       phase: "finished";
@@ -110,35 +113,25 @@ export default function IntentoSessionPage({
         selected,
       });
 
-      if (res.tipo === "finalizado") {
-        sessionStorage.removeItem(`attempt-${attemptId}`);
-        setPageState({
-          phase: "finished",
-          materiaLabel: pageState.materiaLabel,
-          resultado: res.resultado!,
-          lastFeedback: {
-            correcta: res.correcta,
-            correcta_era: res.correcta_era,
-            explicacion: res.explicacion,
-          },
-        });
-      } else {
-        setPageState({
-          phase: "feedback",
-          pregunta: pageState.pregunta,
-          selected,
-          feedback: {
-            correcta: res.correcta,
-            correcta_era: res.correcta_era,
-            explicacion: res.explicacion,
-          },
-          numero: pageState.numero,
-          total: pageState.total,
-          materiaLabel: pageState.materiaLabel,
-          nextPregunta: res.pregunta ?? null,
-          nextNumero: res.numero ?? pageState.numero + 1,
-        });
-      }
+      // En ambos casos (continua / finalizado) mostramos primero el feedback
+      // de la pregunta respondida. Si finalizó, guardamos el resultado para
+      // pasar a la pantalla final al tocar el botón.
+      setPageState({
+        phase: "feedback",
+        pregunta: pageState.pregunta,
+        selected,
+        feedback: {
+          correcta: res.correcta,
+          correcta_era: res.correcta_era,
+          explicacion: res.explicacion,
+        },
+        numero: pageState.numero,
+        total: pageState.total,
+        materiaLabel: pageState.materiaLabel,
+        nextPregunta: res.tipo === "finalizado" ? null : (res.pregunta ?? null),
+        nextNumero: res.numero ?? pageState.numero + 1,
+        finalResultado: res.tipo === "finalizado" ? res.resultado! : null,
+      });
     } catch (err) {
       setApiError(
         err instanceof ApiError ? err.message : "Error al enviar la respuesta. Intentá de nuevo."
@@ -148,7 +141,21 @@ export default function IntentoSessionPage({
   };
 
   const handleNext = () => {
-    if (pageState.phase !== "feedback" || !pageState.nextPregunta) return;
+    if (pageState.phase !== "feedback") return;
+
+    // Última pregunta: ya vimos el feedback, ahora sí a la pantalla final.
+    if (pageState.finalResultado) {
+      sessionStorage.removeItem(`attempt-${attemptId}`);
+      setPageState({
+        phase: "finished",
+        materiaLabel: pageState.materiaLabel,
+        resultado: pageState.finalResultado,
+        lastFeedback: pageState.feedback,
+      });
+      return;
+    }
+
+    if (!pageState.nextPregunta) return;
     setSelected(null);
     setPageState({
       phase: "question",
@@ -344,12 +351,9 @@ export default function IntentoSessionPage({
             )}
           </div>
 
-          <div className="flex flex-wrap gap-3 justify-center">
+          <div className="flex justify-center">
             <Link href="/cuestionarios/generar" className="btn-primary">
-              Nuevo examen →
-            </Link>
-            <Link href="/cuestionarios" className="btn-secondary">
-              ← Todos los cuestionarios
+              Nuevo cuestionario →
             </Link>
           </div>
         </div>
@@ -371,6 +375,7 @@ export default function IntentoSessionPage({
   const feedback = isFeedback ? pageState.feedback : null;
   const selectedInFeedback = isFeedback ? pageState.selected : null;
   const isCorrect = feedback?.correcta ?? false;
+  const finalResultado = isFeedback ? pageState.finalResultado : null;
 
   const getOptionState = (index: number) => {
     if (isFeedback) {
@@ -563,7 +568,7 @@ export default function IntentoSessionPage({
           </button>
         ) : (
           <button onClick={handleNext} className="btn-primary w-full justify-center">
-            Siguiente pregunta →
+            {finalResultado ? "Ver resultados →" : "Siguiente pregunta →"}
           </button>
         )}
       </div>
