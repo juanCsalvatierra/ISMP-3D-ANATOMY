@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans, IBM_Plex_Serif } from "next/font/google";
 import "./globals.css";
 import { GlobalNav } from "./components/ui/GlobalNav";
+import { AuthGate } from "./components/auth/AuthGate";
 
 const ibmPlexSans = IBM_Plex_Sans({
     variable: "--font-ibm-plex-sans",
@@ -40,7 +41,7 @@ export default function RootLayout({
                 className={`${ibmPlexSans.variable} ${ibmPlexSerif.variable} ${ibmPlexMono.variable} antialiased`}
             >
                 <GlobalNav />
-                {children}
+                <AuthGate>{children}</AuthGate>
             </body>
         </html>
     );
