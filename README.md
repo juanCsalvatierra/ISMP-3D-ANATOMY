@@ -154,7 +154,7 @@ ismp-3d-anatomy/
 
 | Ruta | Propósito |
 |------|-----------|
-| `app/skeleton/`, `app/muscles/` | Visores 3D por sistema |
+| `app/modelos/`, `modelos/[system]/` | Galería y visor 3D por sistema (registro en `app/config/systems.ts`) |
 | `app/imaging/`, `imaging/[studyId]/` | Visor de imágenes médicas |
 | `app/cuestionarios/`, `cuestionarios/[id]/` | Cuestionarios del estudiante |
 | `app/docente/cuestionarios/` | Autoría docente |
@@ -215,4 +215,5 @@ Hoy el frontend **no está conectado** al backend — usa mocks Zustand+localSto
 - [docs/BACKEND.md](docs/BACKEND.md) — backend: schema, endpoints, plan de integración.
 - [docs/STACK.md](docs/STACK.md) — stack tecnológico detallado.
 - [docs/ROLES_ROADMAP.md](docs/ROLES_ROADMAP.md) — roles y estado actual.
+- [CREDITS.md](CREDITS.md) — créditos y licencias del contenido de terceros (modelos 3D, textos, imágenes).
 - [CLAUDE.md](CLAUDE.md) — guía para asistentes de IA.

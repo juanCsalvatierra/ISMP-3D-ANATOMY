@@ -3,20 +3,12 @@ import Link from "next/link";
 
 const MODULES = [
   {
-    id: "skeleton",
-    label: "Esqueleto",
-    sublabel: "Huesos y cartílagos",
-    href: "/skeleton",
-    count: "206 estructuras",
-    tag: "Anatomía ósea",
-  },
-  {
-    id: "muscles",
-    label: "Músculos",
-    sublabel: "Sistema muscular",
-    href: "/muscles",
-    count: "650+ estructuras",
-    tag: "Anatomía muscular",
+    id: "modelos",
+    label: "Modelos 3D",
+    sublabel: "Esqueleto, músculos y más sistemas",
+    href: "/modelos",
+    count: "2 sistemas",
+    tag: "Anatomía 3D",
   },
   {
     id: "imaging",
@@ -87,8 +79,8 @@ export default function HomePage() {
           </p>
 
           <div className="flex flex-wrap gap-3 mt-2">
-            <Link href="/skeleton" className="btn-primary">
-              Explorar Esqueleto →
+            <Link href="/modelos" className="btn-primary">
+              Explorar Modelos 3D →
             </Link>
             <Link href="/cuestionarios" className="btn-secondary">
               Iniciar Cuestionario
@@ -114,7 +106,7 @@ export default function HomePage() {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {MODULES.map((mod) => (
             <Link key={mod.id} href={mod.href} className="group block">
               <div
@@ -246,8 +238,7 @@ export default function HomePage() {
           </span>
           <div className="flex gap-4">
             {[
-              { label: "Esqueleto", href: "/skeleton" },
-              { label: "Músculos", href: "/muscles" },
+              { label: "Modelos 3D", href: "/modelos" },
               { label: "Imágenes", href: "/imaging" },
               { label: "Cuestionarios", href: "/cuestionarios" },
             ].map((l) => (

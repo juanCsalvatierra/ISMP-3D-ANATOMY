@@ -1,84 +1,57 @@
 "use client";
-
 import { ThreeEvent, useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import * as THREE from "three";
 
 import { normalize } from "../../utils/normalize";
 import { findBestJsonMatch } from "../../utils/matcher";
-import { buildJsonIndex } from "../../utils/indexBuilder";
+import { JsonIndex } from "../../utils/indexBuilder";
 import { AnatomyItem } from "../../store/anatomyStore";
 import { useCameraStore } from "../../store/cameraStore";
+import type { AnatomySystem } from "../../config/systems";
+import { SYSTEM_MATERIALS } from "../../config/systemMaterials";
 
 type Props = {
+  system: AnatomySystem;
   json: Record<string, AnatomyItem>;
+  index: JsonIndex;
   onSelect?: (item: AnatomyItem, uuid?: string) => void;
 };
 
-const Muscles = ({ json, onSelect }: Props) => {
-  const result = useLoader(GLTFLoader, "/models/muscles.glb");
+// Visor 3D genérico. Antes eran Skeleton.tsx y Muscles.tsx, ~95% idénticos:
+// lo único específico de cada sistema (ruta del .glb y material) sale de `system`.
+const AnatomyModel = ({ system, json, index, onSelect }: Props) => {
+  const gltf = useLoader(GLTFLoader, system.glb);
   const setFocus = useCameraStore((s) => s.setFocus);
-
-  const index = useMemo(() => buildJsonIndex(json), [json]);
+  const applyMaterial = SYSTEM_MATERIALS[system.id];
 
   useEffect(() => {
-    result.scene.traverse((child: THREE.Object3D) => {
+    gltf.scene.traverse((child: THREE.Object3D) => {
       if (!(child instanceof THREE.Mesh)) return;
 
-      // Util para diferenciar modelos
-      const lowerCaseName = child.name.toLowerCase();
-
-      // Fascia
-      if (lowerCaseName.includes("fascia")) {
-        child.material.dispose();
-
-        child.material = new THREE.MeshStandardMaterial({
-          color: "#DCD6C8",
-          transparent: true,
-          opacity: 0.18,
-          roughness: 0.9,
-          metalness: 0,
-          depthWrite: false,
-        });
-
-        child.renderOrder = 1;
-      }
-      else {
-        child.material = new THREE.MeshStandardMaterial({
-          color: "#B84A3A",
-          roughness: 0.7,
-          metalness: 0,
-        });
-      }
-
       let name = child.name;
-
       if (/^Mesh_\d+$/.test(name) && child.parent) {
         name = child.parent.name;
       }
 
-      // Match con el JSON
-      const normalized = normalize(name);
+      applyMaterial(child, name);
 
-      const matchKey = findBestJsonMatch(normalized, index);
-
+      // Match con el JSON de anatomía.
+      const matchKey = findBestJsonMatch(normalize(name), index);
       if (matchKey) {
         child.userData.jsonKey = matchKey;
-      } else {
-        // console.log("No match:", name);
       }
     });
-  }, [result, json, index]);
+  }, [gltf, json, index, applyMaterial]);
 
   return (
     <primitive
-      object={result.scene}
+      object={gltf.scene}
       position={[0, 0, 0]}
       scale={2}
       onClick={(e: ThreeEvent<MouseEvent>) => {
         e.stopPropagation();
-
         const mesh = e.object as THREE.Mesh;
         const key = mesh.userData.jsonKey;
 
@@ -86,9 +59,7 @@ const Muscles = ({ json, onSelect }: Props) => {
           console.log("Sin data:", mesh.name);
           return;
         }
-
         const item = json[key];
-        console.log("Seleccionado:", item);
 
         const meshWorldPos = new THREE.Vector3();
         mesh.getWorldPosition(meshWorldPos);
@@ -105,4 +76,4 @@ const Muscles = ({ json, onSelect }: Props) => {
   );
 };
 
-export default Muscles;
+export default AnatomyModel;

@@ -4,10 +4,9 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { UserMenu } from "./UserMenu";
 import { useUserStore, ROLE_LABELS } from "@/app/store/userStore";
+import { READY_SYSTEMS } from "@/app/config/systems";
 
 const NAV_LINKS = [
-  { label: "Esqueleto", href: "/skeleton" },
-  { label: "Músculos", href: "/muscles" },
   { label: "Imágenes", href: "/imaging" },
   { label: "Cuestionarios", href: "/cuestionarios" },
 ];
@@ -15,6 +14,7 @@ const NAV_LINKS = [
 export function GlobalNav() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [modelsOpen, setModelsOpen] = useState(false);
   const currentUser = useUserStore((s) => s.currentUser);
   const logout = useUserStore((s) => s.logout);
   const init = useUserStore((s) => s.init);
@@ -26,6 +26,8 @@ export function GlobalNav() {
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
+
+  const modelsActive = pathname.startsWith("/modelos");
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -76,6 +78,75 @@ export function GlobalNav() {
 
           {/* Desktop Links */}
           <nav className="hidden md:flex items-center gap-1 h-full">
+            {/* Modelos 3D — dropdown */}
+            <div
+              className="relative flex items-center h-full"
+              onMouseEnter={() => setModelsOpen(true)}
+              onMouseLeave={() => setModelsOpen(false)}
+            >
+              <Link
+                href="/modelos"
+                className="relative flex items-center gap-1 px-3 h-full text-sm transition-colors"
+                style={{
+                  fontFamily: "var(--font-ibm-plex-sans)",
+                  fontWeight: 500,
+                  color: modelsActive ? "var(--text-primary)" : "var(--text-secondary)",
+                }}
+              >
+                Modelos 3D
+                <span style={{ fontSize: "0.625rem", opacity: 0.7 }}>▾</span>
+                {modelsActive && (
+                  <span
+                    className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full"
+                    style={{ background: "var(--accent)" }}
+                  />
+                )}
+              </Link>
+
+              {modelsOpen && (
+                <div
+                  className="absolute top-full left-0 min-w-[200px] py-1 rounded-lg shadow-lg z-50"
+                  style={{
+                    background: "var(--bg-panel)",
+                    border: "1px solid var(--border-subtle)",
+                  }}
+                >
+                  {READY_SYSTEMS.map((sys) => (
+                    <Link
+                      key={sys.id}
+                      href={`/modelos/${sys.id}`}
+                      className="block px-3 py-2 text-sm transition-colors"
+                      style={{
+                        fontFamily: "var(--font-ibm-plex-sans)",
+                        color: pathname === `/modelos/${sys.id}`
+                          ? "var(--accent)"
+                          : "var(--text-secondary)",
+                      }}
+                      onMouseEnter={(e) =>
+                        ((e.currentTarget as HTMLElement).style.background = "var(--bg-elevated)")
+                      }
+                      onMouseLeave={(e) =>
+                        ((e.currentTarget as HTMLElement).style.background = "transparent")
+                      }
+                    >
+                      {sys.shortLabel}
+                    </Link>
+                  ))}
+                  <Link
+                    href="/modelos"
+                    className="block px-3 py-2 text-xs transition-colors"
+                    style={{
+                      fontFamily: "var(--font-ibm-plex-mono)",
+                      color: "var(--text-muted)",
+                      borderTop: "1px solid var(--border-subtle)",
+                    }}
+                  >
+                    Ver todos →
+                  </Link>
+                </div>
+              )}
+            </div>
+
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
@@ -160,6 +231,46 @@ export function GlobalNav() {
         >
           {/* Nav links */}
           <nav className="flex flex-col px-4 pt-4">
+            {/* Modelos 3D */}
+            <Link
+              href="/modelos"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-3 py-3"
+              style={{
+                fontFamily: "var(--font-ibm-plex-sans)",
+                fontWeight: 500,
+                fontSize: "0.9375rem",
+                color: modelsActive ? "var(--accent)" : "var(--text-primary)",
+                borderBottom: "1px solid var(--border-subtle)",
+              }}
+            >
+              {modelsActive && (
+                <span
+                  className="w-1.5 h-1.5 rounded-full shrink-0"
+                  style={{ background: "var(--accent)" }}
+                />
+              )}
+              Modelos 3D
+            </Link>
+            {READY_SYSTEMS.map((sys) => (
+              <Link
+                key={sys.id}
+                href={`/modelos/${sys.id}`}
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center gap-3 py-2 pl-4"
+                style={{
+                  fontFamily: "var(--font-ibm-plex-sans)",
+                  fontSize: "0.875rem",
+                  color: pathname === `/modelos/${sys.id}`
+                    ? "var(--accent)"
+                    : "var(--text-secondary)",
+                  borderBottom: "1px solid var(--border-subtle)",
+                }}
+              >
+                {sys.shortLabel}
+              </Link>
+            ))}
+
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
