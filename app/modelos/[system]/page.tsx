@@ -1,19 +1,13 @@
 "use client";
 import { use, useEffect, useMemo } from "react";
 import { notFound } from "next/navigation";
-import skeletonJson from "../../data/anatomy.skeleton.json";
-import buildedJson from "../../data/anatomy.final.builded.json";
-import { AnatomyItem, useAnatomyStore } from "../../store/anatomyStore";
+import { useAnatomyStore } from "../../store/anatomyStore";
 import { useViewerStore } from "../../store/viewerStore";
 import AnatomyModel from "../../components/models/AnatomyModel";
 import { ModelPageLayout } from "../../components/ui/ModelPageLayout";
 import { buildJsonIndex } from "../../utils/indexBuilder";
-import { getSystem, type AnatomySystem, type DatasetId } from "../../config/systems";
-
-const DATASETS: Record<DatasetId, Record<string, AnatomyItem>> = {
-  skeleton: skeletonJson as Record<string, AnatomyItem>,
-  builded: buildedJson as Record<string, AnatomyItem>,
-};
+import { getSystem, type AnatomySystem } from "../../config/systems";
+import { DATASETS } from "../../config/datasets";
 
 export default function SystemViewerPage({
   params,
@@ -48,8 +42,6 @@ function SystemViewer({ system }: { system: AnatomySystem }) {
         { label: "Modelos 3D", href: "/modelos" },
         { label: system.label },
       ]}
-      json={json}
-      scannerIndex={index}
     >
       <AnatomyModel system={system} json={json} index={index} onSelect={setSelected} />
     </ModelPageLayout>

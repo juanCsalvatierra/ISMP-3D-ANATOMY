@@ -1,19 +1,10 @@
 import { useThree } from "@react-three/fiber";
 import { useEffect } from "react";
 import * as THREE from "three";
-import { useMeshStore } from "../../store/meshStore";
-import { JsonIndex } from "../../utils/indexBuilder";
-import { findBestJsonMatch } from "../../utils/matcher";
-import { normalize } from "../../utils/normalize";
-import { AnatomyItem } from "../../store/anatomyStore";
-import { MeshGroup } from "../../store/meshStore";
-import { useViewerStore } from "../../store/viewerStore";
-import type { CategoryRule } from "../../config/systems";
+import { useMeshStore, MeshGroup } from "../../store/meshStore";
+import { SYSTEMS, isSystemId, type CategoryRule } from "../../config/systems";
 
-const EMPTY_RULES: CategoryRule[] = [];
-
-// Las reglas de categorías salen del sistema activo (config/systems.ts).
-// Sin reglas → todo cae en "Otros".
+// Reglas de categorías por sistema (config/systems.ts). Sin reglas → "Otros".
 function inferCategory(key: string, rules: CategoryRule[]): string {
   const lower = key.toLowerCase();
   for (const { category, keywords } of rules) {
@@ -22,60 +13,55 @@ function inferCategory(key: string, rules: CategoryRule[]): string {
   return "Otros";
 }
 
-type Props = {
-  json: Record<string, AnatomyItem>;
-  index: JsonIndex;
-}
-
-export function MeshScanner({ json, index }: Props) {
+// Escanea la escena y arma meshStore.groups a partir del userData que estampa
+// AnatomyModel (jsonKey, jsonName, systemId). Cada grupo se llavea con
+// `${systemId}:${jsonKey}` para no colisionar entre sistemas en la vista combinada.
+export function MeshScanner() {
   const { scene } = useThree();
   const setGroups = useMeshStore((s) => s.setGroups);
-  const activeSystem = useViewerStore((s) => s.activeSystem);
-  const categoryRules = activeSystem?.categoryRules ?? EMPTY_RULES;
+  const scanVersion = useMeshStore((s) => s.scanVersion);
 
   useEffect(() => {
     if (!scene) return;
 
-
-    const map = new Map<string, THREE.Mesh[]>();
+    type Acc = { meshes: THREE.Mesh[]; systemId: string; jsonKey: string; name: string };
+    const map = new Map<string, Acc>();
 
     scene.traverse((obj: THREE.Object3D) => {
       if (!(obj instanceof THREE.Mesh)) return;
 
-      const key = obj.userData?.jsonKey;
-      if (!key) return;
+      const jsonKey = obj.userData?.jsonKey as string | undefined;
+      if (!jsonKey) return;
 
-      const normalized = normalize(key);
-      const matchKey = findBestJsonMatch(normalized, index);
+      const systemId = (obj.userData?.systemId as string | undefined) ?? "unknown";
+      const groupKey = `${systemId}:${jsonKey}`;
 
-      if (!matchKey) return;
-
-      if (matchKey) {
-        obj.userData.jsonKey = matchKey;
+      let acc = map.get(groupKey);
+      if (!acc) {
+        acc = {
+          meshes: [],
+          systemId,
+          jsonKey,
+          name: (obj.userData?.jsonName as string | undefined) ?? jsonKey,
+        };
+        map.set(groupKey, acc);
       }
-
-      if (!map.has(matchKey)) {
-        map.set(matchKey, []);
-      }
-
-      const grouped = map.get(matchKey);
-      if (!grouped) return;
-      grouped.push(obj);
+      acc.meshes.push(obj);
     });
 
-    const groups: MeshGroup[] = Array.from(map.entries()).map(([key, meshes]) => {
-      const item = json[key];
-
+    const groups: MeshGroup[] = Array.from(map.entries()).map(([key, acc]) => {
+      const rules = isSystemId(acc.systemId) ? SYSTEMS[acc.systemId].categoryRules : [];
       return {
         key,
-        name: item?.name ?? key,
-        meshes,
-        category: inferCategory(key, categoryRules),
+        name: acc.name,
+        meshes: acc.meshes,
+        system: acc.systemId,
+        category: inferCategory(acc.jsonKey, rules),
       };
     });
 
     setGroups(groups);
-  }, [scene, index, json, setGroups, categoryRules]);
+  }, [scene, scanVersion, setGroups]);
 
   return null;
 }

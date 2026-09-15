@@ -9,6 +9,7 @@ import { findBestJsonMatch } from "../../utils/matcher";
 import { JsonIndex } from "../../utils/indexBuilder";
 import { AnatomyItem } from "../../store/anatomyStore";
 import { useCameraStore } from "../../store/cameraStore";
+import { useMeshStore } from "../../store/meshStore";
 import type { AnatomySystem } from "../../config/systems";
 import { SYSTEM_MATERIALS } from "../../config/systemMaterials";
 
@@ -21,9 +22,11 @@ type Props = {
 
 // Visor 3D genérico. Antes eran Skeleton.tsx y Muscles.tsx, ~95% idénticos:
 // lo único específico de cada sistema (ruta del .glb y material) sale de `system`.
+// Sirve tanto para /modelos/[system] (uno) como para /modelos/combinado (varios).
 const AnatomyModel = ({ system, json, index, onSelect }: Props) => {
   const gltf = useLoader(GLTFLoader, system.glb);
   const setFocus = useCameraStore((s) => s.setFocus);
+  const bumpScanVersion = useMeshStore((s) => s.bumpScanVersion);
   const applyMaterial = SYSTEM_MATERIALS[system.id];
 
   useEffect(() => {
@@ -37,13 +40,22 @@ const AnatomyModel = ({ system, json, index, onSelect }: Props) => {
 
       applyMaterial(child, name);
 
-      // Match con el JSON de anatomía.
+      // Match con el JSON de anatomía. Se estampa todo en userData para que
+      // MeshScanner e InteractiveScene no necesiten el JSON (clave en combinado,
+      // donde cada sistema usa un dataset distinto).
       const matchKey = findBestJsonMatch(normalize(name), index);
       if (matchKey) {
+        const item = json[matchKey];
         child.userData.jsonKey = matchKey;
+        child.userData.jsonItem = item;
+        child.userData.jsonName = item?.name ?? matchKey;
+        child.userData.systemId = system.id;
       }
     });
-  }, [gltf, json, index, applyMaterial]);
+
+    bumpScanVersion();
+    return () => bumpScanVersion();
+  }, [gltf, json, index, applyMaterial, system.id, bumpScanVersion]);
 
   return (
     <primitive
@@ -53,13 +65,12 @@ const AnatomyModel = ({ system, json, index, onSelect }: Props) => {
       onClick={(e: ThreeEvent<MouseEvent>) => {
         e.stopPropagation();
         const mesh = e.object as THREE.Mesh;
-        const key = mesh.userData.jsonKey;
+        const item = mesh.userData.jsonItem as AnatomyItem | undefined;
 
-        if (!key) {
+        if (!item) {
           console.log("Sin data:", mesh.name);
           return;
         }
-        const item = json[key];
 
         const meshWorldPos = new THREE.Vector3();
         mesh.getWorldPosition(meshWorldPos);

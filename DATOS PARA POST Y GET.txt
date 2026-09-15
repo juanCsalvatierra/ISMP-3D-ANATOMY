@@ -1,0 +1,131 @@
+http://localhost:3001/cuestionarios
+
+admin@ismp.edu.ar	ADMIN	password
+cmedina@ismp.edu.ar	DOCENTE	password
+jperez@ismp.edu.ar	ESTUDIANTE	password
+
+http://localhost:3001/auth/login
+
+{
+  "email": "admin@ismp.edu.ar",
+  "password": "password"
+}
+
+{
+  "id": "cuest-001",
+  "titulo": "Huesos del cráneo",
+  "descripcion": "Identificación de los huesos que forman el cráneo humano",
+  "materiaId": "mat-osteo",
+  "formato": "MULTIPLE",
+  "autorId": "docente-001",
+  "createdAt": "2026-06-17T18:44:27.390Z",
+  "updatedAt": "2026-06-17T18:44:27.390Z",
+  "materia": {
+    "id": "mat-osteo",
+    "slug": "osteologia",
+    "label": "Osteología"
+  },
+  "autor": {
+    "id": "docente-001",
+    "name": "Dr. Carlos Medina"
+  },
+  "preguntas": [
+    {
+      "id": "q-001-1",
+      "cuestionarioId": "cuest-001",
+      "orden": 0,
+      "texto": "¿Cuántos huesos forman el neurocráneo?",
+      "opciones": [
+        "6",
+        "8",
+        "10",
+        "12"
+      ],
+      "correct": 1,
+      "explicacion": "El neurocráneo está formado por 8 huesos: frontal, parietal (x2), temporal (x2), occipital, esfenoides y etmoides."
+    },
+    {
+      "id": "q-001-2",
+      "cuestionarioId": "cuest-001",
+      "orden": 1,
+      "texto": "¿Qué hueso forma la frente?",
+      "opciones": [
+        "Parietal",
+        "Frontal",
+        "Occipital",
+        "Temporal"
+      ],
+      "correct": 1,
+      "explicacion": "El hueso frontal forma la frente y parte del techo de las órbitas oculares."
+    },
+    {
+      "id": "q-001-3",
+      "cuestionarioId": "cuest-001",
+      "orden": 2,
+      "texto": "¿Cómo se llama la articulación entre los huesos del cráneo?",
+      "opciones": [
+        "Diartrosis",
+        "Anfiartrosis",
+        "Sutura",
+        "Gónfosis"
+      ],
+      "correct": 2,
+      "explicacion": "Las suturas son articulaciones fibrosas inmóviles que unen los huesos del cráneo."
+    },
+    {
+      "id": "q-001-4",
+      "cuestionarioId": "cuest-001",
+      "orden": 3,
+      "texto": "¿Qué hueso contiene el canal auditivo externo?",
+      "opciones": [
+        "Esfenoides",
+        "Occipital",
+        "Etmoides",
+        "Temporal"
+      ],
+      "correct": 3,
+      "explicacion": "El hueso temporal aloja el canal auditivo externo y forma parte de la base del cráneo."
+    },
+    {
+      "id": "q-001-5",
+      "cuestionarioId": "cuest-001",
+      "orden": 4,
+      "texto": "¿En qué hueso se encuentra el foramen magno?",
+      "opciones": [
+        "Frontal",
+        "Parietal",
+        "Occipital",
+        "Esfenoides"
+      ],
+      "correct": 2,
+      "explicacion": "El foramen magno es una apertura en el hueso occipital por donde pasa el tronco encefálico."
+    }
+  ]
+}
+
+[
+  {
+    "id": "admin-001",
+    "name": "Admin Sistema",
+    "email": "admin@ismp.edu.ar",
+    "role": "ADMIN",
+    "carreraId": null,
+    "createdAt": "2026-06-17T18:42:01.201Z"
+  },
+  {
+    "id": "docente-001",
+    "name": "Dr. Carlos Medina",
+    "email": "cmedina@ismp.edu.ar",
+    "role": "DOCENTE",
+    "carreraId": null,
+    "createdAt": "2026-06-17T18:42:01.201Z"
+  },
+  {
+    "id": "alumno-001",
+    "name": "Juan Pérez",
+    "email": "jperez@ismp.edu.ar",
+    "role": "ESTUDIANTE",
+    "carreraId": null,
+    "createdAt": "2026-06-17T18:42:01.201Z"
+  }
+]

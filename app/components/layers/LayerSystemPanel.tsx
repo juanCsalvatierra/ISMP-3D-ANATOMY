@@ -2,8 +2,10 @@
 import { useState } from "react";
 import { useMeshStore } from "../../store/meshStore";
 import { useViewerStore } from "../../store/viewerStore";
+import { useCombinedViewerStore } from "../../store/combinedViewerStore";
 import { capitalize } from "../../utils/capitalize";
 import { LAYER_PRESETS } from "../../utils/layerPresets";
+import { CombinedLayerPanel } from "./CombinedLayerPanel";
 
 const PRESETS = [
   { label: "Todo", key: "all" },
@@ -12,6 +14,12 @@ const PRESETS = [
 ];
 
 export function LayerSystemPanel() {
+  const combinedActive = useCombinedViewerStore((s) => s.active);
+  if (combinedActive) return <CombinedLayerPanel />;
+  return <SingleSystemLayerPanel />;
+}
+
+function SingleSystemLayerPanel() {
   const groups = useMeshStore((s) => s.groups);
   const toggleGroup = useMeshStore((s) => s.toggleGroup);
   const categoryOrder = useViewerStore((s) => s.activeSystem?.categoryOrder) ?? [];

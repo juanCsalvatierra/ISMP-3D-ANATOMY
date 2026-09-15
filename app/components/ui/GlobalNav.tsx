@@ -27,6 +27,9 @@ export function GlobalNav() {
     setMobileOpen(false);
   }, [pathname]);
 
+  // La pantalla de login tiene su propio encabezado de marca, sin menú de navegación.
+  if (pathname === "/login") return null;
+
   const modelsActive = pathname.startsWith("/modelos");
 
   const isActive = (href: string) =>
@@ -111,6 +114,26 @@ export function GlobalNav() {
                     border: "1px solid var(--border-subtle)",
                   }}
                 >
+                  <Link
+                    href="/modelos/combinado"
+                    className="block px-3 py-2 text-sm transition-colors"
+                    style={{
+                      fontFamily: "var(--font-ibm-plex-sans)",
+                      fontWeight: 500,
+                      color: pathname === "/modelos/combinado"
+                        ? "var(--accent)"
+                        : "var(--text-secondary)",
+                      borderBottom: "1px solid var(--border-subtle)",
+                    }}
+                    onMouseEnter={(e) =>
+                      ((e.currentTarget as HTMLElement).style.background = "var(--bg-elevated)")
+                    }
+                    onMouseLeave={(e) =>
+                      ((e.currentTarget as HTMLElement).style.background = "transparent")
+                    }
+                  >
+                    Vista combinada
+                  </Link>
                   {READY_SYSTEMS.map((sys) => (
                     <Link
                       key={sys.id}
@@ -251,6 +274,19 @@ export function GlobalNav() {
                 />
               )}
               Modelos 3D
+            </Link>
+            <Link
+              href="/modelos/combinado"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-3 py-2 pl-4"
+              style={{
+                fontFamily: "var(--font-ibm-plex-sans)",
+                fontSize: "0.875rem",
+                color: pathname === "/modelos/combinado" ? "var(--accent)" : "var(--text-secondary)",
+                borderBottom: "1px solid var(--border-subtle)",
+              }}
+            >
+              Vista combinada
             </Link>
             {READY_SYSTEMS.map((sys) => (
               <Link

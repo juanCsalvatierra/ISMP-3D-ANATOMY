@@ -1,13 +1,14 @@
 "use client";
 import Link from "next/link";
+import { RoleGate } from "@/app/components/auth/RoleGate";
 
 const MODULES = [
   {
     id: "modelos",
     label: "Modelos 3D",
-    sublabel: "Esqueleto, músculos y más sistemas",
+    sublabel: "Esqueleto, músculos, articulaciones, vísceras, nervioso, cardiovascular y linfático",
     href: "/modelos",
-    count: "2 sistemas",
+    count: "7 sistemas",
     tag: "Anatomía 3D",
   },
   {
@@ -21,6 +22,14 @@ const MODULES = [
 ];
 
 export default function HomePage() {
+  return (
+    <RoleGate allowedRoles={["estudiante", "docente", "admin"]}>
+      <HomeContent />
+    </RoleGate>
+  );
+}
+
+function HomeContent() {
   return (
     <main className="min-h-screen" style={{ background: "var(--bg-page)", color: "var(--text-primary)" }}>
 
