@@ -1,0 +1,67 @@
+ISMP Anatomy — Modelos 3D (public/models/*.glb)
+================================================
+
+Archivos cubiertos por este aviso:
+  skeleton.glb, muscles.glb, muscular_insertions.glb, organs.glb,
+  nervous.glb, cardiovascular.glb, lymph.glb, joints.glb, skin.glb
+
+
+ORIGEN
+------
+Estos modelos derivan del proyecto Z-Anatomy, un atlas anatómico
+open-source construido en Blender, exportado a glTF/GLB para su uso en
+esta aplicación. Se han modificado respecto del original: reexportación a
+formato .glb, ajuste de materiales, agrupación de mallas y normalización
+de nombres para el motor de emparejamiento anatomía <-> malla.
+
+  Z-Anatomy
+    Sitio ....... https://www.z-anatomy.com/
+    Repositorio . https://gitlab.com/LluciferMS/z-anatomy
+    Autor ....... LluciferMS y colaboradores
+    Licencia .... Creative Commons Attribution-ShareAlike 4.0 International
+                  (CC BY-SA 4.0)
+                  https://creativecommons.org/licenses/by-sa/4.0/
+
+Z-Anatomy deriva a su vez su geometría de BodyParts3D:
+
+  BodyParts3D / Anatomography
+    Responsable . The Database Center for Life Science (DBCLS),
+                  Research Organization of Information and Systems (ROIS),
+                  Universidad de Tokio, Japón
+    Sitio ....... https://lifesciencedb.jp/bp3d/
+    Licencia .... Creative Commons Attribution-ShareAlike 2.1 Japan
+                  (CC BY-SA 2.1 JP)
+                  https://creativecommons.org/licenses/by-sa/2.1/jp/deed.en
+    Cita ........ Mitsuhashi N, Fujieda K, Tamura T, Kawamoto S, Takagi T,
+                  Okubo K. "BodyParts3D: 3D structure database for
+                  anatomical concepts." Nucleic Acids Research.
+                  2009 Jan;37(Database issue):D782-5.
+
+
+CONDICIONES DE USO (CC BY-SA)
+----------------------------
+1. ATRIBUCION. Cualquier uso o distribución debe acreditar a Z-Anatomy y a
+   BodyParts3D (DBCLS) e incluir un enlace a las licencias indicadas arriba.
+
+2. COMPARTIR IGUAL (ShareAlike). Toda versión modificada o distribuida de
+   estos archivos .glb (o datasets derivados de su geometría) debe
+   licenciarse bajo CC BY-SA 4.0. Esta obligación afecta al contenido
+   derivado, no al código fuente de la aplicación ISMP Anatomy.
+
+3. CONSERVAR AVISOS. Este archivo LICENSE debe acompañar a los modelos en
+   el repositorio y en cualquier redistribución.
+
+4. USO COMERCIAL. Permitido por CC BY-SA, siempre que se respeten los
+   puntos 1-3.
+
+
+TEXTO DE ATRIBUCION SUGERIDO
+----------------------------
+  Modelos anatomicos 3D basados en Z-Anatomy (CC BY-SA 4.0,
+  https://www.z-anatomy.com), derivado de BodyParts3D, (c) The Database
+  Center for Life Science (DBCLS), licenciado bajo CC BY-SA 2.1 Japon.
+  Modelos modificados para ISMP Anatomy y distribuidos bajo CC BY-SA 4.0.
+
+
+Ver ../../CREDITS.md para el detalle completo de todo el contenido de
+terceros del proyecto (modelos, textos e imagenes).

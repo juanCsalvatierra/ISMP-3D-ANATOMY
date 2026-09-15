@@ -58,10 +58,33 @@ export default function LoginPage() {
 
   return (
     <main
-      style={{ background: "var(--bg-page)", minHeight: "calc(100vh - 48px)" }}
+      style={{ background: "var(--bg-page)", minHeight: "100vh" }}
       className="flex items-center justify-center px-6 py-12"
     >
       <div className="w-full max-w-md">
+        <div className="flex flex-col items-center gap-1 mb-8">
+          <span
+            className="flex items-center gap-4"
+          >
+            <span
+              className="font-bold tracking-tight"
+              style={{ fontFamily: "var(--font-ibm-plex-sans)", color: "var(--text-primary)", fontSize: "1.75rem" }}
+            >
+              ISMP
+            </span>
+            <span
+              className="w-px"
+              style={{ background: "var(--border-subtle)", height: "1.4rem" }}
+            />
+            <span
+              className="font-normal"
+              style={{ fontFamily: "var(--font-ibm-plex-serif)", color: "var(--text-muted)", fontSize: "1.4rem" }}
+            >
+              3D Anatomy
+            </span>
+          </span>
+        </div>
+
         <div className="text-center mb-8">
           <h1
             className="text-2xl font-semibold mb-2"
@@ -144,9 +167,6 @@ export default function LoginPage() {
               Registrarse como estudiante
             </Link>
           </p>
-          <Link href="/" className="ui-link text-sm">
-            ← Volver al inicio
-          </Link>
         </div>
       </div>
     </main>

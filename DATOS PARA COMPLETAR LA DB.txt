@@ -1,0 +1,98 @@
+[
+  {
+    "name": "Admin Sistema",
+    "email": "admin@ismp.edu.ar",
+    "password": "admin123",
+    "role": "ADMIN"
+  },
+  {
+    "name": "Laura Rodríguez",
+    "email": "lrodriguez@ismp.edu.ar",
+    "password": "admin123",
+    "role": "ADMIN"
+  },
+  {
+    "name": "Dr. Carlos Medina",
+    "email": "cmedina@ismp.edu.ar",
+    "password": "docente123",
+    "role": "DOCENTE"
+  },
+  {
+    "name": "Dra. Ana Sosa",
+    "email": "asosa@ismp.edu.ar",
+    "password": "docente123",
+    "role": "DOCENTE"
+  },
+  {
+    "name": "Dr. Martín López",
+    "email": "mlopez@ismp.edu.ar",
+    "password": "docente123",
+    "role": "DOCENTE"
+  },
+  {
+    "name": "Dra. Valeria Torres",
+    "email": "vtorres@ismp.edu.ar",
+    "password": "docente123",
+    "role": "DOCENTE"
+  },
+  {
+    "name": "Juan Pérez",
+    "email": "jperez@ismp.edu.ar",
+    "password": "alumno123",
+    "role": "ESTUDIANTE"
+  },
+  {
+    "name": "María García",
+    "email": "mgarcia@ismp.edu.ar",
+    "password": "alumno123",
+    "role": "ESTUDIANTE"
+  },
+  {
+    "name": "Lucas Fernández",
+    "email": "lfernandez@ismp.edu.ar",
+    "password": "alumno123",
+    "role": "ESTUDIANTE"
+  },
+  {
+    "name": "Sofía Martínez",
+    "email": "smartinez@ismp.edu.ar",
+    "password": "alumno123",
+    "role": "ESTUDIANTE"
+  },
+  {
+    "name": "Tomás González",
+    "email": "tgonzalez@ismp.edu.ar",
+    "password": "alumno123",
+    "role": "ESTUDIANTE"
+  },
+  {
+    "name": "Camila Díaz",
+    "email": "cdiaz@ismp.edu.ar",
+    "password": "alumno123",
+    "role": "ESTUDIANTE"
+  },
+  {
+    "name": "Nicolás Romero",
+    "email": "nromero@ismp.edu.ar",
+    "password": "alumno123",
+    "role": "ESTUDIANTE"
+  },
+  {
+    "name": "Valentina Álvarez",
+    "email": "valvarez@ismp.edu.ar",
+    "password": "alumno123",
+    "role": "ESTUDIANTE"
+  },
+  {
+    "name": "Agustín Herrera",
+    "email": "aherrera@ismp.edu.ar",
+    "password": "alumno123",
+    "role": "ESTUDIANTE"
+  },
+  {
+    "name": "Florencia Ruiz",
+    "email": "fruiz@ismp.edu.ar",
+    "password": "alumno123",
+    "role": "ESTUDIANTE"
+  }
+]

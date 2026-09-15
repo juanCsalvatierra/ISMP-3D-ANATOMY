@@ -23,7 +23,8 @@ export function HighlightSystem() {
       if (isolated) {
         mesh.visible = mesh.uuid === isolated;
       } else {
-        mesh.visible = true;
+        // Respeta lo que ocultó el panel de Capas (meshStore.toggleGroup).
+        mesh.visible = !mesh.userData.forceHidden;
       }
 
       // Si materials no es un array lo convierte en uno
