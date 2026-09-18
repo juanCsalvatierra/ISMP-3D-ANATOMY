@@ -10,7 +10,7 @@ export default function CuestionariosHubPage() {
     currentUser?.role === "estudiante" && !currentUser.carreraIds?.length;
 
   return (
-    <main style={{ background: "var(--bg-page)", minHeight: "100vh" }}>
+    <main style={{ background: "var(--bg-canvas)", minHeight: "100vh" }}>
       <div style={{ borderBottom: "1px solid var(--border-subtle)" }}>
         <Breadcrumb items={[{ label: "Inicio", href: "/" }, { label: "Cuestionarios" }]} />
       </div>
