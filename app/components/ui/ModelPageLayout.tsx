@@ -1,7 +1,5 @@
 "use client";
 import { ReactNode } from "react";
-import { AnatomyItem } from "../../store/anatomyStore";
-import { JsonIndex } from "../../utils/indexBuilder";
 import { SceneCanvas } from "../scene/SceneCanvas";
 import { Breadcrumb } from "./Breadcrumb";
 import { ViewerRightPanel } from "./ViewerRightPanel";
@@ -14,12 +12,10 @@ type BreadcrumbItem = {
 
 type Props = {
   breadcrumbItems: BreadcrumbItem[];
-  json: Record<string, AnatomyItem>;
-  scannerIndex: JsonIndex;
   children: ReactNode;
 };
 
-export function ModelPageLayout({ breadcrumbItems, json, scannerIndex, children }: Props) {
+export function ModelPageLayout({ breadcrumbItems, children }: Props) {
   return (
     <div className="w-full flex flex-col" style={{ background: "var(--bg-page)", color: "var(--text-primary)" }}>
       {/* Breadcrumb bar */}
@@ -39,7 +35,7 @@ export function ModelPageLayout({ breadcrumbItems, json, scannerIndex, children 
           className="relative w-full h-[50vh] lg:w-[65%] lg:h-full"
           style={{ background: "var(--bg-canvas)" }}
         >
-          <SceneCanvas json={json} scannerIndex={scannerIndex} background="var(--bg-canvas)">
+          <SceneCanvas background="var(--bg-canvas)">
             {children}
           </SceneCanvas>
 

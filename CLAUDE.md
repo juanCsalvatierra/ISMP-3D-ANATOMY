@@ -30,7 +30,7 @@ No test runner is configured on the frontend. Requires Node ≥ 20.
 
 ### Routing (App Router, [app/](app/))
 Top-level routes map to product areas:
-- [app/skeleton/](app/skeleton/), [app/muscles/](app/muscles/) — 3D viewers per system
+- [app/modelos/](app/modelos/) — galería de sistemas 3D; `modelos/[system]/` — visor dinámico por sistema. El registro de sistemas (label, glb, dataset, material, categorías) vive en [app/config/systems.ts](app/config/systems.ts) + [app/config/systemMaterials.ts](app/config/systemMaterials.ts). Agregar un sistema = una entrada ahí. `/skeleton` y `/muscles` redirigen a `/modelos/*` (next.config.ts).
 - [app/imaging/](app/imaging/), `imaging/[studyId]/` — medical-image viewer
 - [app/cuestionarios/](app/cuestionarios/), `cuestionarios/[id]/`, `.../results/` — student quizzes
 - [app/docente/cuestionarios/](app/docente/cuestionarios/) — teacher quiz authoring (`nuevo`, `[id]`)
@@ -40,7 +40,7 @@ Role gating (student / `docente` / admin) is referenced in [docs/ROLES_ROADMAP.m
 
 ### 3D pipeline
 - GLB assets live in [public/models/](public/models/) (`skeleton.glb`, `muscles.glb`, `organs.glb`, `nervous.glb`, etc.).
-- Rendered via `@react-three/fiber` + `@react-three/drei` + `@react-three/postprocessing`. Scene/model components are under [app/components/scene/](app/components/scene/), [app/components/models/](app/components/models/), [app/components/layers/](app/components/layers/), [app/components/labels/](app/components/labels/).
+- Rendered via `@react-three/fiber` + `@react-three/drei` + `@react-three/postprocessing`. Scene/model components are under [app/components/scene/](app/components/scene/), [app/components/models/](app/components/models/), [app/components/layers/](app/components/layers/), [app/components/labels/](app/components/labels/). [AnatomyModel.tsx](app/components/models/AnatomyModel.tsx) es el visor genérico (carga glb + aplica material + matchea JSON) parametrizado por `AnatomySystem`. `viewerStore` guarda el sistema activo para que `MeshScanner` y `LayerSystemPanel` lean sus reglas de categorías.
 - Anatomy metadata (hierarchical structure → mesh names) is **static JSON** in [app/data/](app/data/): `anatomy.final.builded.json`, `anatomy.skeleton.json`, `imaging-studies.json`. The matcher in [app/utils/matcher.ts](app/utils/matcher.ts) + [app/utils/indexBuilder.ts](app/utils/indexBuilder.ts) maps Three.js mesh names to `AnatomyItem` entries; [app/utils/normalize.ts](app/utils/normalize.ts) handles name normalization (accents, casing) — touch with care, all hover/select interactions depend on it.
 
 ### State (Zustand, [app/store/](app/store/))

@@ -6,10 +6,9 @@ import { useCameraStore } from "../../store/cameraStore";
 
 type Props = {
   children: ReactNode;
-  json: Record<string, AnatomyItem>;
 };
 
-export function InteractiveScene({ children, json }: Props) {
+export function InteractiveScene({ children }: Props) {
   const setHovered = useAnatomyStore((s) => s.setHovered);
   const setSelected = useAnatomyStore((s) => s.setSelected);
   const isolated = useAnatomyStore((s) => s.isolated);
@@ -31,9 +30,9 @@ export function InteractiveScene({ children, json }: Props) {
       }}
       onClick={(e: ThreeEvent<MouseEvent>) => {
         e.stopPropagation();
-        const key = e.object.userData.jsonKey;
-        if (!key) return;
-        setSelected(json[key], e.object.uuid);
+        const item = e.object.userData.jsonItem as AnatomyItem | undefined;
+        if (!item) return;
+        setSelected(item, e.object.uuid);
 
         const meshWorldPos = new THREE.Vector3();
         e.object.getWorldPosition(meshWorldPos);

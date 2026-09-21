@@ -12,9 +12,9 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 const VIEWER_ROUTES: Record<string, string> = {
-  skeleton: "/skeleton",
-  muscles: "/muscles",
-  organs: "/organs",
+  skeleton: "/modelos/skeleton",
+  muscles: "/modelos/muscles",
+  organs: "/modelos/organs",
 };
 
 export default function StudyViewerPage({ params }: { params: Promise<{ studyId: string }> }) {
@@ -253,7 +253,7 @@ export default function StudyViewerPage({ params }: { params: Promise<{ studyId:
                       {structure.name}
                     </span>
                     <Link
-                      href={`${VIEWER_ROUTES[structure.viewer] || "/skeleton"}?selected=${structure.key}&highlight=true`}
+                      href={`${VIEWER_ROUTES[structure.viewer] || "/modelos/skeleton"}?selected=${structure.key}&highlight=true`}
                       className="text-xs transition-colors"
                       style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--accent)" }}
                       onMouseEnter={(e) => ((e.target as HTMLElement).style.color = "var(--accent-hover)")}

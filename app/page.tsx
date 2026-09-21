@@ -1,22 +1,15 @@
 "use client";
 import Link from "next/link";
+import { RoleGate } from "@/app/components/auth/RoleGate";
 
 const MODULES = [
   {
-    id: "skeleton",
-    label: "Esqueleto",
-    sublabel: "Huesos y cartílagos",
-    href: "/skeleton",
-    count: "206 estructuras",
-    tag: "Anatomía ósea",
-  },
-  {
-    id: "muscles",
-    label: "Músculos",
-    sublabel: "Sistema muscular",
-    href: "/muscles",
-    count: "650+ estructuras",
-    tag: "Anatomía muscular",
+    id: "modelos",
+    label: "Modelos 3D",
+    sublabel: "Esqueleto, músculos, articulaciones, vísceras, nervioso, cardiovascular y linfático",
+    href: "/modelos",
+    count: "7 sistemas",
+    tag: "Anatomía 3D",
   },
   {
     id: "imaging",
@@ -29,6 +22,14 @@ const MODULES = [
 ];
 
 export default function HomePage() {
+  return (
+    <RoleGate allowedRoles={["estudiante", "docente", "admin"]}>
+      <HomeContent />
+    </RoleGate>
+  );
+}
+
+function HomeContent() {
   return (
     <main className="min-h-screen" style={{ background: "var(--bg-page)", color: "var(--text-primary)" }}>
 
@@ -87,8 +88,8 @@ export default function HomePage() {
           </p>
 
           <div className="flex flex-wrap gap-3 mt-2">
-            <Link href="/skeleton" className="btn-primary">
-              Explorar Esqueleto →
+            <Link href="/modelos" className="btn-primary">
+              Explorar Modelos 3D →
             </Link>
             <Link href="/cuestionarios" className="btn-secondary">
               Iniciar Cuestionario
@@ -114,7 +115,7 @@ export default function HomePage() {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {MODULES.map((mod) => (
             <Link key={mod.id} href={mod.href} className="group block">
               <div
@@ -246,8 +247,7 @@ export default function HomePage() {
           </span>
           <div className="flex gap-4">
             {[
-              { label: "Esqueleto", href: "/skeleton" },
-              { label: "Músculos", href: "/muscles" },
+              { label: "Modelos 3D", href: "/modelos" },
               { label: "Imágenes", href: "/imaging" },
               { label: "Cuestionarios", href: "/cuestionarios" },
             ].map((l) => (

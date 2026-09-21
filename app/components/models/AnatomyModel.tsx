@@ -9,76 +9,68 @@ import { findBestJsonMatch } from "../../utils/matcher";
 import { JsonIndex } from "../../utils/indexBuilder";
 import { AnatomyItem } from "../../store/anatomyStore";
 import { useCameraStore } from "../../store/cameraStore";
+import { useMeshStore } from "../../store/meshStore";
+import type { AnatomySystem } from "../../config/systems";
+import { SYSTEM_MATERIALS } from "../../config/systemMaterials";
 
 type Props = {
+  system: AnatomySystem;
   json: Record<string, AnatomyItem>;
   index: JsonIndex;
   onSelect?: (item: AnatomyItem, uuid?: string) => void;
 };
 
-const Skeleton = ({ json, index, onSelect }: Props) => {
-  const skeleton = useLoader(GLTFLoader, "/models/skeleton.glb");
+// Visor 3D genérico. Antes eran Skeleton.tsx y Muscles.tsx, ~95% idénticos:
+// lo único específico de cada sistema (ruta del .glb y material) sale de `system`.
+// Sirve tanto para /modelos/[system] (uno) como para /modelos/combinado (varios).
+const AnatomyModel = ({ system, json, index, onSelect }: Props) => {
+  const gltf = useLoader(GLTFLoader, system.glb);
   const setFocus = useCameraStore((s) => s.setFocus);
-
+  const bumpScanVersion = useMeshStore((s) => s.bumpScanVersion);
+  const applyMaterial = SYSTEM_MATERIALS[system.id];
 
   useEffect(() => {
-    skeleton.scene.traverse((child: THREE.Object3D) => {
+    gltf.scene.traverse((child: THREE.Object3D) => {
       if (!(child instanceof THREE.Mesh)) return;
 
-
-
-      // Material de los huesos
-      child.material = new THREE.MeshStandardMaterial({
-        color: "#F1E1B0",
-        roughness: 0.5,
-        metalness: 0,
-      });
-
       let name = child.name;
-
       if (/^Mesh_\d+$/.test(name) && child.parent) {
         name = child.parent.name;
       }
 
-      // Material de las cartilagos
-      if (name.toLowerCase().includes("cartilage")) {
-        child.material = new THREE.MeshStandardMaterial({
-          color: "#D9E1E8",
-          roughness: 0.38,
-          metalness: 0,
-        });
-      }
+      applyMaterial(child, name);
 
-      // Match con el JSON
-      const normalized = normalize(name);
-
-      const matchKey = findBestJsonMatch(normalized, index);
-
+      // Match con el JSON de anatomía. Se estampa todo en userData para que
+      // MeshScanner e InteractiveScene no necesiten el JSON (clave en combinado,
+      // donde cada sistema usa un dataset distinto).
+      const matchKey = findBestJsonMatch(normalize(name), index);
       if (matchKey) {
+        const item = json[matchKey];
         child.userData.jsonKey = matchKey;
-      } else {
-        // console.log("No match:", name);
+        child.userData.jsonItem = item;
+        child.userData.jsonName = item?.name ?? matchKey;
+        child.userData.systemId = system.id;
       }
-
     });
-  }, [skeleton, json, index]);
+
+    bumpScanVersion();
+    return () => bumpScanVersion();
+  }, [gltf, json, index, applyMaterial, system.id, bumpScanVersion]);
 
   return (
     <primitive
-      object={skeleton.scene}
+      object={gltf.scene}
       position={[0, 0, 0]}
       scale={2}
       onClick={(e: ThreeEvent<MouseEvent>) => {
         e.stopPropagation();
         const mesh = e.object as THREE.Mesh;
-        const key = mesh.userData.jsonKey;
+        const item = mesh.userData.jsonItem as AnatomyItem | undefined;
 
-        if (!key) {
+        if (!item) {
           console.log("Sin data:", mesh.name);
           return;
         }
-        const item = json[key];
-        console.log("Seleccionado:", item);
 
         const meshWorldPos = new THREE.Vector3();
         mesh.getWorldPosition(meshWorldPos);
@@ -95,4 +87,4 @@ const Skeleton = ({ json, index, onSelect }: Props) => {
   );
 };
 
-export default Skeleton;
+export default AnatomyModel;

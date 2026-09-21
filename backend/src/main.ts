@@ -1,4 +1,8 @@
-import 'dotenv/config';
+// override: true — backend/.env es la fuente de verdad del PORT del backend.
+// Sin esto, un PORT heredado del entorno (p. ej. el que usa el frontend para
+// :3000) pisaría el default y el backend intentaría bindear el mismo puerto.
+import { config } from 'dotenv';
+config({ override: true });
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';

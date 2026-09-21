@@ -1,23 +1,11 @@
 "use client";
 import { useState } from "react";
 import { useMeshStore } from "../../store/meshStore";
+import { useViewerStore } from "../../store/viewerStore";
+import { useCombinedViewerStore } from "../../store/combinedViewerStore";
 import { capitalize } from "../../utils/capitalize";
 import { LAYER_PRESETS } from "../../utils/layerPresets";
-
-const CATEGORY_ORDER = [
-  "Cara y cabeza",
-  "Cuello",
-  "Espalda y hombro",
-  "Tórax y abdomen",
-  "Brazo",
-  "Antebrazo",
-  "Mano",
-  "Cadera y glúteo",
-  "Muslo",
-  "Pierna",
-  "Pie",
-  "Otros",
-];
+import { CombinedLayerPanel } from "./CombinedLayerPanel";
 
 const PRESETS = [
   { label: "Todo", key: "all" },
@@ -26,8 +14,15 @@ const PRESETS = [
 ];
 
 export function LayerSystemPanel() {
+  const combinedActive = useCombinedViewerStore((s) => s.active);
+  if (combinedActive) return <CombinedLayerPanel />;
+  return <SingleSystemLayerPanel />;
+}
+
+function SingleSystemLayerPanel() {
   const groups = useMeshStore((s) => s.groups);
   const toggleGroup = useMeshStore((s) => s.toggleGroup);
+  const categoryOrder = useViewerStore((s) => s.activeSystem?.categoryOrder) ?? [];
 
   const [visibility, setVisibility] = useState<Record<string, boolean>>({});
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
@@ -72,7 +67,13 @@ export function LayerSystemPanel() {
     return acc;
   }, {});
 
-  const sortedCategories = CATEGORY_ORDER.filter((c) => grouped[c]);
+  // Primero las categorías en el orden definido por el sistema, después
+  // cualquier categoría presente que no esté listada (p. ej. sistemas nuevos).
+  const orderedPresent = categoryOrder.filter((c) => grouped[c]);
+  const leftovers = Object.keys(grouped)
+    .filter((c) => !categoryOrder.includes(c))
+    .sort();
+  const sortedCategories = [...orderedPresent, ...leftovers];
 
   if (groups.length === 0) {
     return (

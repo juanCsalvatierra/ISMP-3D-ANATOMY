@@ -1,4 +1,4 @@
-import { PrismaClient, Role } from '@prisma/client';
+import { PrismaClient, Role, Formato } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -88,6 +88,90 @@ async function main() {
       },
     });
     console.log(`  ✓ ${u.role.padEnd(10)} ${u.email}`);
+  }
+
+  // Preguntas de ejemplo
+  console.log('\nSeeding preguntas...');
+  const docente = await prisma.user.findUnique({ where: { email: 'cmedina@ismp.edu.ar' } });
+  if (!docente) throw new Error('Docente no encontrado');
+
+  const preguntas = [
+    {
+      texto: '¿Cuántos huesos tiene el cuerpo humano adulto?',
+      opciones: ['206', '208', '212', '198'],
+      correct: 0,
+      explicacion: 'El esqueleto adulto está compuesto por 206 huesos.',
+      formato: Formato.MULTIPLE,
+      materiaId: 'mat-anat1',
+    },
+    {
+      texto: '¿Qué hueso es el más largo del cuerpo humano?',
+      opciones: ['Húmero', 'Tibia', 'Fémur', 'Peroné'],
+      correct: 2,
+      explicacion: 'El fémur (hueso del muslo) es el hueso más largo del cuerpo humano.',
+      formato: Formato.MULTIPLE,
+      materiaId: 'mat-anat1',
+    },
+    {
+      texto: '¿El esternón forma parte de la caja torácica?',
+      opciones: ['Verdadero', 'Falso'],
+      correct: 0,
+      explicacion: 'El esternón es el hueso plano central del tórax que articula con las costillas.',
+      formato: Formato.TRUEFALSE,
+      materiaId: 'mat-anat1',
+    },
+    {
+      texto: '¿Cuántas vértebras cervicales tiene la columna vertebral humana?',
+      opciones: ['5', '7', '12', '9'],
+      correct: 1,
+      explicacion: 'La columna cervical tiene 7 vértebras (C1 a C7).',
+      formato: Formato.MULTIPLE,
+      materiaId: 'mat-anat1',
+    },
+    {
+      texto: '¿El húmero es el hueso del antebrazo?',
+      opciones: ['Verdadero', 'Falso'],
+      correct: 1,
+      explicacion: 'El húmero es el hueso del brazo. Los huesos del antebrazo son el radio y el cúbito.',
+      formato: Formato.TRUEFALSE,
+      materiaId: 'mat-anat2',
+    },
+    {
+      texto: '¿Cuál es el hueso más pequeño del cuerpo humano?',
+      opciones: ['Martillo', 'Yunque', 'Estribo', 'Patela'],
+      correct: 2,
+      explicacion: 'El estribo, ubicado en el oído medio, es el hueso más pequeño del cuerpo.',
+      formato: Formato.MULTIPLE,
+      materiaId: 'mat-anat2',
+    },
+    {
+      texto: '¿Cuántos pares de costillas tiene el ser humano?',
+      opciones: ['10', '11', '12', '14'],
+      correct: 2,
+      explicacion: 'El ser humano tiene 12 pares de costillas (24 en total).',
+      formato: Formato.MULTIPLE,
+      materiaId: 'mat-anat2',
+    },
+    {
+      texto: '¿La clavícula articula con el esternón y la escápula?',
+      opciones: ['Verdadero', 'Falso'],
+      correct: 0,
+      explicacion: 'La clavícula articula medialmente con el esternón y lateralmente con la escápula.',
+      formato: Formato.TRUEFALSE,
+      materiaId: 'mat-anat3',
+    },
+  ];
+
+  for (const p of preguntas) {
+    const { materiaId, ...data } = p;
+    const q = await prisma.question.create({
+      data: {
+        ...data,
+        autorId: docente.id,
+        materias: { create: [{ materiaId }] },
+      },
+    });
+    console.log(`  ✓ [${q.formato}] ${q.texto.slice(0, 50)}...`);
   }
 
   console.log(`\nSeed completo.`);

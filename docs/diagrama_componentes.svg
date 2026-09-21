@@ -1,0 +1,101 @@
+<svg viewBox="0 0 820 560" xmlns="http://www.w3.org/2000/svg" font-family="monospace, sans-serif">
+  <title>Diagrama de Componentes – ISMP 3D Anatomy</title>
+
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="820" height="560" fill="#111" rx="12"/>
+  <text x="410" y="32" text-anchor="middle" font-size="14" font-weight="600" fill="#eee">Diagrama de Componentes — ISMP 3D Anatomy</text>
+
+  <!-- FRONTEND -->
+  <rect x="20" y="50" width="280" height="450" rx="8" fill="none" stroke="#4a6fa5" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="160" y="70" text-anchor="middle" font-size="11" font-weight="600" fill="#4a6fa5">«subsystem» Frontend (Next.js 16)</text>
+  <rect x="35" y="82" width="250" height="22" rx="4" fill="#1a2640"/>
+  <text x="160" y="97" text-anchor="middle" font-size="10" fill="#7fa8d8">Pages: /login · /skeleton · /muscles · /cuestionarios · /docente</text>
+  <rect x="35" y="112" width="115" height="90" rx="5" fill="#1a2640" stroke="#4a6fa5" stroke-width="1"/>
+  <text x="92" y="127" text-anchor="middle" font-size="10" font-weight="600" fill="#7fa8d8">Zustand Stores</text>
+  <text x="92" y="143" text-anchor="middle" font-size="9" fill="#7fa8d8">userStore</text>
+  <text x="92" y="157" text-anchor="middle" font-size="9" fill="#7fa8d8">anatomyStore</text>
+  <text x="92" y="171" text-anchor="middle" font-size="9" fill="#7fa8d8">cuestionarioBank</text>
+  <text x="92" y="185" text-anchor="middle" font-size="9" fill="#7fa8d8">meshStore</text>
+  <rect x="160" y="112" width="125" height="90" rx="5" fill="#1a2640" stroke="#4a6fa5" stroke-width="1"/>
+  <text x="222" y="127" text-anchor="middle" font-size="10" font-weight="600" fill="#7fa8d8">3D Viewer</text>
+  <text x="222" y="143" text-anchor="middle" font-size="9" fill="#7fa8d8">@react-three/fiber</text>
+  <text x="222" y="157" text-anchor="middle" font-size="9" fill="#7fa8d8">GLB Models</text>
+  <text x="222" y="171" text-anchor="middle" font-size="9" fill="#7fa8d8">Anatomy JSON</text>
+  <text x="222" y="185" text-anchor="middle" font-size="9" fill="#7fa8d8">Labels / Layers</text>
+  <rect x="35" y="212" width="115" height="60" rx="5" fill="#1a2640" stroke="#4a6fa5" stroke-width="1"/>
+  <text x="92" y="228" text-anchor="middle" font-size="10" font-weight="600" fill="#7fa8d8">AuthProvider</text>
+  <text x="92" y="244" text-anchor="middle" font-size="9" fill="#7fa8d8">localAuthProvider</text>
+  <text x="92" y="258" text-anchor="middle" font-size="9" fill="#7fa8d8">RoleGate</text>
+  <rect x="160" y="212" width="125" height="60" rx="5" fill="#1a2640" stroke="#4a6fa5" stroke-width="1"/>
+  <text x="222" y="228" text-anchor="middle" font-size="10" font-weight="600" fill="#7fa8d8">API Client</text>
+  <text x="222" y="244" text-anchor="middle" font-size="9" fill="#7fa8d8">fetch + JWT Bearer</text>
+  <text x="222" y="258" text-anchor="middle" font-size="9" fill="#7fa8d8">NEXT_PUBLIC_API_URL</text>
+  <rect x="35" y="282" width="250" height="22" rx="4" fill="#1a2640"/>
+  <text x="160" y="297" text-anchor="middle" font-size="9" fill="#7fa8d8">Tailwind CSS v4 · IBM Plex Fonts · App Router</text>
+  <rect x="35" y="312" width="250" height="22" rx="4" fill="#1a2640"/>
+  <text x="160" y="327" text-anchor="middle" font-size="9" fill="#7fa8d8">:3000</text>
+
+  <!-- BACKEND -->
+  <rect x="330" y="50" width="300" height="450" rx="8" fill="none" stroke="#5a8f5a" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="480" y="70" text-anchor="middle" font-size="11" font-weight="600" fill="#5a8f5a">«subsystem» Backend (NestJS 11)</text>
+  <rect x="345" y="82" width="270" height="22" rx="4" fill="#1a2b1a"/>
+  <text x="480" y="97" text-anchor="middle" font-size="10" fill="#8fbf8f">AppModule · ValidationPipe · CORS · JWT Global</text>
+  <rect x="345" y="112" width="120" height="70" rx="5" fill="#1a2b1a" stroke="#5a8f5a" stroke-width="1"/>
+  <text x="405" y="128" text-anchor="middle" font-size="10" font-weight="600" fill="#8fbf8f">AuthModule</text>
+  <text x="405" y="144" text-anchor="middle" font-size="9" fill="#8fbf8f">POST /auth/login</text>
+  <text x="405" y="158" text-anchor="middle" font-size="9" fill="#8fbf8f">JwtStrategy</text>
+  <text x="405" y="172" text-anchor="middle" font-size="9" fill="#8fbf8f">RolesGuard</text>
+  <rect x="475" y="112" width="140" height="70" rx="5" fill="#1a2b1a" stroke="#5a8f5a" stroke-width="1"/>
+  <text x="545" y="128" text-anchor="middle" font-size="10" font-weight="600" fill="#8fbf8f">UsersModule</text>
+  <text x="545" y="144" text-anchor="middle" font-size="9" fill="#8fbf8f">POST /users/register</text>
+  <text x="545" y="158" text-anchor="middle" font-size="9" fill="#8fbf8f">POST /users/activate</text>
+  <text x="545" y="172" text-anchor="middle" font-size="9" fill="#8fbf8f">GET /users/search</text>
+  <rect x="345" y="192" width="120" height="70" rx="5" fill="#1a2b1a" stroke="#5a8f5a" stroke-width="1"/>
+  <text x="405" y="208" text-anchor="middle" font-size="10" font-weight="600" fill="#8fbf8f">QuestionsModule</text>
+  <text x="405" y="224" text-anchor="middle" font-size="9" fill="#8fbf8f">GET/POST /questions</text>
+  <text x="405" y="238" text-anchor="middle" font-size="9" fill="#8fbf8f">PATCH /questions/:id</text>
+  <text x="405" y="252" text-anchor="middle" font-size="9" fill="#8fbf8f">DOCENTE / ADMIN</text>
+  <rect x="475" y="192" width="140" height="70" rx="5" fill="#1a2b1a" stroke="#5a8f5a" stroke-width="1"/>
+  <text x="545" y="208" text-anchor="middle" font-size="10" font-weight="600" fill="#8fbf8f">AttemptsModule</text>
+  <text x="545" y="224" text-anchor="middle" font-size="9" fill="#8fbf8f">POST /attempts/start</text>
+  <text x="545" y="238" text-anchor="middle" font-size="9" fill="#8fbf8f">POST /attempts/:id/answer</text>
+  <text x="545" y="252" text-anchor="middle" font-size="9" fill="#8fbf8f">GET /attempts · /me</text>
+  <rect x="345" y="272" width="270" height="45" rx="5" fill="#1a2b1a" stroke="#5a8f5a" stroke-width="1"/>
+  <text x="480" y="289" text-anchor="middle" font-size="10" font-weight="600" fill="#8fbf8f">CatalogModule</text>
+  <text x="480" y="306" text-anchor="middle" font-size="9" fill="#8fbf8f">GET /carreras · GET /materias · GET /materias/:id/unidades</text>
+  <rect x="345" y="327" width="270" height="32" rx="5" fill="#1a2b1a" stroke="#5a8f5a" stroke-width="1"/>
+  <text x="480" y="348" text-anchor="middle" font-size="10" fill="#8fbf8f">PrismaModule (ORM — acceso global a DB)</text>
+  <rect x="345" y="369" width="270" height="22" rx="4" fill="#1a2b1a"/>
+  <text x="480" y="384" text-anchor="middle" font-size="9" fill="#8fbf8f">JWT payload: sub · email · role · carreraIds[]</text>
+  <rect x="345" y="400" width="270" height="22" rx="4" fill="#1a2b1a"/>
+  <text x="480" y="415" text-anchor="middle" font-size="9" fill="#8fbf8f">:3001</text>
+
+  <!-- DATABASE -->
+  <rect x="660" y="130" width="140" height="240" rx="8" fill="none" stroke="#8f5a8f" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="730" y="150" text-anchor="middle" font-size="11" font-weight="600" fill="#8f5a8f">«database»</text>
+  <text x="730" y="165" text-anchor="middle" font-size="11" font-weight="600" fill="#8f5a8f">PostgreSQL</text>
+  <rect x="672" y="175" width="116" height="18" rx="3" fill="#2a1a2a"/>
+  <text x="730" y="188" text-anchor="middle" font-size="9" fill="#bf8fbf">User · UserCarrera</text>
+  <rect x="672" y="198" width="116" height="18" rx="3" fill="#2a1a2a"/>
+  <text x="730" y="211" text-anchor="middle" font-size="9" fill="#bf8fbf">Carrera · Materia</text>
+  <rect x="672" y="221" width="116" height="18" rx="3" fill="#2a1a2a"/>
+  <text x="730" y="234" text-anchor="middle" font-size="9" fill="#bf8fbf">Question</text>
+  <rect x="672" y="244" width="116" height="18" rx="3" fill="#2a1a2a"/>
+  <text x="730" y="257" text-anchor="middle" font-size="9" fill="#bf8fbf">Attempt · AttemptQuestion</text>
+  <rect x="672" y="267" width="116" height="18" rx="3" fill="#2a1a2a"/>
+  <text x="730" y="280" text-anchor="middle" font-size="9" fill="#bf8fbf">AnswerLog</text>
+  <rect x="672" y="290" width="116" height="18" rx="3" fill="#2a1a2a"/>
+  <text x="730" y="303" text-anchor="middle" font-size="9" fill="#bf8fbf">ext: unaccent</text>
+  <text x="730" y="350" text-anchor="middle" font-size="9" fill="#8f5a8f">via Prisma ORM · :5432</text>
+
+  <!-- Arrows -->
+  <line x1="300" y1="260" x2="328" y2="260" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="314" y="253" text-anchor="middle" font-size="8" fill="#888">HTTP/REST</text>
+  <line x1="630" y1="270" x2="658" y2="270" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="644" y="263" text-anchor="middle" font-size="8" fill="#888">Prisma</text>
+</svg>
