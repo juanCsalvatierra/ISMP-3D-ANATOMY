@@ -10,6 +10,7 @@ import { PREGUNTAS_MIOLOGIA } from './miologia';
 import { PREGUNTAS_NERVIOSO_CENTRAL } from './nervioso-central';
 import { PREGUNTAS_NERVIOSO_PERIFERICO } from './nervioso-periferico';
 import { PREGUNTAS_ENDOCRINO } from './endocrino';
+import { PREGUNTAS_REPRODUCTOR } from './reproductor';
 
 // Un archivo por tema transversal. Orden de los lotes (ver propuesta del paso 4):
 // circulatorio → respiratorio → urinario → digestivo → osteo/artro/miología →
@@ -26,4 +27,5 @@ export const BANCO: PreguntaBanco[] = [
   ...PREGUNTAS_NERVIOSO_CENTRAL,
   ...PREGUNTAS_NERVIOSO_PERIFERICO,
   ...PREGUNTAS_ENDOCRINO,
+  ...PREGUNTAS_REPRODUCTOR,
 ];
