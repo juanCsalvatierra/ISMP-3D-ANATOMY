@@ -70,6 +70,7 @@ export function vf(
 
 // Destinos frecuentes (materia + unidad según domain/programas.ts del frontend).
 export const D = {
+  ANAT1_U2: { materiaId: 'mat-anat1', unidad: 2 },   // Célula y tejidos
   ANAT1_U4: { materiaId: 'mat-anat1', unidad: 4 },   // Osteología
   ANAT1_U5: { materiaId: 'mat-anat1', unidad: 5 },   // Artrología
   ANAT1_U6: { materiaId: 'mat-anat1', unidad: 6 },   // Miología general
@@ -96,6 +97,7 @@ export const D = {
   ANAT4_U3: { materiaId: 'mat-anat4', unidad: 3 },    // Motilidad y secreción digestivas
   ANAT4_U4: { materiaId: 'mat-anat4', unidad: 4 },    // Reproductor femenino y fisiología
   ANAT4_U5: { materiaId: 'mat-anat4', unidad: 5 },    // Circulatorio
+  LABD_U1: { materiaId: 'mat-anat-descriptiva', unidad: 1 },  // La célula
   LABD_U2: { materiaId: 'mat-anat-descriptiva', unidad: 2 },  // Histología: tejidos
   LABD_U3: { materiaId: 'mat-anat-descriptiva', unidad: 3 },  // Circulatorio
   LABD_U4: { materiaId: 'mat-anat-descriptiva', unidad: 4 },  // Respiratorio
@@ -107,6 +109,7 @@ export const D = {
   LABF_U5: { materiaId: 'mat-anat-fisiologica', unidad: 5 },  // Circulatorio
   LABF_U6: { materiaId: 'mat-anat-fisiologica', unidad: 6 },  // Respiratorio
   // Hemoterapia (programa provisorio): 1–6 = Lab Descriptiva, 7–12 = Lab Fisiológica.
+  HEM_U1: { materiaId: 'mat-ahf-normales', unidad: 1 },   // La célula
   HEM_U2: { materiaId: 'mat-ahf-normales', unidad: 2 },   // Histología: tejidos
   HEM_U3: { materiaId: 'mat-ahf-normales', unidad: 3 },   // Circulatorio (descriptiva)
   HEM_U4: { materiaId: 'mat-ahf-normales', unidad: 4 },   // Respiratorio
