@@ -70,6 +70,11 @@ export function vf(
 
 // Destinos frecuentes (materia + unidad según domain/programas.ts del frontend).
 export const D = {
+  ANAT1_U4: { materiaId: 'mat-anat1', unidad: 4 },   // Osteología
+  ANAT1_U5: { materiaId: 'mat-anat1', unidad: 5 },   // Artrología
+  ANAT1_U6: { materiaId: 'mat-anat1', unidad: 6 },   // Miología general
+  ANAT1_U7: { materiaId: 'mat-anat1', unidad: 7 },   // Miembro superior
+  ANAT1_U8: { materiaId: 'mat-anat1', unidad: 8 },   // Miembro inferior
   ANAT1_U9: { materiaId: 'mat-anat1', unidad: 9 },   // Sistema digestivo
   ANAT1_U10: { materiaId: 'mat-anat1', unidad: 10 },  // Sistema nervioso
   ANAT2_U1: { materiaId: 'mat-anat2', unidad: 1 },    // Tronco
