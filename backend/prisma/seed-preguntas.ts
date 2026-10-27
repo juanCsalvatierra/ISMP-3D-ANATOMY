@@ -8,8 +8,8 @@ const preguntas: {
   correct: number;
   explicacion: string;
   formato: Formato;
-  materiaId: string;
-  unidad: number;
+  // Una pregunta puede servir a varias materias; QuestionMateria admite una unidad por materia.
+  destinos: { materiaId: string; unidad: number }[];
 }[] = [
 {
   texto: '¿Cuántas vértebras componen la columna vertebral del adulto?',
@@ -17,8 +17,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La columna vertebral está formada por 33 a 34 vértebras: 7 cervicales, 12 torácicas, 5 lumbares, 5 sacras y 4 a 5 coccígeas.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Cuántas vértebras cervicales tiene la columna vertebral humana?',
@@ -26,8 +25,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'Existen 7 vértebras cervicales (C1 a C7), que forman la porción más móvil y superior de la columna.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 4 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Cómo se denomina la primera vértebra cervical?',
@@ -35,8 +33,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La primera vértebra cervical (C1) se denomina atlas. Carece de cuerpo y de apófisis espinosa, y soporta el cráneo.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 4 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Cuál es la característica distintiva del axis (C2)?',
@@ -49,8 +46,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El axis (C2) se distingue por la apófisis odontoides, también llamada diente, que se articula con el arco anterior del atlas permitiendo la rotación de la cabeza.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 4 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: 'El cuerpo vertebral se ubica en la parte posterior del arco vertebral.',
@@ -58,8 +54,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El cuerpo vertebral ocupa la parte ANTERIOR de la vértebra; el arco vertebral se sitúa por detrás del cuerpo.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Qué estructuras limitan el foramen vertebral?',
@@ -72,8 +67,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El foramen vertebral está delimitado por el cuerpo vertebral por delante y el arco vertebral (pedículos + láminas) por detrás. La superposición de forámenes forma el conducto vertebral.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Qué nombre recibe la estructura ósea que une el cuerpo vertebral con las apófisis transversas y articulares?',
@@ -81,8 +75,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Los pedículos son columnas óseas anteroposteriores que unen el arco vertebral al cuerpo vertebral, uno a cada lado, delimitando los forámenes intervertebrales por sus escotaduras.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Cuántas vértebras torácicas posee la columna vertebral?',
@@ -90,8 +83,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'La columna torácica tiene 12 vértebras (T1 a T12), que se articulan con las 12 costillas y forman la pared posterior de la caja torácica.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Cuál es el elemento que contribuye fundamentalmente a la sustentación de la columna vertebral?',
@@ -99,8 +91,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El cuerpo vertebral, formado por tejido esponjoso resistente con trabéculas orientadas en sentido de las presiones, es el principal elemento de sustentación de la columna.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Qué tipo de tejido predomina en el interior del cuerpo vertebral?',
@@ -108,8 +99,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El cuerpo vertebral está constituido por tejido esponjoso rodeado de una envoltura de tejido compacto. Las trabéculas esponjosas se orientan según las presiones que soporta.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: 'Las vértebras lumbares tienen apujeros transversos por donde pasan las arterias vertebrales.',
@@ -117,8 +107,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Los agujeros transversos (forámenes transversarios) son exclusivos de las vértebras CERVICALES. Las arterias vertebrales transitan por ellos desde C6 hasta C1.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Cuántas vértebras lumbares forman la columna lumbar?',
@@ -126,8 +115,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La columna lumbar está formada por 5 vértebras (L1 a L5). Son las más voluminosas de toda la columna por soportar mayor carga.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Cuál de las siguientes curvaturas de la columna es una lordosis?',
@@ -135,8 +123,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'La curvatura cervical es una lordosis (convexidad anterior). Las curvaturas torácica y sacrococcígea son cifosis (convexidad posterior).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Cómo se denomina la articulación entre dos vértebras adyacentes a nivel de sus cuerpos?',
@@ -144,8 +131,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La sínfisis intervertebral une los cuerpos de dos vértebras adyacentes. Está formada por el disco intervertebral y los ligamentos longitudinales anterior y posterior.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 5 }],
 },
 {
   texto: '¿Qué estructura forma el núcleo del disco intervertebral?',
@@ -153,8 +139,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El disco intervertebral tiene una parte central gelatinosa llamada núcleo pulposo, rodeada por el anillo fibroso (fibrocartílago). El núcleo actúa como amortiguador de cargas.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 5 }],
 },
 {
   texto: 'El ligamento longitudinal anterior recorre la cara anterior de los cuerpos vertebrales desde el cráneo hasta el sacro.',
@@ -162,8 +147,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El ligamento longitudinal anterior se extiende por la cara anterior de los cuerpos vertebrales desde el occipital hasta el sacro, limitando la extensión excesiva de la columna.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 5 }],
 },
 {
   texto: '¿Qué ligamento une las láminas vertebrales de vértebras adyacentes?',
@@ -171,8 +155,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El ligamento amarillo (ligamentum flavum) une las láminas de vértebras contiguas. Contiene gran cantidad de fibras elásticas, lo que le otorga su color amarillento.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 5 }],
 },
 {
   texto: '¿Cuántas piezas óseas forman el sacro del adulto?',
@@ -180,8 +163,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El sacro resulta de la fusión de 5 vértebras sacras (S1 a S5) que se unen entre los 16 y 25 años, formando un hueso único triangular que se articula con el cóccix hacia abajo.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Qué nombre recibe la cara anterior cóncava del sacro que mira hacia la cavidad pélvica?',
@@ -189,8 +171,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La cara pélvica (o cara anterior) del sacro es cóncava y mira hacia la cavidad pélvica. Presenta cuatro agujeros sacros anteriores por donde emergen los ramos anteriores de los nervios sacros.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Cómo se denomina el borde anterior y superior del sacro que sobresale hacia la pelvis?',
@@ -198,8 +179,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El promontorio es la saliente formada por el borde anterosuperior de S1. Constituye un punto de referencia obstétrico fundamental y un elemento de la apertura superior de la pelvis menor.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: 'La columna vertebral lumbar presenta normalmente una cifosis (convexidad posterior).',
@@ -207,8 +187,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La columna lumbar presenta lordosis (convexidad anterior), no cifosis. La cifosis corresponde a las curvaturas torácica y sacra, que son de convexidad posterior.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Cuál es la función principal de los discos intervertebrales?',
@@ -221,8 +200,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Los discos intervertebrales actúan como amortiguadores hidráulicos que distribuyen las cargas axiales y permiten los movimientos de flexión, extensión, inclinación lateral y rotación entre vértebras.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 5 }],
 },
 {
   texto: '¿Qué término describe la desviación lateral de la columna vertebral en el plano frontal?',
@@ -230,8 +208,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'La escoliosis es la desviación lateral de la columna vertebral en el plano frontal. Puede ser funcional o estructural y afecta tanto la curvatura como la rotación vertebral.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Cuál de los siguientes músculos es un músculo propio del dorso de la columna?',
@@ -239,8 +216,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El iliocostal forma parte del músculo erector de la columna (junto al longísimo y espinoso), que son músculos propios del dorso. El trapecio y dorsal ancho son músculos extrínsecos de la espalda.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 6 }],
 },
 {
   texto: 'El cóccix está formado por la fusión de 4 a 5 vértebras rudimentarias.',
@@ -248,8 +224,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El cóccix (hueso coccígeo) resulta de la fusión de 4 a 5 vértebras coccígeas rudimentarias. Es el extremo inferior de la columna vertebral y punto de inserción del ligamento sacrococcígeo y músculos del periné.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat1',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 4 }],
 },
 // ── mat-anat1 · Unidad 2 · Cráneo y cara ──
 
@@ -259,8 +234,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El esqueleto de la cabeza está formado por 22 huesos: 8 del neurocráneo y 14 del viscerocráneo (cara). Solo la mandíbula es móvil.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }, { materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Cuántos huesos componen el neurocráneo?',
@@ -268,8 +242,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El neurocráneo está formado por 8 huesos: 4 impares (frontal, etmoides, esfenoides y occipital) y 4 pares (2 parietales y 2 temporales).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }, { materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Cuál es el único hueso móvil del esqueleto de la cabeza?',
@@ -277,8 +250,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'La mandíbula es el único hueso móvil de la cabeza. Se articula con el hueso temporal formando la articulación temporomandibular (ATM).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }, { materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: 'El hueso frontal es un hueso par del neurocráneo.',
@@ -286,8 +258,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El frontal es un hueso IMPAR del neurocráneo. Los huesos pares del neurocráneo son los parietales y los temporales.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }, { materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Qué nombre recibe la capa de tejido esponjoso situada entre las dos tablas óseas compactas de los huesos del cráneo?',
@@ -295,8 +266,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El díploe es la capa de tejido esponjoso situada entre la tabla externa e interna de los huesos planos del cráneo. Contiene vasos sanguíneos y médula ósea roja.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }, { materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Cómo se denominan las articulaciones fibrosas inmóviles que unen los huesos del cráneo entre sí?',
@@ -304,8 +274,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Las suturas son articulaciones fibrosas (sinartrosis) que unen los huesos del cráneo. Son inmóviles en el adulto y permiten el crecimiento del cráneo durante la infancia.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }, { materiaId: 'mat-anat1', unidad: 5 }],
 },
 {
   texto: '¿Qué sutura une el hueso frontal con los dos huesos parietales?',
@@ -313,8 +282,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'La sutura coronal (o frontoparietal) une el hueso frontal con los dos parietales. Transcurre en plano frontal. La sutura sagital une los dos parietales entre sí.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }, { materiaId: 'mat-anat1', unidad: 5 }],
 },
 {
   texto: '¿Qué sutura une los dos huesos parietales entre sí en la línea media?',
@@ -322,8 +290,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La sutura sagital une ambos parietales en la línea media del cráneo. Junto con la sutura coronal y la lambdoidea delimita la fontanela anterior (bregma) en el recién nacido.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }, { materiaId: 'mat-anat1', unidad: 5 }],
 },
 {
   texto: '¿Cuál es el punto de unión de las suturas coronal, sagital y la fontanela anterior?',
@@ -331,8 +298,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El bregma es el punto craneométrico donde convergen la sutura coronal y la sutura sagital. Corresponde al sitio de la fontanela anterior (bregmática) en el recién nacido.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }, { materiaId: 'mat-anat1', unidad: 5 }],
 },
 {
   texto: '¿Qué hueso forma la parte posterior y la base del cráneo, articulándose con la primera vértebra cervical?',
@@ -340,8 +306,7 @@ const preguntas: {
   correct: 3,
   explicacion: 'El occipital forma la parte posterior e inferior del cráneo. Presenta el foramen magno (por donde pasa el tronco encefálico) y los cóndilos occipitales que se articulan con el atlas (C1).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }, { materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Cómo se denomina el gran orificio del hueso occipital por donde pasa el tronco encefálico?',
@@ -349,8 +314,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El foramen magno (agujero occipital) es la apertura más grande del cráneo, ubicada en el hueso occipital. Por él pasan el tronco encefálico, las arterias vertebrales y las raíces del nervio accesorio (XI).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }, { materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: 'El hueso esfenoides se articula con todos los huesos del cráneo.',
@@ -358,8 +322,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El esfenoides se articula con todos los huesos del cráneo, motivo por el cual se lo describe como la "llave de la bóveda craneal". Ocupa la parte central de la base del cráneo.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }, { materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Qué estructura del esfenoides contiene la hipófisis (glándula pituitaria)?',
@@ -367,8 +330,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La silla turca (fosa hipofisaria) es una depresión en la cara superior del cuerpo del esfenoides donde se aloja la hipófisis. Está rodeada por el diafragma de la silla.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }, { materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Qué hueso contiene el laberinto óseo del oído interno?',
@@ -376,8 +338,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El hueso temporal contiene en su porción petrosa el laberinto óseo del oído interno (cóclea y canales semicirculares), así como el conducto auditivo interno por donde pasa el nervio vestibulococlear (VIII).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }, { materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Cuántos huesos forman el viscerocráneo (esqueleto de la cara)?',
@@ -385,8 +346,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El viscerocráneo está formado por 14 huesos: 6 pares (maxilar, palatino, cigomático, nasal, lagrimal y cornete nasal inferior) y 2 impares (vómer y mandíbula).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }, { materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Cuál es el hueso más largo y resistente de la cara?',
@@ -394,8 +354,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'La mandíbula es el hueso más largo y el más resistente de la cara. Es el único hueso móvil del cráneo y forma el esqueleto de la parte inferior de la cara.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }, { materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Qué hueso forma el tabique nasal óseo en su parte inferior?',
@@ -403,8 +362,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El vómer es un hueso impar y mediano que forma la parte posteroinferior del tabique nasal óseo. La parte superior del tabique está formada por la lámina perpendicular del etmoides.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }, { materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: 'El hueso etmoides participa en la formación del suelo de la cavidad orbitaria.',
@@ -412,8 +370,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El etmoides forma la PARED MEDIAL de la órbita (lámina orbitaria o lámina papirácea), no el suelo. El suelo de la órbita está formado principalmente por el maxilar y el cigomático.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }, { materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Qué nombre recibe el punto más anterior de la sutura entre los huesos nasales y el frontal?',
@@ -421,8 +378,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nasion es el punto craneométrico ubicado en la unión de los dos huesos nasales con el frontal, en la raíz de la nariz. Es un punto de referencia para mediciones craneales y radiológicas.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }, { materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Por qué orificio del hueso temporal emerge el nervio facial (VII par)?',
@@ -430,8 +386,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio facial (VII) emerge del cráneo por el foramen estilomastoideo, ubicado entre las apófisis estiloides y mastoides del temporal.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Qué nombre recibe la zona delgada del cráneo donde se articulan el frontal, el parietal, el temporal y el esfenoides?',
@@ -439,8 +394,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El pterion es el punto de unión entre el frontal, el parietal, el temporal y el ala mayor del esfenoides. Es la zona más delgada del cráneo y corresponde a la arteria meníngea media, por lo que las fracturas aquí pueden causar hematoma epidural.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }, { materiaId: 'mat-anat1', unidad: 5 }],
 },
 {
   texto: '¿Cuántos senos paranasales comunican con la cavidad nasal?',
@@ -448,8 +402,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Existen 4 pares de senos paranasales (8 en total): frontales, maxilares, etmoidales y esfenoidales. Todos comunican con la cavidad nasal y están tapizados por mucosa respiratoria.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Cuál es el seno paranasal de mayor tamaño?',
@@ -457,8 +410,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El seno maxilar (antro de Highmore) es el seno paranasal de mayor tamaño. Se aloja en el cuerpo del maxilar y su ostium de drenaje se abre en el meato nasal medio.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: 'El hueso hioides es el único hueso del cuerpo que no se articula con ningún otro hueso.',
@@ -466,8 +418,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El hueso hioides es el único hueso del organismo que no forma articulación con ningún otro hueso. Se mantiene en posición suspendido por músculos y ligamentos, entre el suelo de la boca y la laringe.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }, { materiaId: 'mat-anat1', unidad: 4 }],
 },
 {
   texto: '¿Qué estructura del cráneo está presente en el recién nacido y cierra entre los 18 y 24 meses de vida?',
@@ -475,8 +426,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La fontanela anterior (bregmática) es la más grande y la última en cerrarse, entre los 18 y 24 meses. Permite el crecimiento del encéfalo y es punto de referencia clínico para evaluar la presión intracraneal en lactantes.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 4 }, { materiaId: 'mat-anat1', unidad: 5 }],
 },
 // ── mat-anat1 · Unidad 3 · Miembro superior ──
 
@@ -491,8 +441,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La cintura escapular está formada por la clavícula y la escápula a cada lado. Conecta el miembro superior al tronco y brinda una amplia libertad de movimiento al hombro.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: '¿Cuál es el único punto de unión ósea entre el miembro superior y el esqueleto axial?',
@@ -505,8 +454,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'La articulación esternoclavicular es la única articulación sinovial verdadera que une el miembro superior al esqueleto axial (esternón). Posee un disco articular intraarticular.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: '¿Qué nombre recibe la cavidad articular de la escápula que se articula con la cabeza del húmero?',
@@ -514,8 +462,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La cavidad glenoidea (glenoide) es la superficie articular de la escápula que recibe la cabeza del húmero para formar la articulación glenohumeral (hombro). Es poco profunda, lo que confiere gran movilidad pero menor estabilidad.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: '¿Cuál es el proceso óseo de la escápula que se proyecta hacia adelante y sirve de inserción al pectoral menor?',
@@ -523,8 +470,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El proceso coracoides es una proyección anterior de la escápula. En él se insertan el pectoral menor, la cabeza corta del bíceps braquial y el coracobraquial.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: 'El acromion es una prolongación de la espina de la escápula.',
@@ -532,8 +478,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El acromion es la expansión lateral y anterior de la espina de la escápula. Se articula con el extremo acromial de la clavícula formando la articulación acromioclavicular.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: '¿Cuál es el hueso del brazo?',
@@ -541,8 +486,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El húmero es el único hueso del brazo (segmento entre el hombro y el codo). Es un hueso largo con una cabeza esférica en la extremidad superior que se articula con la glenoide.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: '¿Qué estructura del húmero pasa el nervio radial?',
@@ -555,8 +499,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio radial transcurre por el surco del nervio radial (canal de torsión o surco espiral), ubicado en la cara posterolateral del cuerpo del húmero. Las fracturas del tercio medio humeral pueden lesionarlo.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: '¿Cuál es el nombre de la tuberosidad del húmero donde se inserta el músculo deltoides?',
@@ -564,8 +507,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La tuberosidad deltoidea (V deltoidea) es una rugosidad en la cara anterolateral del cuerpo del húmero donde se inserta el músculo deltoides. Se localiza en la unión del tercio superior con los dos tercios inferiores.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: '¿Qué huesos forman el antebrazo?',
@@ -578,8 +520,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El antebrazo está formado por el radio (lateral, del lado del pulgar) y el cúbito (medial, del lado del meñique). Ambos se articulan entre sí en las articulaciones radioulnares proximal y distal.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: '¿Cómo se denomina la prominencia ósea posterior del cúbito que forma el punto del codo?',
@@ -587,8 +528,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El olécranon es la prominencia posterior de la extremidad superior del cúbito, palpable como el punto del codo. En él se inserta el tendón del tríceps braquial.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: 'La articulación del codo es una articulación de tipo bisagra (gínglimo) que solo permite flexión y extensión.',
@@ -596,8 +536,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'La articulación humeroulnar del codo es un gínglimo (bisagra) que permite flexión y extensión. La articulación humeroradial añade movimientos de prono-supinación junto con la radioulnar proximal.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: '¿Cuántos huesos forman el carpo (muñeca)?',
@@ -605,8 +544,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El carpo está formado por 8 huesos dispuestos en dos hileras. Hilera proximal: escafoides, semilunar, piramidal y pisiforme. Hilera distal: trapecio, trapezoide, grande y ganchoso.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: '¿Cuál es el hueso del carpo más frecuentemente fracturado?',
@@ -614,8 +552,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El escafoides es el hueso del carpo más frecuentemente fracturado, generalmente por caída sobre la mano extendida. Su vascularización precaria (de distal a proximal) predispone a la necrosis avascular del polo proximal.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: '¿Cuántos huesos metacarpianos tiene la mano?',
@@ -623,8 +560,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La mano tiene 5 huesos metacarpianos (I al V), uno por cada dedo. Cada metacarpiano tiene una base proximal, un cuerpo y una cabeza distal que se articula con la primera falange.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: '¿Cuántas falanges tiene el pulgar?',
@@ -632,8 +568,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El pulgar (primer dedo) tiene solo 2 falanges: proximal y distal. Los demás dedos tienen 3 falanges: proximal, media y distal.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: '¿Qué tipo de articulación es la glenohumeral?',
@@ -641,8 +576,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La articulación glenohumeral es una enartrosis (articulación esférica o de bola y cavidad), lo que le confiere el mayor rango de movimiento del organismo: flexión, extensión, abducción, aducción, rotación y circunducción.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: '¿Qué músculo es el principal abductor del hombro?',
@@ -650,8 +584,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El deltoides es el principal abductor del hombro. El supraespinoso inicia la abducción (0-15°) y el deltoides completa el movimiento hasta los 90°. Por encima de los 90° interviene la escapula (músculo trapecio y serrato anterior).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: '¿Cuáles son los cuatro músculos que forman el manguito rotador del hombro?',
@@ -664,8 +597,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El manguito rotador está formado por cuatro músculos: supraespinoso (abducción), infraespinoso y redondo menor (rotación externa), y subescapular (rotación interna). Estabilizan la cabeza del húmero en la glenoide.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: '¿Cuál es la función principal del músculo bíceps braquial?',
@@ -678,8 +610,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El bíceps braquial es el principal flexor del codo y supinador del antebrazo. Tiene dos cabezas de origen: la cabeza larga (tubérculo supraglenoideo) y la cabeza corta (proceso coracoides).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: 'El músculo tríceps braquial es el único extensor del codo.',
@@ -687,8 +618,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El tríceps braquial (con sus tres cabezas: larga, lateral y medial) es el único músculo extensor del codo. Se inserta en el olécranon a través de un tendón común.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: '¿Qué músculo es el principal flexor de los dedos a nivel de las articulaciones interfalángicas proximales?',
@@ -701,8 +631,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El flexor superficial de los dedos (flexor digitorum superficialis) flexiona las articulaciones interfalángicas proximales (IFP). El flexor profundo flexiona las distales (IFD).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: '¿Por dónde pasa el nervio mediano en la muñeca, cuya compresión produce el síndrome del túnel carpiano?',
@@ -715,8 +644,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio mediano pasa por el túnel carpiano, por debajo del retináculo de los flexores. Su compresión en este canal produce el síndrome del túnel carpiano, con parestesias en los dedos I, II, III y mitad radial del IV.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: '¿Qué movimiento produce el músculo pronador redondo?',
@@ -724,8 +652,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El pronador redondo produce la pronación del antebrazo (rotación que coloca la palma hacia abajo). Junto con el pronador cuadrado, son los dos pronadores del antebrazo.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: 'La "tabaquera anatómica" está delimitada lateralmente por los tendones del extensor largo del pulgar y medialmente por los tendones del abductor largo y extensor corto del pulgar.',
@@ -733,8 +660,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'La tabaquera anatómica está delimitada medialmente por el extensor largo del pulgar y lateralmente por el abductor largo y el extensor corto del pulgar. En su fondo es palpable el escafoides y pasa la arteria radial.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 {
   texto: '¿Cuál es el hueso más lateral del antebrazo en posición anatómica?',
@@ -742,8 +668,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'En posición anatómica (palma hacia adelante), el radio es el hueso más lateral del antebrazo (lado del pulgar) y el cúbito el más medial (lado del meñique).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 7 }],
 },
 // ── mat-anat1 · Unidad 4 · Miembro inferior ──
 
@@ -758,8 +683,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La cintura pélvica está formada por los dos huesos coxales (ilion + isquion + pubis fusionados) y el sacro. Juntos conforman la pelvis ósea que conecta el miembro inferior al esqueleto axial.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: '¿Cuántos huesos se fusionan para formar el hueso coxal en el adulto?',
@@ -767,8 +691,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El hueso coxal resulta de la fusión de tres huesos: ilion (porción superior), isquion (porción posteroinferior) y pubis (porción anteroinferior). La fusión se completa alrededor de los 16-17 años en el acetábulo.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: '¿Cómo se denomina la cavidad articular del hueso coxal que recibe la cabeza del fémur?',
@@ -776,8 +699,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El acetábulo es la cavidad hemisférica del hueso coxal donde se articula la cabeza del fémur para formar la articulación coxofemoral (cadera). Es más profundo que la glenoide del hombro, otorgando mayor estabilidad.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: '¿Cuál es el hueso más largo del cuerpo humano?',
@@ -785,8 +707,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El fémur es el hueso más largo, más pesado y más resistente del cuerpo humano. Forma el esqueleto del muslo y constituye aproximadamente el 26% de la talla corporal.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: '¿Qué nombre reciben las prominencias óseas del extremo proximal del fémur donde se insertan músculos glúteos?',
@@ -794,8 +715,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Los trocánteres son las prominencias del extremo proximal del fémur: el trocánter mayor (lateral, inserción del glúteo medio y menor) y el trocánter menor (medial, inserción del iliopsoas).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: 'La articulación de la cadera (coxofemoral) es una enartrosis, al igual que la articulación glenohumeral.',
@@ -803,8 +723,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'La articulación coxofemoral es una enartrosis (articulación esférica) que permite movimientos en los tres planos: flexión/extensión, abducción/aducción, rotación y circunducción. Es más estable que el hombro por la mayor profundidad del acetábulo.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: '¿Qué ligamento intracapsular de la cadera conecta la cabeza del fémur con el acetábulo?',
@@ -817,8 +736,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El ligamento de la cabeza del fémur (ligamento redondo o teres) es el único ligamento intracapsular de la cadera. Transporta la arteria del ligamento redondo, rama de la obturatriz, que irriga parte de la cabeza femoral.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: '¿Cuáles son los huesos de la pierna?',
@@ -831,8 +749,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La pierna (segmento entre rodilla y tobillo) está formada por la tibia (medial, hueso principal de carga) y el peroné o fíbula (lateral, más delgado). La tibia se articula con el fémur; el peroné no participa en la rodilla.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: '¿Qué hueso sesamoideo protege la cara anterior de la articulación de la rodilla?',
@@ -840,8 +757,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La rótula (patela) es el mayor hueso sesamoideo del organismo. Se encuentra embebida en el tendón del cuádriceps femoral y protege la cara anterior de la rodilla, aumentando además la palanca mecánica del cuádriceps.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: '¿Cuáles son los dos ligamentos cruzados de la rodilla y qué movimiento limita cada uno?',
@@ -854,8 +770,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El ligamento cruzado anterior (LCA) limita la traslación anterior de la tibia respecto al fémur. El ligamento cruzado posterior (LCP) limita la traslación posterior. Ambos se cruzan en el interior de la articulación.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: '¿Qué estructuras fibrocartilaginosas actúan como amortiguadores dentro de la articulación de la rodilla?',
@@ -863,8 +778,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Los meniscos medial (en C) y lateral (en O) son estructuras fibrocartilaginosas que profundizan la cavidad articular, distribuyen cargas, absorben impactos y contribuyen a la estabilidad de la rodilla.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: 'La articulación de la rodilla es exclusivamente una articulación de bisagra (gínglimo) sin ningún movimiento rotatorio.',
@@ -872,8 +786,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La rodilla es principalmente una tróclea (bisagra modificada) que permite flexión y extensión, pero también permite una pequeña rotación axial de la tibia sobre el fémur con la rodilla en flexión.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: '¿Cuántos huesos forman el tarso?',
@@ -881,8 +794,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El tarso está formado por 7 huesos: astrágalo (talus), calcáneo, navicular (escafoides), cuboides, y tres cuneiformes (medial, intermedio y lateral).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: '¿Cuál es el hueso más grande del tarso y del pie?',
@@ -890,8 +802,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El calcáneo es el hueso más voluminoso del tarso y del pie. Forma el talón y en él se inserta el tendón calcáneo (de Aquiles), el más grueso y resistente del organismo.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: '¿Cuál es el hueso del tarso que se articula con la tibia y el peroné formando la articulación del tobillo?',
@@ -899,8 +810,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El astrágalo (talus) es el único hueso del tarso que se articula con la tibia y el peroné formando la mortaja del tobillo (articulación talocrural). Permite la dorsiflexión y la flexión plantar del pie.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: '¿Cuántos huesos metatarsianos tiene el pie?',
@@ -908,8 +818,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El pie tiene 5 huesos metatarsianos (I al V). El primer metatarsiano es el más corto y grueso; el segundo es el más largo. La base del V metatarsiano presenta una tuberosidad donde se inserta el peroneo corto.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: '¿Cuál es el músculo más potente del cuerpo humano en relación a su sección transversal?',
@@ -917,8 +826,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El cuádriceps femoral (recto femoral + vasto lateral + vasto medial + vasto intermedio) es el músculo más potente del cuerpo. Su función principal es la extensión de la rodilla y es esencial para la marcha y la carrera.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: '¿Cuál es la función del músculo glúteo mayor?',
@@ -931,8 +839,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El glúteo mayor es el principal extensor y rotador externo de la cadera. Es el músculo más voluminoso del cuerpo y fundamental para incorporarse desde la posición sentada, subir escaleras y correr.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: '¿Cuál es el músculo abductor más importante de la cadera?',
@@ -940,8 +847,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El glúteo medio es el principal abductor de la cadera. Durante la marcha evita que la pelvis caiga hacia el lado contrario (signo de Trendelenburg negativo). Su parálisis produce marcha claudicante.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: 'El tendón de Aquiles es el tendón del músculo sóleo exclusivamente.',
@@ -949,8 +855,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El tendón calcáneo (de Aquiles) es el tendón COMÚN del tríceps sural, formado por el gastrocnemio (dos cabezas) y el sóleo. Es el tendón más grueso y resistente del organismo y se inserta en la tuberosidad del calcáneo.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: '¿Cuál es la función principal del músculo iliopsoas?',
@@ -963,8 +868,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El iliopsoas (ilíaco + psoas mayor) es el principal flexor de la cadera. Se inserta en el trocánter menor del fémur y también puede flexionar el tronco sobre la pelvis cuando el miembro inferior está fijo.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: '¿Por qué agujero emergen los nervios del plexo sacro que forman el nervio ciático?',
@@ -977,8 +881,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio ciático emerge de la pelvis a través de la escotadura ciática mayor (foramen isquiático mayor), por debajo del músculo piriforme, pasando hacia la región glútea y luego al muslo.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: '¿Cuál es el nervio más largo y grueso del cuerpo humano?',
@@ -986,8 +889,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El nervio ciático (isquiático) es el nervio más largo y grueso del organismo. Formado por L4-S3, inerva todos los músculos del muslo posterior y toda la pierna y el pie, dividiéndose en tibial y peroneo común a nivel de la fosa poplítea.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: '¿Qué músculo del compartimento posterior de la pierna es el principal flexor plantar del pie?',
@@ -995,8 +897,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El tríceps sural (gastrocnemio + sóleo) es el principal flexor plantar del pie. Actúa en la propulsión durante la marcha y en actividades como correr o saltar, ejerciendo fuerza a través del tendón de Aquiles sobre el calcáneo.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 {
   texto: '¿Qué estructura ósea del fémur distal se articula con los cóndilos tibiales en la rodilla?',
@@ -1009,8 +910,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Los cóndilos femorales medial y lateral se articulan con los platillos tibiales correspondientes formando la articulación femorotibial de la rodilla. Entre ambos cóndilos se encuentra la fosa intercondílea, donde se insertan los ligamentos cruzados.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat1',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 8 }],
 },
 // ── mat-anat2 · Unidad 1 · Médula espinal y tronco encefálico ──
 
@@ -1020,8 +920,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'En el adulto la médula espinal termina en el cono medular, a nivel de L1-L2. Por debajo de este nivel el conducto vertebral contiene las raíces de los nervios lumbosacros, formando la cola de caballo (cauda equina).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Cómo se denomina el conjunto de raíces nerviosas que descienden por el conducto vertebral por debajo del cono medular?',
@@ -1029,8 +928,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La cola de caballo (cauda equina) es el conjunto de raíces lumbares, sacras y coccígeas que descienden verticalmente en el conducto vertebral desde el cono medular hasta sus respectivos forámenes intervertebrales.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Cuántos pares de nervios espinales emergen de la médula espinal?',
@@ -1038,8 +936,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'De la médula espinal emergen 31 pares de nervios espinales: 8 cervicales, 12 torácicos, 5 lumbares, 5 sacros y 1 coccígeo.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Qué nombre reciben las tres membranas que envuelven la médula espinal y el encéfalo?',
@@ -1052,8 +949,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Las meninges son tres membranas concéntricas que protegen el SNC: duramadre (externa, más resistente), aracnoides (media, avascular) y piamadre (interna, vascularizada, adherida al tejido nervioso).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: 'El líquido cerebroespinal (LCR) circula en el espacio subdural, entre la duramadre y la aracnoides.',
@@ -1061,8 +957,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El LCR circula en el espacio SUBARACNOIDEO, entre la aracnoides y la piamadre. El espacio subdural (entre duramadre y aracnoides) es un espacio virtual que solo se abre en condiciones patológicas.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Qué nombre recibe la sustancia gris de la médula espinal vista en un corte transversal?',
@@ -1070,8 +965,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'En un corte transversal, la sustancia gris medular tiene forma de H o de mariposa. Se divide en astas anteriores (motoras), astas posteriores (sensitivas) y astas laterales (autonómicas en la región torácica y sacra).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Qué tipo de neuronas se ubican en el asta anterior de la médula espinal?',
@@ -1084,8 +978,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El asta anterior contiene las motoneuronas alfa y gamma (neuronas motoras inferiores) cuyos axones forman las raíces anteriores de los nervios espinales e inervan la musculatura esquelética voluntaria.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Por qué foramen ingresa el nervio espinal C1 al canal vertebral?',
@@ -1098,8 +991,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio C1 (nervio suboccipital) emerge entre el hueso occipital y el atlas (C1), por encima del arco posterior del atlas. Es principalmente motor e inerva músculos suboccipitales.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Cuáles son las tres partes del tronco encefálico de superior a inferior?',
@@ -1112,8 +1004,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El tronco encefálico está formado, de superior a inferior, por: mesencéfalo, protuberancia (puente o pons) y bulbo raquídeo (médula oblongada). Se continúa hacia abajo con la médula espinal.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿En qué parte del tronco encefálico se origina el nervio facial (VII par)?',
@@ -1121,8 +1012,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio facial (VII par craneal) emerge de la protuberancia, en el surco bulboprotuberancial, junto al nervio vestibulococlear (VIII). Su núcleo motor está en el tegmento protuberancial.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: 'Los colículos (tubérculos cuadrigéminos) superiores e inferiores son estructuras del mesencéfalo.',
@@ -1130,8 +1020,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'Los cuatro colículos (superiores e inferiores) se ubican en la cara posterior del mesencéfalo (techo o tectum). Los superiores participan en reflejos visuales y los inferiores en reflejos auditivos.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Qué estructura del mesencéfalo contiene la sustancia negra (nigra) y los núcleos rojos?',
@@ -1139,8 +1028,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El tegmento del mesencéfalo contiene la sustancia negra (involucrada en el control motor y cuya degeneración causa Parkinson) y los núcleos rojos (coordinación del movimiento).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Qué nervio craneal emerge del mesencéfalo por su cara anterior?',
@@ -1148,8 +1036,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio oculomotor (III par) emerge por la cara anterior del mesencéfalo, en la fosa interpeduncular. El nervio troclear (IV) es el único par craneal que emerge por la cara POSTERIOR del tronco encefálico.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Cuál es el único par craneal que emerge por la cara dorsal (posterior) del tronco encefálico?',
@@ -1157,8 +1044,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio troclear (IV par) es el único nervio craneal que emerge por la cara posterior del tronco encefálico, inmediatamente por debajo de los colículos inferiores del mesencéfalo. También es el más delgado de los pares craneales.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Qué nombre recibe la estructura de la protuberancia visible en su cara anterior como una prominencia transversal?',
@@ -1166,8 +1052,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'La base del puente (o pars basilaris pontis) es la prominencia transversal visible en la cara anterior de la protuberancia. Contiene fibras transversas que conectan ambos hemisferios cerebelosos a través de los pedúnculos cerebelosos medios.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Qué centros vitales se encuentran en el bulbo raquídeo?',
@@ -1180,8 +1065,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El bulbo raquídeo contiene los centros vitales: centro respiratorio (controla la frecuencia y profundidad respiratoria), centro cardiovascular (regula frecuencia cardíaca y presión arterial) y centro del vómito, entre otros.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Cómo se denominan las prominencias en la cara anterior del bulbo que contienen los tractos corticoespinales?',
@@ -1189,8 +1073,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Las pirámides son dos relieves longitudinales en la cara anterior del bulbo que contienen las fibras del tracto corticoespinal (fascículo piramidal). El cruzamiento de estas fibras (decusación piramidal) ocurre en el límite bulbomedular.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Qué nombre recibe el entrecruzamiento de las fibras corticoespinales en el bulbo raquídeo?',
@@ -1203,8 +1086,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La decusación piramidal es el cruzamiento de las fibras del tracto corticoespinal lateral en la unión bulboespinal. Explica por qué las lesiones del SNC por encima de la decusación producen déficit motor contralateral.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: 'La decusación piramidal explica por qué una lesión en el hemisferio cerebral izquierdo produce parálisis en el lado derecho del cuerpo.',
@@ -1212,8 +1094,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'Correcto. Las fibras corticoespinales cruzan la línea media en la decusación piramidal (bulbo). Por eso una lesión en el hemisferio izquierdo (por encima de la decusación) produce hemiplejía o hemiparesia derecha.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Qué vías sensitivas decusan (cruzan) en la médula espinal, a nivel del segmento de entrada?',
@@ -1226,8 +1107,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Las vías del dolor y la temperatura (tracto espinotalámico lateral) cruzan en la médula espinal, en la comisura anterior, pocos segmentos por encima del nivel de entrada. Las vías propioceptivas y de tacto fino cruzan en el bulbo (decusación de los lemniscos).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Dónde se produce el líquido cerebroespinal (LCR)?',
@@ -1240,8 +1120,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El LCR es producido principalmente por los plexos coroideos ubicados en los ventrículos cerebrales (especialmente los ventrículos laterales). Se producen aproximadamente 500 ml por día, aunque el volumen total circulante es de 120-150 ml.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿A qué nivel se realiza la punción lumbar para extraer LCR de forma segura en el adulto?',
@@ -1249,8 +1128,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La punción lumbar se realiza entre L3-L4 o L4-L5, por debajo del cono medular (que termina en L1-L2), para evitar lesionar la médula. En ese nivel solo hay raíces de la cola de caballo que se desplazan sin lesionarse.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Qué tracto descendente es responsable del control voluntario de la musculatura esquelética?',
@@ -1263,8 +1141,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El tracto corticoespinal (vía piramidal) es el principal tracto motor descendente para el control voluntario de la musculatura esquelética. Se origina en la corteza motora y termina en las motoneuronas del asta anterior medular.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Cuáles son los dos engrosamientos (intumescencias) de la médula espinal?',
@@ -1277,8 +1154,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La médula espinal presenta dos engrosamientos donde hay mayor cantidad de neuronas motoras: la intumescencia cervical (C4-T1), que da origen al plexo braquial para el miembro superior, y la intumescencia lumbosacra (L2-S3), para el plexo lumbosacro del miembro inferior.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: 'El acueducto cerebral (de Silvio) comunica el tercer ventrículo con el cuarto ventrículo.',
@@ -1286,8 +1162,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El acueducto cerebral (acueducto de Silvio o mesencefálico) es un conducto estrecho que atraviesa el mesencéfalo y comunica el tercer ventrículo con el cuarto ventrículo. Su obstrucción produce hidrocefalia obstructiva.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat2',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 // ── mat-anat2 · Unidad 2 · Cerebro y cerebelo ──
 
@@ -1302,8 +1177,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El cerebro se divide en hemisferio derecho e izquierdo, separados por la fisura longitudinal (interhemisférica). Están unidos por el cuerpo calloso, la principal comisura interhemisférica.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Cómo se denomina la estructura de sustancia blanca que une los dos hemisferios cerebrales?',
@@ -1311,8 +1185,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El cuerpo calloso es la mayor comisura interhemisférica del encéfalo. Formado por fibras de sustancia blanca, une simétricamente las áreas corticales de ambos hemisferios y permite la comunicación entre ellos.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Cuántos lóbulos tiene cada hemisferio cerebral?',
@@ -1320,8 +1193,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Cada hemisferio cerebral tiene 5 lóbulos: frontal, parietal, temporal, occipital e ínsula (lóbulo central o de Reil), aunque algunos textos mencionan solo 4 lóbulos excluyendo la ínsula por estar oculta en la cisura de Silvio.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Qué cisura (surco) separa el lóbulo frontal del lóbulo parietal?',
@@ -1334,8 +1206,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La cisura de Rolando (surco central) separa el lóbulo frontal del lóbulo parietal. Por delante de ella se ubica la circunvolución precentral (corteza motora primaria) y por detrás la circunvolución poscentral (corteza somatosensitiva primaria).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Qué cisura separa el lóbulo temporal del lóbulo frontal y del lóbulo parietal?',
@@ -1348,8 +1219,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'La cisura de Silvio (surco lateral) separa el lóbulo temporal por abajo de los lóbulos frontal y parietal por arriba. En su profundidad se encuentra la ínsula (lóbulo de la ínsula).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Dónde se localiza la corteza motora primaria (área 4 de Brodmann)?',
@@ -1362,8 +1232,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La corteza motora primaria (área 4 de Brodmann) se localiza en la circunvolución precentral del lóbulo frontal, por delante de la cisura de Rolando. Es el origen principal del tracto corticoespinal y controla los movimientos voluntarios.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: 'La corteza somatosensitiva primaria se localiza en la circunvolución precentral del lóbulo frontal.',
@@ -1371,8 +1240,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La corteza somatosensitiva primaria (áreas 3, 1 y 2 de Brodmann) se localiza en la circunvolución POScentral del lóbulo PARIETAL, inmediatamente por detrás de la cisura de Rolando.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿En qué lóbulo y área se encuentra la corteza visual primaria?',
@@ -1385,8 +1253,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La corteza visual primaria (área 17 de Brodmann) se localiza en el lóbulo occipital, a ambos lados del surco calcarino. Recibe la información visual procedente del tálamo (cuerpo geniculado lateral).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿En qué lóbulo se localiza la corteza auditiva primaria?',
@@ -1394,8 +1261,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'La corteza auditiva primaria (áreas 41 y 42 de Brodmann) se localiza en el lóbulo temporal, en las circunvoluciones temporales transversas de Heschl, dentro de la cisura de Silvio.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Cómo se denomina el área del lenguaje expresivo (motor del habla) y en qué hemisferio suele localizarse?',
@@ -1408,8 +1274,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El área de Broca (áreas 44 y 45 de Brodmann) es el centro del lenguaje expresivo, ubicado en el opérculo frontal del hemisferio izquierdo en el 95% de los diestros. Su lesión produce afasia de Broca (no fluente).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Qué estructura del diencéfalo actúa como principal estación de relevo de las vías sensitivas hacia la corteza?',
@@ -1417,8 +1282,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El tálamo es la principal estación de relevo sensitivo del diencéfalo. Procesa y distribuye casi toda la información sensitiva (excepto el olfato) hacia las áreas corticales correspondientes.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Qué estructura del diencéfalo regula la temperatura corporal, el hambre, la sed y el sistema nervioso autónomo?',
@@ -1426,8 +1290,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El hipotálamo regula funciones vitales: temperatura corporal, hambre, sed, ciclos de sueño-vigilia, comportamiento sexual y control del sistema nervioso autónomo. También controla la hipófisis a través del eje hipotálamo-hipofisario.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: 'La glándula pineal (epífisis) es una estructura del diencéfalo.',
@@ -1435,8 +1298,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'La glándula pineal (epífisis cerebri) forma parte del epitálamo, una subdivisión del diencéfalo. Produce melatonina y participa en la regulación de los ritmos circadianos.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Qué nombre reciben los núcleos basales (ganglios de la base) y cuál es su función principal?',
@@ -1449,8 +1311,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Los núcleos basales incluyen principalmente el núcleo caudado, el putamen y el globo pálido (más el núcleo subtalámico y la sustancia negra). Modulan el inicio, la fluidez y la coordinación del movimiento voluntario. Su disfunción causa Parkinson y Huntington.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Cómo se denomina el sistema encefálico relacionado con las emociones, la memoria y el comportamiento?',
@@ -1463,8 +1324,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El sistema límbico incluye estructuras como la amígdala, el hipocampo, el giro del cíngulo y los cuerpos mamilares. Interviene en las emociones, la memoria a largo plazo, el aprendizaje y las conductas instintivas.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Qué estructura del sistema límbico es fundamental para la consolidación de la memoria declarativa?',
@@ -1472,8 +1332,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El hipocampo (parte del lóbulo temporal medial) es esencial para la consolidación de la memoria declarativa (episódica y semántica), es decir, la transferencia de la memoria a corto plazo a la memoria a largo plazo.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Dónde se localiza el cerebelo?',
@@ -1486,8 +1345,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El cerebelo se ubica en la fosa craneal posterior (fosa cerebelosa), por detrás del tronco encefálico y por debajo del lóbulo occipital. Está separado del cerebro por la tienda del cerebelo (tentorio).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Cuáles son las tres partes principales del cerebelo?',
@@ -1500,8 +1358,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'Anatómicamente el cerebelo se divide en: dos hemisferios cerebelosos laterales, el vermis (porción medial que los une) y los pedúnculos cerebelosos (superior, medio e inferior) que lo conectan con el tronco encefálico.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Cuál es la función principal del cerebelo?',
@@ -1514,8 +1371,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El cerebelo coordina el movimiento, mantiene el equilibrio y el tono muscular, y ajusta la postura. No inicia movimientos sino que los refina. Su lesión produce ataxia, dismetría, disdiadococinesia y temblor de intención.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: 'Las lesiones cerebelosas producen déficits motores en el lado contralateral al daño.',
@@ -1523,8 +1379,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Las lesiones cerebelosas producen déficits IPSILATERALES (del mismo lado del daño). Esto se debe a que las fibras cerebelosas cruzan dos veces antes de llegar a la corteza, resultando en un efecto homolateral.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Cómo se conecta el cerebelo con el resto del SNC?',
@@ -1537,8 +1392,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El cerebelo se conecta con el tronco encefálico mediante tres pares de pedúnculos cerebelosos: superiores (unen con mesencéfalo), medios (con protuberancia, los más gruesos) e inferiores (con bulbo).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Qué nombre recibe la corteza del cerebelo y cuáles son sus tres capas?',
@@ -1551,8 +1405,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La corteza cerebelosa tiene tres capas: molecular (externa, con pocas células), de células de Purkinje (media, con neuronas grandes cuyo axón es la única salida de la corteza cerebelosa) y granular (interna, con células granulosas).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Cuáles son los ventrículos cerebrales y cómo se comunican entre sí?',
@@ -1565,8 +1418,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El sistema ventricular tiene: dos ventrículos laterales (en los hemisferios cerebrales), el tercer ventrículo (en el diencéfalo) y el cuarto ventrículo (en el tronco encefálico). Los laterales se comunican con el tercero por los agujeros de Monro, y el tercero con el cuarto por el acueducto de Silvio.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Qué estructura del telencéfalo contiene la mayor densidad de fibras de sustancia blanca y conecta la corteza con estructuras subcorticales?',
@@ -1574,8 +1426,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La cápsula interna es una densa banda de sustancia blanca entre el tálamo, el núcleo caudado y el lenticular. Contiene fibras corticoespinales, corticobulbares y talamocorticales. Su lesión (por ACV) produce hemiplejía contralateral.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Qué arteria irriga la mayor parte de la cara lateral de los hemisferios cerebrales?',
@@ -1588,8 +1439,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La arteria cerebral media (arteria silviana) irriga la mayor parte de la cara lateral de los hemisferios, incluyendo las áreas motora y sensitiva del miembro superior y de la cara, y las áreas del lenguaje (Broca y Wernicke en el hemisferio dominante). Es la más frecuentemente afectada en los ACV.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 // ── mat-anat2 · Unidad 3 · Nervios craneales ──
 
@@ -1599,8 +1449,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'Existen 13 pares de nervios craneales (incluyendo el nervio terminal o par 0), aunque clásicamente se describen 12 pares (I al XII). Emergen del encéfalo y atraviesan forámenes del cráneo para inervar estructuras de la cabeza, cuello y vísceras toraco-abdominales.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Cuál es el nervio craneal que conduce la información olfatoria?',
@@ -1608,8 +1457,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio olfatorio (I par) conduce la información de los receptores olfatorios ubicados en el epitelio olfatorio de la mucosa nasal superior hasta el bulbo olfatorio. Es un nervio puramente sensitivo sensorial.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Por qué estructura ósea pasan las fibras del nervio olfatorio desde la nariz hasta el encéfalo?',
@@ -1622,8 +1470,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Las fibras del nervio olfatorio atraviesan los pequeños orificios de la lámina cribosa del etmoides para conectar los receptores nasales con el bulbo olfatorio. Los traumatismos de la base del cráneo en esta zona pueden causar anosmia.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Cuál es la función del nervio óptico (II par)?',
@@ -1636,8 +1483,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio óptico (II par) conduce la información visual desde las células ganglionares de la retina hasta el quiasma óptico y luego al cuerpo geniculado lateral del tálamo. Técnicamente es una expansión del SNC, no un nervio periférico.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Dónde se produce la decusación parcial de las fibras del nervio óptico?',
@@ -1645,8 +1491,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'En el quiasma óptico se produce la decusación parcial: las fibras de la mitad nasal de cada retina (que captan el campo visual temporal) cruzan al lado opuesto, mientras que las fibras temporales continúan ipsilateralmente.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: 'El nervio oculomotor (III par) inerva todos los músculos extrínsecos del ojo.',
@@ -1654,8 +1499,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio oculomotor (III) inerva la mayoría de los músculos extrínsecos del ojo (recto superior, inferior, medial y oblicuo inferior), más el elevador del párpado superior. El recto lateral es inervado por el abducens (VI) y el oblicuo superior por el troclear (IV).',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Qué músculo ocular extrínseco inerva el nervio troclear (IV par)?',
@@ -1663,8 +1507,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El nervio troclear (IV par) inerva exclusivamente el músculo oblicuo superior del ojo. Su función es rotar el ojo hacia abajo y adentro. Es el único par craneal que emerge por la cara dorsal del tronco encefálico.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Qué músculo ocular extrínseco inerva el nervio abducens (VI par)?',
@@ -1672,8 +1515,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El nervio abducens (VI par) inerva exclusivamente el músculo recto lateral, cuya función es la abducción del ojo (mirada hacia afuera). Su parálisis produce estrabismo convergente con diplopía horizontal.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Cuál es el nervio craneal más voluminoso y cuáles son sus tres ramas principales?',
@@ -1686,8 +1528,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio trigémino (V par) es el más voluminoso. Se divide en tres ramas: oftálmica (V1, sensitiva), maxilar (V2, sensitiva) y mandibular (V3, mixta: sensitiva y motora para músculos masticadores).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Por cuál foramen craneal sale la rama oftálmica del nervio trigémino?',
@@ -1695,8 +1536,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'La rama oftálmica (V1) del trigémino sale del cráneo por la fisura orbitaria superior. La rama maxilar (V2) por el foramen redondo y la mandibular (V3) por el foramen oval.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Cuáles son las funciones del nervio facial (VII par)?',
@@ -1709,8 +1549,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El nervio facial (VII) es mixto: inerva los músculos de la expresión facial (motor), conduce el gusto de los dos tercios anteriores de la lengua (sensitivo) y lleva fibras parasimpáticas para las glándulas lagrimal, submandibular y sublingual.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: 'La parálisis del nervio facial periférico afecta tanto la parte superior como inferior de la hemicara ipsilateral.',
@@ -1718,8 +1557,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'La parálisis facial periférica (p. ej., parálisis de Bell) afecta toda la hemicara ipsilateral, incluyendo la frente. En cambio, la parálisis central (ACV) respeta la frente porque la corteza motora contralateral también inerva la parte superior de la cara por vías bilaterales.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Qué nervio craneal conduce la información auditiva y vestibular?',
@@ -1732,8 +1570,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El nervio vestibulococlear (VIII par) tiene dos componentes: el nervio coclear (información auditiva desde la cóclea) y el nervio vestibular (información del equilibrio desde el utrículo, sáculo y conductos semicirculares).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Cuáles son las funciones del nervio glosofaríngeo (IX par)?',
@@ -1746,8 +1583,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio glosofaríngeo (IX) es mixto: conduce el gusto y la sensibilidad del tercio posterior de la lengua, la sensibilidad de la faringe y el oído medio, y lleva fibras parasimpáticas (rama timpánica) para la glándula parótida.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Cuál es el nervio craneal con mayor distribución en el organismo y qué funciones cumple?',
@@ -1760,8 +1596,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio vago (X par) es el de mayor distribución. Aporta fibras parasimpáticas a las vísceras torácicas (corazón, pulmones) y abdominales (hasta el ángulo esplénico del colon). También inerva la laringe, la faringe y las cuerdas vocales.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Qué músculo inerva el nervio hipogloso (XII par)?',
@@ -1774,8 +1609,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio hipogloso (XII par) es exclusivamente motor e inerva todos los músculos intrínsecos y extrínsecos de la lengua (excepto el palatogloso, que depende del vago). Su parálisis unilateral provoca desviación de la lengua hacia el lado paralizado.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Qué músculos inerva el nervio accesorio (XI par)?',
@@ -1788,8 +1622,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio accesorio (XI par) inerva el músculo esternocleidomastoideo (rotación e inclinación de la cabeza) y el músculo trapecio (elevación del hombro y retracción escapular). Su lesión produce caída del hombro e incapacidad para girar la cabeza.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: 'El nervio vago (X par) sale del cráneo por el foramen yugular.',
@@ -1797,8 +1630,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El nervio vago (X par) emerge del cráneo por el foramen yugular, junto con el nervio glosofaríngeo (IX) y el nervio accesorio (XI). En el foramen yugular se encuentran los ganglios superior e inferior del vago.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Qué nervio craneal controla el reflejo pupilar de acomodación y miosis ante la luz?',
@@ -1811,8 +1643,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Las fibras parasimpáticas del nervio oculomotor (III), que hacen relevo en el ganglio ciliar, inervan el músculo esfínter de la pupila (miosis) y el músculo ciliar (acomodación). Su compresión produce midriasis fija como signo de herniación uncal.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Cuál de los siguientes nervios craneales lleva fibras parasimpáticas hacia la glándula parótida?',
@@ -1820,8 +1651,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El nervio glosofaríngeo (IX) lleva fibras parasimpáticas preganglionares hacia el ganglio ótico a través del nervio de Jacobson (rama timpánica). Las fibras posganglionares del ganglio ótico inervan la glándula parótida mediante el nervio auriculotemporal.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Qué par craneal aporta sensibilidad a la córnea, cuya ausencia se evalúa con el reflejo corneal?',
@@ -1834,8 +1664,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La rama oftálmica (V1) del nervio trigémino aporta sensibilidad a la córnea a través del nervio nasociliar. El reflejo corneal evalúa V1 como vía aferente y el facial (VII) como vía eferente (cierre del ojo).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Cuál es el nervio craneal más delgado?',
@@ -1843,8 +1672,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El nervio troclear (IV par) es el más delgado de los nervios craneales y el que tiene mayor trayecto intracraneal antes de salir del cráneo. Inerva exclusivamente el músculo oblicuo superior del ojo.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Qué nervios craneales contienen fibras parasimpáticas?',
@@ -1857,8 +1685,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Los nervios craneales con fibras parasimpáticas son: oculomotor (III, ganglio ciliar), facial (VII, ganglios pterigopalatino y submandibular), glosofaríngeo (IX, ganglio ótico) y vago (X, ganglios terminales en vísceras torácicas y abdominales).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Cuál es el recorrido del nervio facial dentro del hueso temporal?',
@@ -1871,8 +1698,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio facial entra al conducto auditivo interno, atraviesa el laberinto óseo por el canal del nervio facial (acueducto de Falopio) haciendo tres rodillas, y emerge del cráneo por el foramen estilomastoideo para inervar los músculos faciales.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: 'La neuralgia del trigémino (tic doloroso) es un dolor intenso unilateral en el territorio del nervio trigémino, generalmente en la rama mandibular o maxilar.',
@@ -1880,8 +1706,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'La neuralgia del trigémino es un dolor paroxístico, intenso, unilateral que sigue el territorio de una o más ramas del V par, más frecuentemente V2 (maxilar) y V3 (mandibular). Es la neuralgia craneal más frecuente en adultos mayores.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat2',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 // ── mat-anat2 · Unidad 4 · Nervios espinales y plexos ──
 
@@ -1896,8 +1721,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Cada nervio espinal se forma por la unión de dos raíces: la raíz anterior (ventral), motora, que contiene axones de las motoneuronas del asta anterior, y la raíz posterior (dorsal), sensitiva, que posee el ganglio espinal con los somas de las neuronas sensitivas.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Cómo se denomina el engrosamiento de la raíz posterior del nervio espinal que contiene los cuerpos celulares de las neuronas sensitivas?',
@@ -1905,8 +1729,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El ganglio espinal (ganglio de la raíz dorsal) es un ensanchamiento de la raíz posterior que contiene los somas de las neuronas sensitivas pseudounipolares de primer orden. Se ubica en el foramen intervertebral.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Qué ramos da cada nervio espinal al salir del foramen intervertebral?',
@@ -1919,8 +1742,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'Al salir del foramen intervertebral cada nervio espinal se divide en ramo anterior (ventral, más voluminoso, forma los plexos e inerva la parte anterior del tronco y los miembros) y ramo posterior (dorsal, inerva músculos y piel de la región posterior del tronco).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Qué raíces nerviosas forman el plexo cervical?',
@@ -1928,8 +1750,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El plexo cervical está formado por los ramos anteriores de C1 a C4. Sus ramas más importantes son el nervio frénico (C3-C4-C5) y ramas cutáneas superficiales (nervio auricular mayor, occipital menor, etc.).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Cuál es el nervio más importante del plexo cervical y qué estructura inerva?',
@@ -1942,8 +1763,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio frénico (C3, C4, C5) es la rama más importante del plexo cervical. Desciende por el mediastino y es el único motor del diafragma. Su lesión produce parálisis hemidiafragmática ipsilateral.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: 'El nervio frénico se origina exclusivamente de la raíz C4.',
@@ -1951,8 +1771,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio frénico se origina de las raíces C3, C4 y C5 (principalmente C4). El aporte de C3 y C5 es variable. La regla nemotécnica es "C3, 4, 5 keeps the diaphragm alive".',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 4 }],
 },
 {
   texto: '¿Qué raíces nerviosas forman el plexo braquial?',
@@ -1960,8 +1779,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El plexo braquial está formado por los ramos anteriores de C5, C6, C7, C8 y T1. Inerva prácticamente todo el miembro superior. Se organiza en raíces, troncos, divisiones, fascículos y ramas terminales.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Cuáles son los tres troncos del plexo braquial?',
@@ -1974,8 +1792,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'Los tres troncos del plexo braquial son: tronco superior (C5-C6), tronco medio (C7) y tronco inferior (C8-T1). Cada tronco se divide en una división anterior y una posterior para formar los fascículos.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Qué nervio del plexo braquial inerva los músculos flexores del codo y la piel de la cara palmar de los dedos I, II, III y mitad del IV?',
@@ -1983,8 +1800,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El nervio mediano (C6-T1) inerva los músculos del compartimento anterior del antebrazo (flexores), los músculos tenares y los dos primeros lumbricales. Aporta sensibilidad a la palma y a los dedos I, II, III y mitad lateral del IV.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Cuál es la parálisis que resulta de la lesión de C5-C6 del plexo braquial (parálisis de Erb-Duchenne)?',
@@ -1997,8 +1813,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La parálisis de Erb-Duchenne (lesión de C5-C6) produce el clásico "brazo de camarero": el miembro queda en aducción, rotación interna del hombro, extensión del codo y pronación del antebrazo por parálisis de deltoides, bíceps y supinador.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Qué nervio del plexo braquial inerva el músculo tríceps y los extensores de la muñeca y los dedos?',
@@ -2006,8 +1821,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El nervio radial (C5-T1) inerva el tríceps, el braquiorradial y todos los músculos extensores del compartimento posterior del antebrazo. Su lesión en el surco del nervio radial del húmero produce "mano caída" (drop wrist).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: 'El nervio cubital inerva los músculos hipotenary los interóseos de la mano.',
@@ -2015,8 +1829,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El nervio cubital (C8-T1) inerva los músculos hipotenares (abductor, flexor corto y oponente del meñique), los interóseos palmares y dorsales, los dos últimos lumbricales, el aductor del pulgar y parte del flexor corto del pulgar.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Qué raíces nerviosas forman el plexo lumbar?',
@@ -2024,8 +1837,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El plexo lumbar está formado por los ramos anteriores de L1, L2, L3 y L4 (con participación inconstante de T12). Se forma en el espesor del músculo psoas mayor y da origen a los nervios femorocutáneo lateral, femoral y obturador, entre otros.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Cuál es el nervio más importante del plexo lumbar y cuál es su función?',
@@ -2038,8 +1850,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio femoral (L2-L4) es el más grande del plexo lumbar. Inerva el cuádriceps femoral (extensión de rodilla) y el sartorio, y aporta sensibilidad a la cara anterior del muslo y la cara medial de la pierna (nervio safeno).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Qué nervio del plexo lumbar inerva los músculos aductores del muslo?',
@@ -2047,8 +1858,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio obturador (L2-L4) inerva los músculos del compartimento medial del muslo (aductores: largo, corto y mayor, grácil y obturador externo) y aporta sensibilidad a la cara medial del muslo.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Qué raíces nerviosas forman el plexo sacro?',
@@ -2056,8 +1866,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El plexo sacro está formado por los ramos anteriores de L4, L5, S1, S2, S3 y S4. Se forma sobre la cara anterior del sacro y el músculo piriforme. Su rama principal es el nervio ciático.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿En qué dos nervios se divide el nervio ciático a nivel de la fosa poplítea?',
@@ -2070,8 +1879,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio ciático se divide en la fosa poplítea en nervio tibial (continúa hacia abajo por la pierna posterior) y nervio peroneo común o fibular (rodea la cabeza del peroné y se divide en peroneo superficial y profundo).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Qué déficit motor produce la lesión del nervio peroneo común a nivel de la cabeza del peroné?',
@@ -2084,8 +1892,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La lesión del nervio peroneo común a nivel de la cabeza del peroné produce "pie caído" (foot drop): imposibilidad de dorsiflexionar el pie, con marcha en estepaje. Es la neuropatía del miembro inferior más frecuente.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: 'El nervio tibial inerva los músculos del compartimento posterior de la pierna y la planta del pie.',
@@ -2093,8 +1900,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El nervio tibial inerva todos los músculos del compartimento posterior de la pierna (flexores plantares) y al pasar por detrás del maléolo medial (canal del tarso) se divide en nervios plantares medial y lateral, que inervan la musculatura y piel de la planta del pie.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Qué nervio del plexo sacro inerva el glúteo mayor?',
@@ -2102,8 +1908,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio glúteo inferior (L5-S2) inerva el músculo glúteo mayor. El nervio glúteo superior (L4-S1) inerva el glúteo medio, el glúteo menor y el tensor de la fascia lata.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Qué nervio inerva el periné, el esfínter externo del ano y la vejiga, y los genitales externos?',
@@ -2111,8 +1916,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio pudendo (S2-S4) inerva los músculos del periné, el esfínter externo del ano, el esfínter uretral externo y aporta sensibilidad a los genitales externos. Sale por el foramen isquiático mayor y reingresa por el menor.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Cuál es el dermatoma correspondiente al ombligo?',
@@ -2120,8 +1924,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El dermatoma T10 corresponde al ombligo. Esta referencia es útil clínicamente: una anestesia espinal que llega a T10 insensibiliza desde los pies hasta el ombligo, y las lesiones medulares en ese nivel afectan la sensibilidad abdominal inferior.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Qué dermatoma corresponde a la cara interna del brazo y antebrazo?',
@@ -2129,8 +1932,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La cara medial (interna) del brazo y antebrazo corresponde a los dermatomas C8 y T1, inervados por el nervio cutáneo medial del brazo y el cutáneo medial del antebrazo, ramas del fascículo medial del plexo braquial.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: '¿Cuál es el concepto de dermatoma?',
@@ -2143,8 +1945,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Un dermatoma es el área de piel inervada por la rama sensitiva de una única raíz espinal (nervio espinal). Los mapas de dermatomas son útiles para localizar lesiones medulares o radiculopatías según la distribución del dolor o la pérdida de sensibilidad.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }],
 },
 {
   texto: 'Los nervios intercostales son los ramos anteriores de los nervios torácicos T1 a T11 que no forman plexo.',
@@ -2152,8 +1953,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'Los nervios intercostales corresponden a los ramos anteriores de T1 a T11, que discurren por los espacios intercostales sin unirse en plexo. Inervan los músculos intercostales, la pared abdominal (T7-T11) y la piel del tronco según dermatomas horizontales.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat2',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 10 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 // ── mat-anat3 · Unidad 1 · Caja torácica ──
 
@@ -2168,8 +1968,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La caja torácica es una formación osteocartilaginosa formada por: las doce vértebras torácicas (posterior), el esternón (anterior) y doce pares de costillas con sus cartílagos (laterales). Contiene y protege el corazón, los pulmones y los órganos mediastinales.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Cómo se denomina el hueso impar y mediano que forma la pared anterior del tórax?',
@@ -2177,8 +1976,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El esternón es un hueso plano, impar, mediano y simétrico situado en la parte anterior del tórax entre los cartílagos costales. Se divide en manubrio (superior), cuerpo (medio) y apófisis xifoides (inferior).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Cuáles son las tres partes del esternón de arriba hacia abajo?',
@@ -2191,8 +1989,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El esternón se divide en: manubrio (porción superior, más ancha, con la escotadura yugular y las escotaduras claviculares), cuerpo (porción media, con escotaduras costales) y apófisis xifoides (extremo inferior, cartilaginosa en el joven).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Cómo se denomina la articulación entre el manubrio y el cuerpo del esternón, que forma una saliente anterior palpable?',
@@ -2205,8 +2002,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La articulación manubrioesternal forma el ángulo esternal de Louis, una saliente palpable en la cara anterior del tórax. Es un importante punto de referencia clínico: se ubica a nivel del 2.º cartílago costal, T4-T5 y la bifurcación traqueal.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Cuántos pares de costillas tiene la caja torácica?',
@@ -2214,8 +2010,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'La caja torácica tiene 12 pares de costillas (24 en total). Se clasifican en: costillas verdaderas (1-7, articuladas directamente con el esternón), falsas (8-10, unidas al cartílago de la 7.ª) y flotantes (11-12, sin inserción anterior).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Cuántas costillas se articulan directamente con el esternón mediante sus propios cartílagos?',
@@ -2223,8 +2018,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'Las primeras 7 costillas (costillas verdaderas) se articulan directamente con el esternón a través de sus cartílagos costales propios. Las costillas 8.ª, 9.ª y 10.ª (falsas) se unen al cartílago de la 7.ª formando el arco costal.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: 'Las costillas flotantes (11.ª y 12.ª) se articulan con el esternón por cartílagos costales propios.',
@@ -2232,8 +2026,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Las costillas flotantes (11.ª y 12.ª) NO tienen inserción anterior: no se articulan ni con el esternón ni con otros cartílagos costales. Solo se articulan posteriormente con las vértebras torácicas correspondientes.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Cuáles son las partes de una costilla típica de posterior a anterior?',
@@ -2246,8 +2039,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'Una costilla típica tiene: cabeza (con dos carillas articulares para dos vértebras), cuello, tubérculo (con carilla para la apófisis transversa vertebral), ángulo costal, cuerpo (con surco costal en el borde inferior) y extremidad anterior (donde se une al cartílago costal).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Dónde se ubica el surco costal y qué estructuras discurren por él?',
@@ -2260,8 +2052,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El surco costal se ubica en el borde inferior (cara interna) de la costilla. Por él discurren, de arriba a abajo: la vena intercostal, la arteria intercostal y el nervio intercostal (VAN). Las punciones torácicas se realizan por el borde superior de la costilla inferior para evitar lesionarlos.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Qué tipo de articulación forman la cabeza de la costilla con los cuerpos vertebrales?',
@@ -2269,8 +2060,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La articulación de la cabeza de la costilla con los cuerpos vertebrales es una articulación sinovial plana (artrodia). La cabeza costal se articula típicamente con dos vértebras adyacentes y el disco intervertebral entre ellas.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Cómo se denomina la articulación entre el tubérculo costal y la apófisis transversa vertebral?',
@@ -2283,8 +2073,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La articulación costotransversa une el tubérculo costal con la apófisis transversa de la vértebra correspondiente. Solo existe para las costillas 1.ª a 10.ª; las costillas 11.ª y 12.ª carecen de tubérculo y de esta articulación.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Qué nombre reciben los espacios entre dos costillas adyacentes?',
@@ -2292,8 +2081,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Los espacios intercostales son los espacios comprendidos entre dos costillas adyacentes. Existen 11 espacios intercostales a cada lado. Contienen los músculos intercostales externos, internos e íntimos, y el paquete vasculonervioso intercostal.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Cuántas capas de músculos intercostales existen en cada espacio intercostal?',
@@ -2301,8 +2089,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'En cada espacio intercostal existen tres capas musculares: músculo intercostal externo (eleva las costillas en la inspiración), músculo intercostal interno (desciende las costillas en la espiración forzada) y músculo intercostal íntimo (profundo).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: 'Los músculos intercostales externos participan principalmente en la espiración forzada.',
@@ -2310,8 +2097,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Los músculos intercostales externos participan en la INSPIRACIÓN al elevar las costillas y aumentar el diámetro transversal del tórax. Los intercostales internos participan en la espiración forzada al descender las costillas.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Qué músculo separa la cavidad torácica de la abdominal y es el principal músculo inspiratorio?',
@@ -2319,8 +2105,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El diafragma es el músculo que separa la cavidad torácica de la abdominal. Es el principal músculo de la inspiración: al contraerse, desciende y aumenta el volumen torácico, generando presión negativa que produce la entrada de aire.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Cuáles son los tres orificios principales del diafragma y qué estructuras atraviesan cada uno?',
@@ -2333,8 +2118,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'Los tres orificios del diafragma son: foramen de la vena cava inferior (T8, en el centro tendinoso, solo la vena cava inferior), hiato esofágico (T10, en la parte muscular, el esófago y los nervios vagos) y hiato aórtico (T12, entre el diafragma y la columna, la aorta y el conducto torácico).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Qué nervio inerva el diafragma?',
@@ -2342,8 +2126,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El diafragma es inervado principalmente por el nervio frénico (C3-C4-C5). La periferia del diafragma también recibe inervación sensitiva de los nervios intercostales inferiores (T5-T11).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Cuál es la apertura superior del tórax (estrecho torácico superior) y qué estructuras la limitan?',
@@ -2356,8 +2139,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El estrecho torácico superior (orificio torácico superior) está limitado por la primera vértebra torácica (T1) por detrás, las primeras costillas lateralmente y el manubrio esternal por delante. Por él pasan tráquea, esófago, vasos (arteria subclavia, vena braquiocefálica) y nervios.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Qué nombre recibe la saliente anterior palpable a nivel del ángulo de unión entre el cuerpo del esternón y la apófisis xifoides?',
@@ -2365,8 +2147,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La fosita supraxifoidea es la depresión cóncava hacia adelante ubicada inmediatamente por encima de la unión del cuerpo esternal con la apófisis xifoides. El ángulo de Louis se ubica más arriba, a nivel de la unión manubrioesternal.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: 'La primera costilla es la más larga y plana de todas las costillas.',
@@ -2374,8 +2155,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La primera costilla es la más CORTA, ancha y plana de todas. En su cara superior presenta el tubérculo del escaleno anterior que separa los surcos de la arteria y vena subclavias. La costilla más larga es generalmente la 7.ª.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Cuántas vértebras torácicas tienen articulación con la cabeza de una sola costilla (articulación con una única vértebra)?',
@@ -2383,8 +2163,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Las costillas 1.ª, 10.ª, 11.ª y 12.ª se articulan con una sola vértebra (T1, T10, T11 y T12 respectivamente). Las costillas 2.ª a 9.ª se articulan con dos vértebras adyacentes y el disco intervertebral entre ellas.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Cuál es la función principal de la caja torácica además de la protección?',
@@ -2397,8 +2176,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La caja torácica participa activamente en la mecánica respiratoria: el movimiento de elevación y descenso de las costillas modifica los diámetros anteroposterior y transversal del tórax, permitiendo la ventilación pulmonar junto con el diafragma.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿A qué nivel vertebral se proyecta el ángulo esternal de Louis?',
@@ -2406,8 +2184,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El ángulo de Louis se proyecta a nivel de T4-T5 y es un punto de referencia para identificar: el 2.º cartílago costal, la bifurcación traqueal (carina), el arco de la aorta y la vena ácigos desembocando en la cava superior.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Qué músculos accesorios de la inspiración se insertan en las costillas superiores y elevan la caja torácica?',
@@ -2420,8 +2197,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Los músculos escalenos (anterior, medio y posterior) elevan las dos primeras costillas durante la inspiración forzada. El esternocleidomastoideo eleva el esternón. Ambos son músculos accesorios de la inspiración que actúan ante demanda ventilatoria aumentada.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: 'Las fracturas costales son más frecuentes en el tercio medio de las costillas, a nivel del ángulo costal.',
@@ -2429,8 +2205,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El ángulo costal es el punto de mayor curvatura y menor resistencia de la costilla, por lo que es el sitio donde ocurren con mayor frecuencia las fracturas. A nivel del ángulo, el hueso debe resistir la tensión de los músculos intercostales y la fuerza del traumatismo.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat3',
-  unidad: 1,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 // ── mat-anat3 · Unidad 2 · Aparato cardiovascular ──
 
@@ -2445,8 +2220,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El corazón se ubica en el mediastino medio, dentro del saco pericárdico. Aproximadamente dos tercios de su masa se proyectan hacia la izquierda de la línea media, y un tercio hacia la derecha.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: '¿Cómo se denomina el saco fibroseroso que envuelve al corazón?',
@@ -2454,8 +2228,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El pericardio es el saco que rodea al corazón. Tiene dos capas: el pericardio fibroso (externo, resistente) y el pericardio seroso (con hoja parietal y visceral o epicardio). Entre ambas hojas serosas existe la cavidad pericárdica con una pequeña cantidad de líquido lubricante.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: '¿Cuántas cavidades tiene el corazón?',
@@ -2463,8 +2236,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El corazón tiene 4 cavidades: dos aurículas (atrios) superiores que reciben la sangre, y dos ventrículos inferiores que la expulsan. El tabique interauricular separa las aurículas y el tabique interventricular los ventrículos.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: '¿Qué válvula separa la aurícula derecha del ventrículo derecho?',
@@ -2472,8 +2244,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'La válvula tricúspide (atrioventricular derecha) separa la aurícula derecha del ventrículo derecho. Tiene tres valvas: anterior, posterior y septal. Impide el reflujo de sangre hacia la aurícula durante la sístole ventricular.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: '¿Qué válvula separa la aurícula izquierda del ventrículo izquierdo?',
@@ -2481,8 +2252,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La válvula mitral (atrioventricular izquierda o bicúspide) separa la aurícula izquierda del ventrículo izquierdo. Tiene dos valvas: anterior (aórtica) y posterior. Es la más frecuentemente afectada en la enfermedad reumática.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: 'Las válvulas sigmoideas (semilunares) aórtica y pulmonar se abren durante la sístole ventricular.',
@@ -2490,8 +2260,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'Las válvulas semilunares (aórtica y pulmonar) se abren durante la sístole ventricular cuando la presión ventricular supera la presión en la aorta y la arteria pulmonar, permitiendo la eyección de sangre. Se cierran en la diástole, produciendo el segundo ruido cardíaco.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: '¿Cuántas valvas tiene la válvula aórtica y cómo se denominan?',
@@ -2504,8 +2273,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La válvula aórtica tiene tres valvas semilunares: coronaria derecha (de ella nace la arteria coronaria derecha), coronaria izquierda (de ella nace la arteria coronaria izquierda) y no coronaria (posterior). Los senos de Valsalva corresponden a las dilataciones detrás de cada valva.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: '¿Qué estructuras del ventrículo evitan la inversión de las valvas auriculoventriculares durante la sístole?',
@@ -2518,8 +2286,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Los músculos papilares (anteriores, posteriores y septales) se contraen durante la sístole y tensan las cuerdas tendinosas (chordae tendineae), impidiendo que las valvas de las válvulas mitral y tricúspide se inviertan hacia las aurículas.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: '¿Desde qué cavidad cardíaca emerge la arteria aorta?',
@@ -2527,8 +2294,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'La arteria aorta emerge del ventrículo izquierdo, que contiene sangre oxigenada proveniente de los pulmones. La arteria pulmonar emerge del ventrículo derecho, conduciendo sangre desoxigenada hacia los pulmones.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: '¿Cómo se denomina la primera porción de la aorta, que da origen a las arterias coronarias?',
@@ -2536,8 +2302,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'La aorta ascendente es la primera porción de la aorta, que surge del ventrículo izquierdo. De los senos de Valsalva de la aorta ascendente nacen las arterias coronarias derecha e izquierda, que irrigan el miocardio.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: '¿Qué tres ramas emite el arco aórtico de derecha a izquierda?',
@@ -2550,8 +2315,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El arco aórtico emite tres ramas de derecha a izquierda: tronco braquiocefálico (que se divide en arteria subclavia derecha y carótida común derecha), arteria carótida común izquierda y arteria subclavia izquierda.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: '¿Qué venas desembocan en la aurícula derecha?',
@@ -2564,8 +2328,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'En la aurícula derecha desembocan: la vena cava superior (trae sangre de la mitad superior del cuerpo), la vena cava inferior (de la mitad inferior) y el seno coronario (sangre venosa del propio miocardio). En la aurícula izquierda desembocan las cuatro venas pulmonares.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: '¿Cuántas venas pulmonares desembocan en la aurícula izquierda?',
@@ -2573,8 +2336,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'Cuatro venas pulmonares (dos derechas y dos izquierdas) desembocan en la aurícula izquierda transportando sangre oxigenada desde los pulmones. Son las únicas venas del organismo que transportan sangre arterial (oxigenada).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: 'Las venas pulmonares transportan sangre desoxigenada desde el pulmón hacia el corazón.',
@@ -2582,8 +2344,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Las venas pulmonares transportan sangre OXIGENADA (arterial) desde los pulmones hacia la aurícula izquierda. Es una excepción a la regla general: las venas llevan sangre venosa y las arterias sangre arterial.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: '¿Cuáles son las dos arterias coronarias y de dónde nacen?',
@@ -2596,8 +2357,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Las arterias coronarias derecha e izquierda nacen de los senos de Valsalva de la aorta ascendente (coronario derecho y coronario izquierdo respectivamente) durante la diástole, cuando las valvas semilunares se cierran y la sangre llena los senos.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: '¿En qué dos ramas se divide la arteria coronaria izquierda?',
@@ -2610,8 +2370,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La arteria coronaria izquierda se divide en: arteria descendente anterior izquierda (IDA o "la widow maker"), que irriga la cara anterior del ventrículo izquierdo y el tabique interventricular, y la arteria circunfleja, que irriga la cara lateral y posterior del ventrículo izquierdo.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: '¿Cuál es el sistema de conducción cardíaca que genera y coordina el impulso eléctrico del corazón?',
@@ -2624,8 +2383,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El sistema de conducción cardíaco es: nodo sinoauricular (marcapasos natural, 60-100 lpm) → vías internodales → nodo auriculoventricular (retraso AV) → fascículo de His → ramas derecha e izquierda → fibras de Purkinje (contracción ventricular).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: '¿Dónde se ubica el nodo sinoauricular (nodo SA), marcapasos natural del corazón?',
@@ -2638,8 +2396,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nodo sinoauricular (de Keith y Flack) se ubica en la pared de la aurícula derecha, cerca de la desembocadura de la vena cava superior. Genera impulsos a 60-100 lpm y es el marcapasos dominante del corazón.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: '¿Qué estructura del tabique interauricular es el remanente del foramen oval fetal?',
@@ -2647,8 +2404,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La fosa oval es una depresión en el tabique interauricular que corresponde al cierre del foramen oval fetal. En la vida fetal, el foramen oval permite el paso de sangre de la aurícula derecha a la izquierda. Permanece permeable (foramen oval permeable) en el 25% de los adultos.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: 'El ventrículo izquierdo tiene una pared más gruesa que el ventrículo derecho porque genera mayor presión.',
@@ -2656,8 +2412,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El ventrículo izquierdo tiene una pared de 8-12 mm de espesor (vs. 3-5 mm del derecho) porque debe generar presión suficiente para impulsar sangre a través de toda la circulación sistémica (mayor resistencia), mientras el derecho solo debe vencer la resistencia pulmonar.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: '¿Qué nombre recibe la vena que recoge la mayor parte del retorno venoso del miocardio y desemboca en la aurícula derecha?',
@@ -2665,8 +2420,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El seno coronario es el principal colector del retorno venoso del miocardio. Recibe las venas cardíacas mayor, media y menor y desemboca en la aurícula derecha, entre la válvula tricúspide y la desembocadura de la vena cava inferior.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: '¿Cómo se denomina la proyección del ápex cardíaco en la pared torácica y dónde se encuentra?',
@@ -2679,8 +2433,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El latido de la punta (choque de punta) se palpa normalmente en el 5.º espacio intercostal izquierdo sobre la línea medioclavicular. Corresponde al ápex del ventrículo izquierdo y es un importante punto de auscultación cardíaca.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: '¿Qué nombre recibe la dilatación de la arteria pulmonar antes de su bifurcación en rama derecha e izquierda?',
@@ -2688,8 +2441,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El tronco pulmonar (arteria pulmonar principal) emerge del ventrículo derecho y se bifurca en arteria pulmonar derecha e izquierda que llevan sangre desoxigenada a cada pulmón. A nivel fetal, el conducto arterioso une el tronco pulmonar con la aorta.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: '¿Cuál es la diferencia entre circulación mayor (sistémica) y circulación menor (pulmonar)?',
@@ -2702,8 +2454,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La circulación mayor (sistémica) va desde el ventrículo izquierdo por la aorta hacia todo el cuerpo y retorna por las venas cavas a la aurícula derecha. La circulación menor (pulmonar) va desde el ventrículo derecho por el tronco pulmonar hacia los pulmones y retorna por las venas pulmonares a la aurícula izquierda.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: 'La aorta abdominal se bifurca en las arterias ilíacas comunes a nivel de la vértebra L4.',
@@ -2711,8 +2462,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'La aorta abdominal se bifurca en las dos arterias ilíacas comunes (derecha e izquierda) a nivel de L4, ligeramente hacia la izquierda de la línea media. Este punto, denominado bifurcación aórtica, es una referencia quirúrgica y radiológica importante.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat3',
-  unidad: 2,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 3 }, { materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 // ── mat-anat3 · Unidad 3 · Aparato respiratorio ──
 
@@ -2727,8 +2477,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Las vías respiratorias superiores comprenden las fosas nasales (filtrado, humidificación y calentamiento del aire), la faringe (vía común para aire y alimento) y la laringe (fonación y protección de las vías aéreas inferiores).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: '¿Cuántos cartílagos forman el esqueleto de la laringe?',
@@ -2736,8 +2485,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'La laringe está formada por 9 cartílagos: 3 impares (tiroides, cricoides y epiglotis) y 3 pares (aritenoides, corniculados y cuneiformes). El cricoides es el único cartílago que forma un anillo completo.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: '¿Cuál es el cartílago laríngeo más grande y qué estructura palpable forma en la línea media del cuello?',
@@ -2750,8 +2498,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El cartílago tiroides es el más grande de la laringe. Sus dos láminas se unen en ángulo anterior formando la prominencia laríngea o nuez de Adán (más pronunciada en el hombre). Protege las cuerdas vocales.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: '¿Cuál es el único cartílago laríngeo que forma un anillo completo?',
@@ -2759,8 +2506,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El cartílago cricoides es el único que forma un anillo completo alrededor de la vía aérea. Tiene forma de sello de anillo, con un arco anterior delgado y una lámina posterior ancha. Es la base de la laringe y el punto de referencia para la cricotirotomía de emergencia.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: '¿Cuál es la función de la epiglotis durante la deglución?',
@@ -2773,8 +2519,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Durante la deglución, la epiglotis se inclina hacia atrás cubriendo el aditus laríngeo (entrada de la laringe), desviando los alimentos hacia el esófago y evitando su aspiración hacia las vías aéreas. Es una válvula protectora de la vía aérea.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: '¿Cómo se denomina el espacio entre las dos cuerdas vocales verdaderas?',
@@ -2782,8 +2527,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La glotis (hendidura glótica o rima glótica) es el espacio entre las dos cuerdas vocales verdaderas (pliegues vocales). Es la parte más estrecha de la laringe del adulto y la principal zona de resistencia al flujo de aire.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: 'Las cuerdas vocales verdaderas están formadas por el ligamento vocal y el músculo vocal (tiroaritenoideo).',
@@ -2791,8 +2535,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'Las cuerdas vocales verdaderas (pliegues vocales) están constituidas por el ligamento vocal (borde libre del cono elástico) y el músculo vocal o tiroaritenoideo interno. Su vibración al paso del aire produce el sonido fundamental de la voz.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: '¿Qué nervio inerva la mayoría de los músculos intrínsecos de la laringe?',
@@ -2805,8 +2548,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio laríngeo recurrente (rama del vago, X par) inerva todos los músculos intrínsecos de la laringe excepto el cricotiroideo (inervado por el laríngeo superior). Su lesión en cirugía tiroidea puede causar disfonía o parálisis de cuerdas vocales.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: '¿A qué nivel vertebral se bifurca la tráquea en los dos bronquios principales?',
@@ -2814,8 +2556,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La tráquea se bifurca a nivel de T4-T5 en los bronquios principales derecho e izquierdo. El punto de bifurcación se denomina carina (espolón traqueal) y se proyecta en el ángulo de Louis. La carina es una referencia en fibrobroncoscopía.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: '¿Cuántos anillos cartilaginosos en forma de C tiene la tráquea aproximadamente?',
@@ -2823,8 +2564,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La tráquea tiene entre 16 y 20 anillos cartilaginosos en forma de C (herradura) que mantienen abierta la vía aérea. La parte posterior es membranosa (músculo traqueal), lo que permite la expansión del esófago durante la deglución.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: '¿Por qué el bronquio principal derecho es más propenso a la aspiración de cuerpos extraños que el izquierdo?',
@@ -2837,8 +2577,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El bronquio principal derecho es más vertical (más en línea con la tráquea), más corto y de mayor calibre que el izquierdo. Por estas razones, los cuerpos extraños aspirados tienden a alojarse con mayor frecuencia en el bronquio derecho, especialmente en el lóbulo inferior derecho.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: '¿Cuántos lóbulos tiene el pulmón derecho y cuántos el izquierdo?',
@@ -2851,8 +2590,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El pulmón derecho tiene 3 lóbulos (superior, medio e inferior) separados por las cisuras oblicua y horizontal. El pulmón izquierdo tiene 2 lóbulos (superior e inferior) separados por la cisura oblicua. El pulmón izquierdo es más pequeño porque el corazón ocupa espacio a la izquierda.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: '¿Cuántos segmentos broncopulmonares tiene el pulmón derecho?',
@@ -2860,8 +2598,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El pulmón derecho tiene 10 segmentos broncopulmonares (3 en el lóbulo superior, 2 en el medio y 5 en el inferior). El izquierdo tiene 8-10 dependiendo de la nomenclatura. Cada segmento tiene su propio bronquio segmentario, arteria y vena.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: '¿Qué nombre recibe la membrana que tapiza la superficie de los pulmones y la pared interna de la cavidad torácica?',
@@ -2869,8 +2606,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La pleura es la membrana serosa que rodea los pulmones. Tiene dos hojas: la pleura visceral (adherida a la superficie del pulmón) y la pleura parietal (tapiza la pared torácica, el diafragma y el mediastino). Entre ellas existe la cavidad pleural con una pequeña cantidad de líquido lubricante.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: 'La cavidad pleural normalmente contiene una gran cantidad de aire que permite el deslizamiento del pulmón.',
@@ -2878,8 +2614,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La cavidad pleural normalmente contiene una pequeña cantidad de LÍQUIDO (no aire) que lubrica las dos hojas de la pleura y permite el deslizamiento suave del pulmón durante la respiración. La presencia de aire en la cavidad pleural se denomina neumotórax.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: '¿Cómo se denomina la zona por donde entran y salen los bronquios, vasos y nervios al pulmón?',
@@ -2887,8 +2622,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El hilio pulmonar es la zona de la cara mediastínica del pulmón por donde entran y salen: el bronquio principal, la arteria pulmonar, las venas pulmonares, los vasos bronquiales, los linfáticos y los nervios. Estas estructuras forman la raíz del pulmón.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: '¿Cuál es la unidad funcional del pulmón donde se produce el intercambio gaseoso?',
@@ -2896,8 +2630,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El alvéolo pulmonar es la unidad funcional respiratoria donde se produce el intercambio gaseoso (hematosis): el O₂ pasa desde el aire alveolar hacia la sangre y el CO₂ hace el camino inverso. Los pulmones tienen aproximadamente 300-500 millones de alvéolos.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: '¿Qué células del alvéolo producen el surfactante pulmonar?',
@@ -2910,8 +2643,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Los neumocitos tipo II producen el surfactante pulmonar, una mezcla de fosfolípidos que reduce la tensión superficial alveolar, evitando el colapso de los alvéolos al final de la espiración. Su déficit en prematuros causa el síndrome de distrés respiratorio neonatal.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: '¿A qué nivel se encuentra el ápex del pulmón en relación a la clavícula?',
@@ -2924,8 +2656,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El ápex pulmonar se proyecta 2-3 cm por encima del tercio interno de la clavícula, llegando hasta la base del cuello. Está cubierto por la membrana suprapleural (ligamento de Sibson). Es importante en traumatismos cervicales y en la tuberculosis apical.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: '¿Qué nombre recibe el receso pleural entre el diafragma y la pared costal donde se acumula el derrame pleural?',
@@ -2938,8 +2669,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El receso costodiafragmático (seno costodiafragmático) es la parte más baja de la cavidad pleural, entre la pleura costal y la diafragmática. Es el sitio donde se acumula el líquido en el derrame pleural y el sitio de punción para toracocentesis.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: '¿Cuál es la irrigación arterial de los pulmones?',
@@ -2952,8 +2682,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Los pulmones tienen doble irrigación: las arterias pulmonares (ramas del tronco pulmonar) llevan sangre desoxigenada para la hematosis, y las arterias bronquiales (ramas de la aorta torácica) aportan sangre oxigenada para la nutrición del tejido pulmonar (bronquios, parénquima).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: '¿Cómo se denomina la parte del pulmón izquierdo que corresponde funcionalmente al lóbulo medio del pulmón derecho?',
@@ -2961,8 +2690,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'La língula es una prolongación en forma de lengüeta del lóbulo superior del pulmón izquierdo (segmentos superior e inferior de la língula) que corresponde anatómica y funcionalmente al lóbulo medio del pulmón derecho.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: '¿Qué estructura separa el lóbulo superior del lóbulo inferior en ambos pulmones?',
@@ -2975,8 +2703,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La cisura oblicua separa el lóbulo superior del inferior en AMBOS pulmones. En el pulmón derecho existe además la cisura horizontal (menor) que separa el lóbulo medio del superior. El pulmón izquierdo solo tiene cisura oblicua.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: 'La tráquea se extiende desde el borde inferior del cartílago cricoides hasta la carina traqueal.',
@@ -2984,8 +2711,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'La tráquea comienza en el borde inferior del cartílago cricoides (a nivel de C6) y termina en la carina (bifurcación traqueal) a nivel de T4-T5. Mide aproximadamente 10-12 cm de longitud y 2 cm de diámetro en el adulto.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 {
   texto: '¿Cuál es el volumen de aire que entra y sale en cada respiración normal (volumen corriente)?',
@@ -2993,8 +2719,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El volumen corriente (tidal volume) es la cantidad de aire que entra y sale en cada respiración normal en reposo: aproximadamente 350-500 ml en el adulto. De este volumen, unos 150 ml quedan en el espacio muerto anatómico (vías aéreas de conducción) sin participar en el intercambio gaseoso.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 3,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 2 }, { materiaId: 'mat-anat2', unidad: 2 }],
 },
 // ── mat-anat3 · Unidad 4 · Mediastino y sistema linfático torácico ──
 
@@ -3009,8 +2734,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El mediastino es el espacio comprendido entre las dos cavidades pleurales, limitado por delante por el esternón, por detrás por la columna vertebral torácica, por abajo por el diafragma y por arriba por el estrecho torácico superior. Contiene todas las estructuras torácicas excepto los pulmones.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿En cuántas regiones se divide el mediastino?',
@@ -3023,8 +2747,7 @@ const preguntas: {
   correct: 2,
   explicacion: 'El mediastino se divide en cuatro compartimentos: mediastino superior (por encima del plano del ángulo de Louis), y mediastino inferior que se subdivide en anterior (entre esternón y pericardio), medio (el pericardio y su contenido) y posterior (entre pericardio y columna vertebral).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Qué estructuras contiene el mediastino superior?',
@@ -3037,8 +2760,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El mediastino superior contiene: timo (o tejido tímico residual), arco aórtico y sus ramas, venas braquiocefálicas y vena cava superior, tráquea, esófago, conducto torácico, nervios vagos, frénico y laríngeo recurrente izquierdo, y cadenas simpáticas.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Qué estructura glandular involutiva del mediastino superior es esencial para la maduración de los linfocitos T?',
@@ -3046,8 +2768,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El timo es un órgano linfoide primario ubicado en el mediastino anterosuperior. Es fundamental para la maduración de los linfocitos T. Alcanza su máximo desarrollo en la pubertad y luego involuciona siendo reemplazado por tejido adiposo en el adulto.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Qué estructuras contiene el mediastino posterior?',
@@ -3060,8 +2781,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El mediastino posterior contiene: esófago, aorta torácica descendente, conducto torácico, venas ácigos y hemiácigos, cadenas simpáticas torácicas, nervios vagos y nervios esplácnicos. Se ubica entre el pericardio por delante y la columna vertebral por detrás.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: 'El esófago torácico atraviesa el mediastino posterior y pasa al abdomen por el hiato esofágico del diafragma a nivel de T10.',
@@ -3069,8 +2789,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El esófago atraviesa el mediastino posterior y perfora el diafragma por el hiato esofágico a nivel de T10, junto con los nervios vagos. El hiato esofágico es el punto más común de herniación (hernia de hiato).',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Cuáles son las tres porciones del esófago en relación a su trayecto?',
@@ -3083,8 +2802,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El esófago se divide en tres porciones: cervical (desde el cricoides hasta el estrecho torácico superior, ~5 cm), torácica (la más larga, en el mediastino posterior, ~18 cm) y abdominal (desde el hiato esofágico hasta el cardias, ~2-3 cm).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 9 }, { materiaId: 'mat-anat4', unidad: 1 }],
 },
 {
   texto: '¿Cuántas estrecheces (constricciones) tiene el esófago a lo largo de su trayecto?',
@@ -3092,8 +2810,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El esófago presenta tres estrecheces fisiológicas: la cricofaríngea (unión faringoesofágica, C6), la aórtico-bronquial (a nivel del arco aórtico y del bronquio izquierdo, T4-T5) y la diafragmática (hiato esofágico, T10). Son sitios frecuentes de impactación de cuerpos extraños y de carcinoma esofágico.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat1', unidad: 9 }, { materiaId: 'mat-anat4', unidad: 1 }],
 },
 {
   texto: '¿Cómo se denomina el principal colector linfático del organismo que drena la mayor parte del cuerpo?',
@@ -3101,8 +2818,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El conducto torácico es el principal tronco linfático del organismo. Drena la linfa de toda la mitad inferior del cuerpo y de la mitad superior izquierda (miembro superior izquierdo, hemicabeza y cuello izquierdos). Desemboca en el ángulo venoso yugulo-subclavio izquierdo.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Dónde se origina el conducto torácico y cuál es su trayecto?',
@@ -3115,8 +2831,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El conducto torácico se origina en la cisterna del quilo (dilatación a nivel de L1-L2), asciende por el mediastino posterior a la derecha de la aorta, cruza la línea media a nivel de T5, continúa por el mediastino superior y desemboca en el ángulo venoso yugulo-subclavio izquierdo.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Qué región del cuerpo drena el conducto linfático derecho?',
@@ -3129,8 +2844,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El conducto linfático derecho drena: el miembro superior derecho, la mitad derecha de la cabeza y del cuello, y el hemitórax derecho (cuadrante superior derecho del cuerpo). Desemboca en el ángulo venoso yugulo-subclavio derecho.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: 'El conducto torácico desemboca en el ángulo venoso yugulo-subclavio derecho.',
@@ -3138,8 +2852,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El conducto torácico desemboca en el ángulo venoso yugulo-subclavio IZQUIERDO. El conducto linfático derecho (más corto) desemboca en el ángulo venoso yugulo-subclavio derecho.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Qué nervio del mediastino inerva el corazón, los pulmones y el esófago con fibras parasimpáticas?',
@@ -3147,8 +2860,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio vago (X par craneal) aporta fibras parasimpáticas al corazón (reducción de la frecuencia cardíaca), los pulmones (broncoconstricción y secreción) y el esófago (peristaltismo). Ambos nervios vagos discurren junto al esófago en el mediastino posterior.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Cuál es el trayecto peculiar del nervio laríngeo recurrente izquierdo que lo hace vulnerable en cirugías torácicas?',
@@ -3161,8 +2873,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El nervio laríngeo recurrente izquierdo rodea el arco aórtico (por debajo del ligamento arterioso, remanente del conducto arterioso) y asciende por el surco traqueoesofágico hasta la laringe. Su largo trayecto lo expone a lesiones en cirugía cardíaca, de aorta y de mediastino.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Cuál es el recorrido de la vena ácigos y dónde desemboca?',
@@ -3175,8 +2886,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'La vena ácigos asciende por el mediastino posterior derecho, recoge la sangre de las venas intercostales derechas y al llegar a T4 forma el cayado de la ácigos, que arquea sobre el bronquio derecho para desembocar en la vena cava superior.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Qué estructura fetal comunica la arteria pulmonar con la aorta y cuál es su remanente en el adulto?',
@@ -3189,8 +2899,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El conducto arterioso (de Botallo) comunica la arteria pulmonar con la aorta en la vida fetal, permitiendo que la mayor parte de la sangre evite la circulación pulmonar. Tras el nacimiento se cierra y persiste como el ligamento arterioso. Su no cierre constituye la persistencia del conducto arterioso.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 3 }],
 },
 {
   texto: '¿Cuáles son los ganglios linfáticos más importantes del mediastino para la estadificación del cáncer de pulmón?',
@@ -3203,8 +2912,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'Los ganglios mediastínicos son fundamentales en la estadificación del cáncer de pulmón (clasificación N del TNM). Los más relevantes son: paratraqueales (niveles 2R, 2L, 4R, 4L), subcarínicos (nivel 7), hiliares (nivel 10) e interlobares (nivel 11).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Qué nombre recibe la cadena de ganglios linfáticos que acompaña a la arteria mamaria interna y drena la mama y la pared anterior del tórax?',
@@ -3217,8 +2925,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La cadena ganglionar mamaria interna (paraesternal) acompaña a los vasos mamarios internos a lo largo del borde del esternón. Drena los cuadrantes mediales de la mama, la pared anterior del tórax y el diafragma. Es relevante en la estadificación del cáncer de mama.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: '¿Qué nervios forman el plexo cardíaco y regulan la actividad del corazón?',
@@ -3231,8 +2938,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El plexo cardíaco está formado por ramas cardíacas del nervio vago (parasimpático, disminuye la FC y la contractilidad) y del simpático cervicotorácico (aumenta la FC, la conductividad y la contractilidad). El plexo se distribuye por el nodo SA, nodo AV y el miocardio.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 1 }],
 },
 {
   texto: 'El síndrome de la vena cava superior se produce por compresión u obstrucción de este vaso en el mediastino superior, causando edema en cara, cuello y miembros superiores.',
@@ -3240,8 +2946,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El síndrome de vena cava superior se produce cuando esta vena es comprimida en el mediastino (frecuentemente por tumores mediastínicos o adenopatías). Produce edema progresivo en cara, cuello, y miembros superiores, ingurgitación yugular y circulación colateral visible en el tórax.',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 3 }],
 },
 {
   texto: '¿Qué nombre recibe el ligamento fibroso remanente del conducto venoso fetal que une la vena umbilical con la vena cava inferior?',
@@ -3249,8 +2954,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'El ligamento venoso (de Arancio) es el remanente del conducto venoso fetal. El conducto venoso derivaba la sangre oxigenada de la vena umbilical directamente a la vena cava inferior, evitando la circulación portal. Al nacer se oblitera y persiste como el ligamento venoso en el surco venoso del hígado.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat4', unidad: 2 }],
 },
 {
   texto: '¿Cuáles son las ramas de la aorta torácica descendente?',
@@ -3263,8 +2967,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'La aorta torácica descendente emite ramas parietales (arterias intercostales posteriores III-XI y subcostales) y ramas viscerales (arterias bronquiales para la nutrición pulmonar, esofágicas, pericárdicas y frénicas superiores para el diafragma).',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat4', unidad: 5 }],
 },
 {
   texto: '¿Qué nombre recibe el espacio virtual entre las dos hojas del pericardio seroso?',
@@ -3277,8 +2980,7 @@ const preguntas: {
   correct: 1,
   explicacion: 'La cavidad pericárdica es el espacio virtual entre la hoja parietal y la hoja visceral (epicardio) del pericardio seroso. Normalmente contiene 15-50 ml de líquido pericárdico lubricante. La acumulación patológica de líquido produce derrame pericárdico y puede causar taponamiento cardíaco.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat3', unidad: 3 }],
 },
 {
   texto: '¿Cuáles son los senos pericárdicos y cuál es su importancia quirúrgica?',
@@ -3291,8 +2993,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El seno transverso del pericardio se ubica entre los grandes vasos arteriales (aorta y tronco pulmonar) por delante y las aurículas por detrás. El cirujano introduce el dedo por el seno transverso para controlar la aorta y la arteria pulmonar en cirugía cardíaca. El seno oblicuo está detrás del corazón, entre las venas pulmonares.',
   formato: Formato.MULTIPLE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat2', unidad: 3 }, { materiaId: 'mat-anat3', unidad: 3 }],
 },
 {
   texto: 'El mediastino anterior contiene principalmente el timo en niños y tejido adiposo en adultos.',
@@ -3300,8 +3001,7 @@ const preguntas: {
   correct: 0,
   explicacion: 'El mediastino anterior (entre el esternón y el pericardio) contiene principalmente el timo en niños y adolescentes, que involuciona a tejido adiposo en el adulto. También puede contener ganglios linfáticos y vasos mamarios internos. Es el compartimento mediastínico de mayor variedad de masas patológicas (timoma, teratoma, linfoma).',
   formato: Formato.TRUEFALSE,
-  materiaId: 'mat-anat3',
-  unidad: 4,
+  destinos: [{ materiaId: 'mat-anat3', unidad: 1 }, { materiaId: 'mat-anat2', unidad: 1 }],
 },
 
 ];
@@ -3316,20 +3016,24 @@ async function main() {
   console.log(`Seeding preguntas (autor: ${autor.name})...`);
 
   let creadas = 0;
-  let omitidas = 0;
+  let reclasificadas = 0;
 
   for (const p of preguntas) {
-    const { materiaId, unidad, ...questionData } = p;
+    const { destinos, ...questionData } = p;
 
+    // Idempotente: si la pregunta ya existe (por texto) se reemplazan sus
+    // vínculos materia/unidad, así re-correr el seed reclasifica el banco ya
+    // cargado según el programa vigente (domain/programas.ts) sin duplicar.
     const existe = await prisma.question.findFirst({
-      where: {
-        texto: questionData.texto,
-        materias: { some: { materiaId } },
-      },
+      where: { texto: questionData.texto },
     });
 
     if (existe) {
-      omitidas++;
+      await prisma.questionMateria.deleteMany({ where: { questionId: existe.id } });
+      await prisma.questionMateria.createMany({
+        data: destinos.map((d) => ({ questionId: existe.id, ...d })),
+      });
+      reclasificadas++;
       continue;
     }
 
@@ -3337,15 +3041,15 @@ async function main() {
       data: {
         ...questionData,
         autorId: autor.id,
-        materias: { create: [{ materiaId, unidad }] },
+        materias: { create: destinos },
       },
     });
 
     creadas++;
-    console.log(`  ✓ [anat${materiaId.slice(-1)} U${unidad}] ${questionData.texto.slice(0, 60)}…`);
+    console.log(`  ✓ [${destinos.map((d) => `${d.materiaId} U${d.unidad}`).join(', ')}] ${questionData.texto.slice(0, 60)}…`);
   }
 
-  console.log(`\nSeed completo: ${creadas} creadas, ${omitidas} ya existían.`);
+  console.log(`\nSeed completo: ${creadas} creadas, ${reclasificadas} reclasificadas.`);
 }
 
 main()

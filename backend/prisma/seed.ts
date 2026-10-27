@@ -7,6 +7,7 @@ const carreras = [
   { id: 'carrera-rad', slug: 'radiologia',                 label: 'Radiología' },
   { id: 'carrera-iq',  slug: 'instrumentacion-quirurgica', label: 'Instrumentación Quirúrgica' },
   { id: 'carrera-hem', slug: 'hemoterapia',                label: 'Hemoterapia' },
+  { id: 'carrera-lab', slug: 'laboratorio',                label: 'Laboratorio de Análisis Clínicos' },
 ];
 
 const materias = [
@@ -14,6 +15,9 @@ const materias = [
   { id: 'mat-anat2', slug: 'anatomia-2', label: 'Anatomía 2' },
   { id: 'mat-anat3', slug: 'anatomia-3', label: 'Anatomía 3' },
   { id: 'mat-anat4', slug: 'anatomia-4', label: 'Anatomía 4' },
+  { id: 'mat-anat-descriptiva', slug: 'anatomia-descriptiva', label: 'Anatomía Descriptiva' },
+  { id: 'mat-anat-fisiologica', slug: 'anatomia-fisiologica', label: 'Anatomía Fisiológica' },
+  { id: 'mat-ahf-normales',     slug: 'anatomia-histologia-fisiologia-normales', label: 'Anatomía, Histología y Fisiología normales' },
 ];
 
 const carreraMaterias: { carreraId: string; materiaId: string }[] = [
@@ -23,6 +27,14 @@ const carreraMaterias: { carreraId: string; materiaId: string }[] = [
   { carreraId: 'carrera-rad', materiaId: 'mat-anat4' },
   { carreraId: 'carrera-iq',  materiaId: 'mat-anat1' },
   { carreraId: 'carrera-iq',  materiaId: 'mat-anat2' },
+  { carreraId: 'carrera-hem', materiaId: 'mat-ahf-normales' },
+  { carreraId: 'carrera-lab', materiaId: 'mat-anat-descriptiva' },
+  { carreraId: 'carrera-lab', materiaId: 'mat-anat-fisiologica' },
+];
+
+// Vínculos que dejaron de existir (Hemoterapia cursa su propia materia de
+// Anatomía, Histología y Fisiología normales, no Anatomía 1).
+const carreraMateriasObsoletas: { carreraId: string; materiaId: string }[] = [
   { carreraId: 'carrera-hem', materiaId: 'mat-anat1' },
 ];
 
@@ -34,6 +46,8 @@ const usuarios = [
   { name: 'Sofía Martínez',      email: 'smartinez@ismp.edu.ar',   password: 'alumno123',  role: Role.ESTUDIANTE, carreraId: 'carrera-rad' },
   { name: 'Lucas Fernández',     email: 'lfernandez@ismp.edu.ar',  password: 'alumno123',  role: Role.ESTUDIANTE, carreraId: 'carrera-iq' },
   { name: 'Camila Díaz',         email: 'cdiaz@ismp.edu.ar',       password: 'alumno123',  role: Role.ESTUDIANTE, carreraId: 'carrera-iq' },
+  { name: 'Tomás González',      email: 'tgonzalez@ismp.edu.ar',   password: 'alumno123',  role: Role.ESTUDIANTE, carreraId: 'carrera-lab' },
+  { name: 'Valentina Álvarez',   email: 'valvarez@ismp.edu.ar',    password: 'alumno123',  role: Role.ESTUDIANTE, carreraId: 'carrera-hem' },
 ];
 
 async function main() {
@@ -67,6 +81,14 @@ async function main() {
       data: { materias: { connect: { id: rel.materiaId } } },
     });
     console.log(`  ✓ ${rel.carreraId} → ${rel.materiaId}`);
+  }
+
+  for (const rel of carreraMateriasObsoletas) {
+    await prisma.carrera.update({
+      where: { id: rel.carreraId },
+      data: { materias: { disconnect: { id: rel.materiaId } } },
+    });
+    console.log(`  ✗ ${rel.carreraId} → ${rel.materiaId} (obsoleto, desvinculado)`);
   }
 
   // Usuarios

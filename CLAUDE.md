@@ -56,7 +56,7 @@ All client state goes through Zustand stores; do not introduce Redux/Context for
 When reading persisted Zustand state in a component, gate on `useHydrated` to avoid SSR mismatches.
 
 ### Domain types
-Shared types (quiz/academic shapes) in [app/domain/academic.ts](app/domain/academic.ts). The 3D anatomy item shape (`AnatomyItem`, `Section`) is defined in [app/store/anatomyStore.ts](app/store/anatomyStore.ts) — import it from there.
+Shared types (quiz/academic shapes) in [app/domain/academic.ts](app/domain/academic.ts): 4 carreras (rad, iq, hem, lab) y 7 materias de anatomía. Anatomía I y II son **una sola materia compartida** por Radiología e IQ (unión de ambos programas). Los programas por unidad (temas, sistemas 3D asociados, `origen` por carrera para filtrar) viven en [app/domain/programas.ts](app/domain/programas.ts); los números de unidad son los de `QuestionMateria.unidad`. El programa de Hemoterapia (`mat-ahf-normales`) es provisorio (= Lab Descriptiva + Fisiológica) hasta tener el real. The 3D anatomy item shape (`AnatomyItem`, `Section`) is defined in [app/store/anatomyStore.ts](app/store/anatomyStore.ts) — import it from there.
 
 ### Styling
 Tailwind CSS v4 (PostCSS plugin, no `tailwind.config` file — configured via [postcss.config.mjs](postcss.config.mjs) and [app/globals.css](app/globals.css)). Fonts: IBM Plex Sans/Serif/Mono loaded in [app/layout.tsx](app/layout.tsx) via CSS variables.

@@ -56,7 +56,7 @@ export type AnatomySystem = {
   carreras: CarreraId[];
 };
 
-const TODAS_LAS_CARRERAS: CarreraId[] = ["carrera-rad", "carrera-iq", "carrera-hem"];
+const TODAS_LAS_CARRERAS: CarreraId[] = ["carrera-rad", "carrera-iq", "carrera-hem", "carrera-lab"];
 
 const MUSCLE_CATEGORY_RULES: CategoryRule[] = [
   { category: "Cara y cabeza", keywords: ["frontalis", "temporoparietalis", "nasalis", "zygomaticus", "depressor_anguli", "depressor_labii", "procerus", "risorius", "mentalis", "levator_nasol", "platysma", "temporalis", "masseter"] },
