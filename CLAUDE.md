@@ -31,6 +31,7 @@ No test runner is configured on the frontend. Requires Node ≥ 20.
 ### Routing (App Router, [app/](app/))
 Top-level routes map to product areas:
 - [app/modelos/](app/modelos/) — galería de sistemas 3D; `modelos/[system]/` — visor dinámico por sistema. El registro de sistemas (label, glb, dataset, material, categorías) vive en [app/config/systems.ts](app/config/systems.ts) + [app/config/systemMaterials.ts](app/config/systemMaterials.ts). Agregar un sistema = una entrada ahí. `/skeleton` y `/muscles` redirigen a `/modelos/*` (next.config.ts).
+- [app/materias/](app/materias/), `materias/[materiaId]/` — "Mis materias": materias del alumno según su carrera (`materiasParaCarreras`), unidades del programa (`unidadesDeMateria(materia, carrera)`, filtra por `origen` en Anatomía I/II compartidas) y, por unidad, "Ver en 3D" (`/modelos/combinado?materia=&unidad=`) y "Practicar" (`/cuestionarios/generar?materiaId=&unidad=`).
 - [app/imaging/](app/imaging/), `imaging/[studyId]/` — medical-image viewer
 - [app/cuestionarios/](app/cuestionarios/), `cuestionarios/[id]/`, `.../results/` — student quizzes
 - [app/docente/cuestionarios/](app/docente/cuestionarios/) — teacher quiz authoring (`nuevo`, `[id]`)
@@ -47,7 +48,8 @@ Role gating (student / `docente` / admin) is referenced in [docs/ROLES_ROADMAP.m
 All client state goes through Zustand stores; do not introduce Redux/Context for cross-cutting state.
 - `anatomyStore` — `hovered`, `selected` (`AnatomyItem`), `selectedUuid`, `isolated`, label visibility
 - `cameraStore` — camera target/position + `setFocus` animation
-- `meshStore` — visibility toggles per mesh group
+- `meshStore` — mesh groups (`system:jsonKey`) y su visibilidad (`visibility`, `toggleGroup`, `setVisibility`, `resetVisibility`); vive acá y no en estado local para sobrevivir al cambio de pestaña
+- `combinedViewerStore` — vista combinada: sistemas montados, filtro "solo mi carrera" y la unidad activa (`applyUnit` activa `inicial3D ?? sistemas3D` y el `categorias3D` de la unidad; los grupos nuevos sin decisión de visibilidad se filtran por categoría)
 - `userStore` — auth/user state (currently client-only; replace with NestJS JWT provider)
 - `usersStore` — user list for admin (currently seeded mock; replace with `GET /users`)
 - `cuestionarioBankStore`, `cuestionarioHistoryStore` — quiz authoring + attempt history (localStorage-persisted; replace with API calls)

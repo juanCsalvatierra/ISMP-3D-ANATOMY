@@ -3,6 +3,7 @@ import { use, useEffect, useMemo } from "react";
 import { notFound } from "next/navigation";
 import { useAnatomyStore } from "../../store/anatomyStore";
 import { useViewerStore } from "../../store/viewerStore";
+import { useMeshStore } from "../../store/meshStore";
 import AnatomyModel from "../../components/models/AnatomyModel";
 import { ModelPageLayout } from "../../components/ui/ModelPageLayout";
 import { buildJsonIndex } from "../../utils/indexBuilder";
@@ -32,7 +33,10 @@ function SystemViewer({ system }: { system: AnatomySystem }) {
 
   useEffect(() => {
     setActiveSystem(system);
-    return () => setActiveSystem(null);
+    return () => {
+      setActiveSystem(null);
+      useMeshStore.getState().resetVisibility();
+    };
   }, [system, setActiveSystem]);
 
   return (

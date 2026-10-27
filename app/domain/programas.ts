@@ -16,6 +16,17 @@ export type Unidad = {
   temas: string[];
   /** Sistemas del visor 3D que sirven a la unidad. Vacío = sin modelo 3D. */
   sistemas3D: SystemId[];
+  /**
+   * Categorías del sistema (config/systems.ts) que se muestran al abrir la
+   * unidad en 3D. Un sistema sin entrada se muestra completo.
+   */
+  categorias3D?: Partial<Record<SystemId, string[]>>;
+  /**
+   * Sistemas que se cargan al abrir la unidad en 3D (por defecto, todos los de
+   * `sistemas3D`). Los demás quedan apagados en el panel, listos para activar;
+   * sirve para no descargar modelos pesados que la unidad usa solo de apoyo.
+   */
+  inicial3D?: SystemId[];
   /** Aclaraciones o huecos de cobertura 3D. */
   nota3D?: string;
   /** Solo en materias compartidas: carreras cuyo programa incluye la unidad. */
@@ -160,7 +171,8 @@ const ANAT1: Unidad[] = [
       "Anexos: páncreas, hígado y vesícula biliar",
       "Irrigación del sistema digestivo",
     ],
-    sistemas3D: ["organs", "cardiovascular"],
+    sistemas3D: ["organs"],
+    nota3D: "Irrigación: activar el sistema Cardiovascular desde el panel de Capas.",
     origen: IQ,
   },
   {
@@ -426,8 +438,8 @@ const ANAT4: Unidad[] = [
       "Intestino delgado: duodeno, yeyuno-íleon",
       "Intestino grueso: apéndice, colon ascendente, transverso, descendente y sigmoide, recto, ano; cintas, abollonaduras y apéndices epiploicos",
     ],
-    sistemas3D: ["organs", "skeleton"],
-    nota3D: "Dientes en el sistema esquelético.",
+    sistemas3D: ["organs"],
+    nota3D: "Los dientes están dentro del sistema esquelético (no incluido en esta unidad).",
   },
   {
     n: 2,
@@ -622,6 +634,93 @@ const LAB_FISIOLOGICA: Unidad[] = [
   },
 ];
 
+// ── Categorías 3D por unidad ─────────────────────────────────────────────────
+// Los nombres deben existir en categoryOrder del sistema (config/systems.ts);
+// scripts de verificación en el repo lo comprueban.
+
+type Extra3D = Pick<Unidad, "categorias3D" | "inicial3D">;
+
+function asignar3D(unidades: Unidad[], extra: Record<number, Extra3D>) {
+  for (const u of unidades) Object.assign(u, extra[u.n] ?? {});
+}
+
+asignar3D(ANAT1, {
+  4: { categorias3D: { skeleton: ["Cráneo y cara", "Cuello (hioides y laringe)", "Columna vertebral", "Tórax"] } },
+  7: {
+    categorias3D: {
+      skeleton: ["Miembro superior"],
+      joints: ["Hombro", "Codo", "Muñeca y mano"],
+      muscles: ["Espalda y hombro", "Brazo", "Antebrazo", "Mano"],
+    },
+  },
+  8: {
+    categorias3D: {
+      skeleton: ["Pelvis", "Miembro inferior"],
+      joints: ["Pelvis", "Cadera", "Rodilla", "Tobillo y pie"],
+      muscles: ["Cadera y glúteo", "Muslo", "Pierna", "Pie"],
+    },
+  },
+  9: { categorias3D: { organs: ["Aparato digestivo", "Peritoneo"] } },
+});
+
+asignar3D(ANAT2, {
+  1: {
+    categorias3D: {
+      skeleton: ["Columna vertebral", "Tórax"],
+      joints: ["Columna vertebral", "Tórax"],
+      muscles: ["Tórax y abdomen", "Espalda y hombro"],
+      lymphatic: ["Tórax", "Abdomen y vísceras", "Pelvis"],
+      nervous: ["Médula espinal", "Nervios periféricos", "Plexos y ganglios autónomos"],
+    },
+    inicial3D: ["skeleton", "muscles", "cardiovascular"],
+  },
+  2: { categorias3D: { organs: ["Aparato respiratorio"] } },
+  4: {
+    categorias3D: {
+      skeleton: ["Cráneo y cara", "Cuello (hioides y laringe)", "Columna vertebral"],
+      joints: ["Cabeza y cuello", "Columna vertebral"],
+      muscles: ["Ojo y órbita", "Cara y cabeza", "Laringe y faringe", "Cuello"],
+      lymphatic: ["Cabeza y cuello"],
+      nervous: ["Encéfalo", "Nervios craneales", "Órganos de los sentidos", "Plexos y ganglios autónomos"],
+    },
+    inicial3D: ["skeleton", "muscles", "nervous"],
+  },
+  5: { categorias3D: { organs: ["Aparato urinario"] } },
+  6: { categorias3D: { organs: ["Aparato reproductor masculino"] } },
+  7: { categorias3D: { organs: ["Sistema endocrino"] } },
+  9: { categorias3D: { nervous: ["Órganos de los sentidos"] } },
+});
+
+asignar3D(ANAT3, {
+  1: {
+    categorias3D: {
+      skeleton: ["Tórax", "Columna vertebral"],
+      joints: ["Tórax", "Columna vertebral"],
+      muscles: ["Tórax y abdomen"],
+    },
+  },
+  2: { categorias3D: { organs: ["Aparato respiratorio"] } },
+  4: { categorias3D: { organs: ["Aparato digestivo", "Peritoneo", "Aparato urinario"], skin: ["Abdomen"] } },
+  5: { categorias3D: { organs: ["Aparato urinario"] } },
+});
+
+asignar3D(ANAT4, {
+  1: { categorias3D: { organs: ["Aparato digestivo"] } },
+  2: { categorias3D: { organs: ["Aparato digestivo"] } },
+});
+
+asignar3D(LAB_DESCRIPTIVA, {
+  4: { categorias3D: { organs: ["Aparato respiratorio"] } },
+  5: { categorias3D: { organs: ["Aparato urinario"] } },
+  6: { categorias3D: { organs: ["Aparato digestivo"] } },
+});
+
+asignar3D(LAB_FISIOLOGICA, {
+  3: { categorias3D: { organs: ["Aparato urinario"] } },
+  4: { categorias3D: { organs: ["Aparato digestivo"] } },
+  6: { categorias3D: { organs: ["Aparato respiratorio"] } },
+});
+
 // Hemoterapia: el programa real de "Anatomía, Histología y Fisiología normales"
 // aún no fue provisto. Provisorio = Anatomía Descriptiva + Anatomía Fisiológica
 // de Laboratorio (unidades 1–6 y 7–12).
@@ -648,4 +747,15 @@ export function unidadesDeMateria(materiaId: MateriaId, carreraId?: CarreraId): 
   const unidades = PROGRAMAS[materiaId]?.unidades ?? [];
   if (!carreraId) return unidades;
   return unidades.filter((u) => !u.origen || u.origen.includes(carreraId));
+}
+
+export function getUnidad(materiaId: MateriaId, n: number): Unidad | undefined {
+  return PROGRAMAS[materiaId]?.unidades.find((u) => u.n === n);
+}
+
+/** Sistemas 3D que usa alguna unidad de la materia (opcionalmente solo las de una carrera). */
+export function sistemasDeMateria(materiaId: MateriaId, carreraId?: CarreraId): SystemId[] {
+  const set = new Set<SystemId>();
+  for (const u of unidadesDeMateria(materiaId, carreraId)) u.sistemas3D.forEach((id) => set.add(id));
+  return Array.from(set);
 }

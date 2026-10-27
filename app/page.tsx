@@ -4,11 +4,19 @@ import { RoleGate } from "@/app/components/auth/RoleGate";
 
 const MODULES = [
   {
+    id: "materias",
+    label: "Mis materias",
+    sublabel: "Unidades de cada materia, en 3D y con práctica",
+    href: "/materias",
+    count: "7 materias",
+    tag: "Programas",
+  },
+  {
     id: "modelos",
     label: "Modelos 3D",
     sublabel: "Esqueleto, músculos, articulaciones, vísceras, nervioso, cardiovascular y linfático",
     href: "/modelos",
-    count: "7 sistemas",
+    count: "8 sistemas",
     tag: "Anatomía 3D",
   },
   {
@@ -115,7 +123,7 @@ function HomeContent() {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {MODULES.map((mod) => (
             <Link key={mod.id} href={mod.href} className="group block">
               <div
@@ -247,6 +255,7 @@ function HomeContent() {
           </span>
           <div className="flex gap-4">
             {[
+              { label: "Mis materias", href: "/materias" },
               { label: "Modelos 3D", href: "/modelos" },
               { label: "Imágenes", href: "/imaging" },
               { label: "Cuestionarios", href: "/cuestionarios" },

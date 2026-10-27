@@ -1,8 +1,9 @@
 "use client";
 import { useAnatomyStore } from "../store/anatomyStore";
 import { useMeshStore } from "../store/meshStore";
+import { useCombinedViewerStore } from "../store/combinedViewerStore";
 
-export type Tab = "info" | "layers" | "labels" | "imaging";
+export type Tab = "unit" | "info" | "layers" | "labels" | "imaging";
 
 export type TabItem = {
   id: Tab;
@@ -14,8 +15,9 @@ export function useViewerTabs(): TabItem[] {
   const selected      = useAnatomyStore((s) => s.selected);
   const groups        = useMeshStore((s) => s.groups);
   const labelsVisible = useAnatomyStore((s) => s.labelsVisible);
+  const unit          = useCombinedViewerStore((s) => s.unit);
 
-  return [
+  const tabs: TabItem[] = [
     {
       id: "info",
       label: "Info",
@@ -37,4 +39,9 @@ export function useViewerTabs(): TabItem[] {
       badge: null,
     },
   ];
+
+  // Vista combinada abierta desde "Mis materias": pestaña con el contenido de la unidad.
+  if (unit) tabs.unshift({ id: "unit", label: "Unidad", badge: `U${unit.unidad.n}` });
+
+  return tabs;
 }

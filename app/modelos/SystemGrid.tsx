@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useUserStore } from "../store/userStore";
 import { useHydrated } from "../store/useHydrated";
 import { READY_SYSTEMS, systemsForCarreras } from "../config/systems";
-import { CARRERAS } from "../domain/academic";
+import { CARRERAS, MATERIAS, carreraDeUsuarioParaMateria, materiasParaCarreras, type MateriaId } from "../domain/academic";
+import { sistemasDeMateria } from "../domain/programas";
 
 export function SystemGrid() {
   const hydrated = useHydrated();
@@ -12,6 +13,7 @@ export function SystemGrid() {
   const initialized = useUserStore((s) => s.initialized);
   const init = useUserStore((s) => s.init);
   const [showAll, setShowAll] = useState(false);
+  const [materiaSel, setMateriaSel] = useState<MateriaId | null>(null);
 
   useEffect(() => {
     if (!initialized) init();
@@ -26,7 +28,15 @@ export function SystemGrid() {
 
   // Antes de hidratar mostramos todos para no parpadear.
   const isFiltering = hydrated && initialized && !showAll && filtered.length < READY_SYSTEMS.length;
-  const systems = isFiltering ? filtered : READY_SYSTEMS;
+  const baseSystems = isFiltering ? filtered : READY_SYSTEMS;
+
+  // Filtro por materia: solo los sistemas que usa alguna unidad de esa materia.
+  // Se ofrece cuando el usuario tiene carreras (si no, serían las 7 materias).
+  const misMaterias = carreraIds && carreraIds.length > 0 ? materiasParaCarreras(carreraIds) : [];
+  const delaMateria = materiaSel
+    ? sistemasDeMateria(materiaSel, carreraDeUsuarioParaMateria(carreraIds, materiaSel))
+    : null;
+  const systems = delaMateria ? baseSystems.filter((s) => delaMateria.includes(s.id)) : baseSystems;
 
   const carreraLabels = (carreraIds ?? [])
     .map((c) => CARRERAS[c as keyof typeof CARRERAS]?.label)
@@ -73,6 +83,36 @@ export function SystemGrid() {
           </span>
         </div>
       </Link>
+
+      {hydrated && initialized && misMaterias.length > 1 && (
+        <div className="flex flex-wrap items-center gap-2 mb-6">
+          <span
+            className="text-xs uppercase tracking-wider mr-1"
+            style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
+          >
+            Materia
+          </span>
+          {[null, ...misMaterias].map((m) => {
+            const activa = materiaSel === m;
+            return (
+              <button
+                key={m ?? "todas"}
+                onClick={() => setMateriaSel(m)}
+                className="px-3 py-1 rounded-full text-xs border transition-all"
+                style={{
+                  fontFamily: "var(--font-ibm-plex-sans)",
+                  fontWeight: 500,
+                  background: activa ? "rgba(194,47,47,0.12)" : "transparent",
+                  borderColor: activa ? "var(--accent)" : "var(--border-subtle)",
+                  color: activa ? "var(--accent)" : "var(--text-muted)",
+                }}
+              >
+                {m ? MATERIAS[m].label : "Todas"}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {isFiltering && (
         <div

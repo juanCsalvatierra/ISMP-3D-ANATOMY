@@ -1,10 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Breadcrumb } from "@/app/components/ui/Breadcrumb";
 import { api, ApiError } from "@/app/lib/api";
 import { useUserStore } from "@/app/store/userStore";
 import { useHydrated } from "@/app/store/useHydrated";
+import { MATERIA_IDS } from "@/app/domain/academic";
+import { getUnidad } from "@/app/domain/programas";
 
 interface MateriaOption {
   id: string;
@@ -25,7 +27,20 @@ interface StartResponse {
 }
 
 export default function GenerarExamenPage() {
+  // useSearchParams exige un Suspense boundary en el prerender estático.
+  return (
+    <Suspense fallback={null}>
+      <GenerarExamen />
+    </Suspense>
+  );
+}
+
+function GenerarExamen() {
   const router = useRouter();
+  // Preselección desde "Mis materias": ?materiaId=mat-anat1&unidad=7
+  const searchParams = useSearchParams();
+  const qMateria = searchParams.get("materiaId");
+  const qUnidad = Number(searchParams.get("unidad") ?? 0);
   const hydrated = useHydrated();
   const currentUser = useUserStore((s) => s.currentUser);
 
@@ -43,7 +58,12 @@ export default function GenerarExamenPage() {
   // Derived values — no synchronous setState in effects
   const unidades = unidadesCache?.materiaId === materiaId ? unidadesCache.values : [];
   const loadingUnidades = !!materiaId && unidadesCache?.materiaId !== materiaId;
-  const unidad = unidadSel?.materiaId === materiaId ? unidadSel.value : 0;
+  const unidad =
+    unidadSel?.materiaId === materiaId
+      ? unidadSel.value
+      : materiaId === qMateria && unidades.includes(qUnidad)
+        ? qUnidad
+        : 0;
 
   useEffect(() => {
     if (!hydrated) return;
@@ -53,11 +73,13 @@ export default function GenerarExamenPage() {
       .get<MateriaOption[]>(path)
       .then((data) => {
         setMaterias(data);
-        if (data.length > 0) setMateriaId(data[0].id);
+        if (data.length > 0) {
+          setMateriaId(data.some((m) => m.id === qMateria) ? (qMateria as string) : data[0].id);
+        }
       })
       .catch(() => setError("No se pudieron cargar las materias."))
       .finally(() => setLoadingMaterias(false));
-  }, [hydrated, currentUser]);
+  }, [hydrated, currentUser, qMateria]);
 
   useEffect(() => {
     if (!materiaId) return;
@@ -181,6 +203,11 @@ export default function GenerarExamenPage() {
               {unidades.filter((u) => u !== 0).map((u) => (
                 <option key={u} value={u}>
                   Unidad {u}
+                  {(() => {
+                    const mid = MATERIA_IDS.find((m) => m === materiaId);
+                    const titulo = mid ? getUnidad(mid, u)?.titulo : undefined;
+                    return titulo ? ` · ${titulo}` : "";
+                  })()}
                 </option>
               ))}
             </select>

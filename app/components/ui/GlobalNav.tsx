@@ -7,6 +7,7 @@ import { useUserStore, ROLE_LABELS } from "@/app/store/userStore";
 import { READY_SYSTEMS } from "@/app/config/systems";
 
 const NAV_LINKS = [
+  { label: "Mis materias", href: "/materias" },
   { label: "Imágenes", href: "/imaging" },
   { label: "Cuestionarios", href: "/cuestionarios" },
 ];

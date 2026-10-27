@@ -32,12 +32,16 @@ export function CombinedLayerPanel() {
   const toggleSystem = useCombinedViewerStore((s) => s.toggleSystem);
   const onlyMyCarrera = useCombinedViewerStore((s) => s.onlyMyCarrera);
   const setOnlyMyCarrera = useCombinedViewerStore((s) => s.setOnlyMyCarrera);
+  const categoryFilter = useCombinedViewerStore((s) => s.categoryFilter);
+  const clearCategoryFilter = useCombinedViewerStore((s) => s.clearCategoryFilter);
 
   const currentUser = useUserStore((s) => s.currentUser);
   const carreraIds = currentUser?.carreraIds ?? null;
   const hasCarreras = !!carreraIds && carreraIds.length > 0;
 
-  const [visibility, setVisibility] = useState<Record<string, boolean>>({});
+  // La visibilidad vive en meshStore (sobrevive al cambio de pestaña).
+  const visibility = useMeshStore((s) => s.visibility);
+  const setVisibility = useMeshStore((s) => s.setVisibility);
 
   const visibleSystems = useMemo(() => {
     if (onlyMyCarrera && hasCarreras) return systemsForCarreras(carreraIds);
@@ -54,22 +58,34 @@ export function CombinedLayerPanel() {
     return m;
   }, [groups]);
 
-  const handleToggleGroup = (key: string, value: boolean) => {
-    setVisibility((prev) => ({ ...prev, [key]: value }));
-    toggleGroup(key, value);
-  };
+  const handleToggleGroup = (key: string, value: boolean) => toggleGroup(key, value);
 
-  const handleToggleMany = (keys: string[], value: boolean) => {
-    const next: Record<string, boolean> = {};
-    keys.forEach((k) => {
-      next[k] = value;
-      toggleGroup(k, value);
-    });
-    setVisibility((prev) => ({ ...prev, ...next }));
-  };
+  const handleToggleMany = (keys: string[], value: boolean) =>
+    setVisibility(Object.fromEntries(keys.map((k) => [k, value])));
 
   return (
     <div className="flex flex-col h-full">
+      {categoryFilter && (
+        <div
+          className="px-4 py-2 flex items-center justify-between gap-2 shrink-0 text-xs"
+          style={{
+            background: "rgba(194,47,47,0.08)",
+            borderBottom: "1px solid var(--border-subtle)",
+            fontFamily: "var(--font-ibm-plex-sans)",
+            color: "var(--text-secondary)",
+          }}
+        >
+          <span>Mostrando solo lo de la unidad.</span>
+          <button
+            onClick={clearCategoryFilter}
+            className="ui-link shrink-0"
+            style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--accent)" }}
+          >
+            Mostrar todo
+          </button>
+        </div>
+      )}
+
       {/* ── Sistemas ─────────────────────────────────────────── */}
       <div
         className="px-4 py-3 flex flex-col gap-2 shrink-0"

@@ -22,26 +22,22 @@ export function LayerSystemPanel() {
 function SingleSystemLayerPanel() {
   const groups = useMeshStore((s) => s.groups);
   const toggleGroup = useMeshStore((s) => s.toggleGroup);
+  // La visibilidad vive en meshStore (sobrevive al cambio de pestaña).
+  const visibility = useMeshStore((s) => s.visibility);
+  const setVisibility = useMeshStore((s) => s.setVisibility);
   const categoryOrder = useViewerStore((s) => s.activeSystem?.categoryOrder) ?? [];
 
-  const [visibility, setVisibility] = useState<Record<string, boolean>>({});
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
   const [activePreset, setActivePreset] = useState<string | null>("all");
 
   const handleToggle = (key: string, value: boolean) => {
-    setVisibility((prev) => ({ ...prev, [key]: value }));
     toggleGroup(key, value);
     setActivePreset(null);
   };
 
   const handleToggleCategory = (category: string, value: boolean) => {
     const inCategory = groups.filter((g) => (g.category ?? "Otros") === category);
-    const next: Record<string, boolean> = {};
-    inCategory.forEach((g) => {
-      next[g.key] = value;
-      toggleGroup(g.key, value);
-    });
-    setVisibility((prev) => ({ ...prev, ...next }));
+    setVisibility(Object.fromEntries(inCategory.map((g) => [g.key, value])));
     setActivePreset(null);
   };
 
@@ -51,9 +47,7 @@ function SingleSystemLayerPanel() {
     setActivePreset(preset);
     const presetFn = LAYER_PRESETS[preset];
     if (!presetFn) return;
-    const next = presetFn(groups);
-    Object.entries(next).forEach(([key, visible]) => toggleGroup(key, visible));
-    setVisibility(next);
+    setVisibility(presetFn(groups));
   };
 
   const toggleOpen = (category: string) => {
@@ -74,6 +68,14 @@ function SingleSystemLayerPanel() {
     .filter((c) => !categoryOrder.includes(c))
     .sort();
   const sortedCategories = [...orderedPresent, ...leftovers];
+
+  // Solo los presets que tienen sentido para este visor: "Solo huesos" compara
+  // sistemas entre sí (vista combinada) y "Sin cara" necesita esa categoría.
+  const presets = PRESETS.filter(
+    (p) =>
+      p.key === "all" ||
+      (p.key === "no-face" && groups.some((g) => g.category === "Cara y cabeza")),
+  );
 
   if (groups.length === 0) {
     return (
@@ -97,6 +99,7 @@ function SingleSystemLayerPanel() {
   return (
     <div className="flex flex-col h-full">
       {/* Presets */}
+      {presets.length > 1 && (
       <div
         className="px-4 py-3 flex flex-col gap-2"
         style={{ borderBottom: "1px solid var(--border-subtle)" }}
@@ -108,7 +111,7 @@ function SingleSystemLayerPanel() {
           Presets
         </span>
         <div className="flex gap-2 flex-wrap">
-          {PRESETS.map((p) => (
+          {presets.map((p) => (
             <button
               key={p.key}
               onClick={() => applyPreset(p.key)}
@@ -126,6 +129,7 @@ function SingleSystemLayerPanel() {
           ))}
         </div>
       </div>
+      )}
 
       {/* Categories */}
       <div className="flex-1 overflow-y-auto ui-scrollbar scrollbar scrollbar-thumb-muted scrollbar-track-panel px-2 py-2">

@@ -52,3 +52,23 @@ export function materiasDeCarrera(carreraId: CarreraId): MateriaId[] {
 export function carrerasDeMateria(materiaId: MateriaId): CarreraId[] {
   return CARRERA_IDS.filter((c) => CARRERAS[c].materias.includes(materiaId));
 }
+
+/**
+ * Materias que ve un usuario según sus carreras. Sin carreras válidas (admin,
+ * docente, anónimo) → todas.
+ */
+export function materiasParaCarreras(carreraIds: readonly string[] | null | undefined): MateriaId[] {
+  const validas = (carreraIds ?? []).filter((c): c is CarreraId => c in CARRERAS);
+  if (validas.length === 0) return MATERIA_IDS;
+  return MATERIA_IDS.filter((m) => validas.some((c) => CARRERAS[c].materias.includes(m)));
+}
+
+/** Primera carrera del usuario que cursa la materia (define qué unidades le corresponden). */
+export function carreraDeUsuarioParaMateria(
+  carreraIds: readonly string[] | null | undefined,
+  materiaId: MateriaId,
+): CarreraId | undefined {
+  return (carreraIds ?? []).find(
+    (c): c is CarreraId => c in CARRERAS && CARRERAS[c as CarreraId].materias.includes(materiaId),
+  );
+}
