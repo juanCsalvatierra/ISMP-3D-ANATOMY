@@ -14,10 +14,12 @@ import { PREGUNTAS_REPRODUCTOR } from './reproductor';
 import { PREGUNTAS_HISTOLOGIA } from './histologia';
 import { PREGUNTAS_FISIOLOGIA_GENERAL } from './fisiologia-general';
 import { PREGUNTAS_GENETICA } from './genetica';
+import { PREGUNTAS_TEGUMENTARIO } from './tegumentario';
 
 // Un archivo por tema transversal. Orden de los lotes (ver propuesta del paso 4):
 // circulatorio → respiratorio → urinario → digestivo → osteo/artro/miología →
-// nervioso, endocrino y reproductor → histología, fisiología y genética.
+// nervioso, endocrino y reproductor → histología, fisiología y genética →
+// tegumentario.
 export const BANCO: PreguntaBanco[] = [
   ...PREGUNTAS_CIRCULATORIO,
   ...PREGUNTAS_RESPIRATORIO,
@@ -34,4 +36,5 @@ export const BANCO: PreguntaBanco[] = [
   ...PREGUNTAS_HISTOLOGIA,
   ...PREGUNTAS_FISIOLOGIA_GENERAL,
   ...PREGUNTAS_GENETICA,
+  ...PREGUNTAS_TEGUMENTARIO,
 ];

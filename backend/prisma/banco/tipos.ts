@@ -72,6 +72,7 @@ export function vf(
 export const D = {
   ANAT1_U1: { materiaId: 'mat-anat1', unidad: 1 },   // Introducción a la anatomía
   ANAT1_U2: { materiaId: 'mat-anat1', unidad: 2 },   // Célula y tejidos
+  ANAT1_U3: { materiaId: 'mat-anat1', unidad: 3 },   // Sistema tegumentario
   ANAT1_U4: { materiaId: 'mat-anat1', unidad: 4 },   // Osteología
   ANAT1_U5: { materiaId: 'mat-anat1', unidad: 5 },   // Artrología
   ANAT1_U6: { materiaId: 'mat-anat1', unidad: 6 },   // Miología general
