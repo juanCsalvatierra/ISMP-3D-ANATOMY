@@ -70,6 +70,7 @@ export function vf(
 
 // Destinos frecuentes (materia + unidad según domain/programas.ts del frontend).
 export const D = {
+  ANAT1_U1: { materiaId: 'mat-anat1', unidad: 1 },   // Introducción a la anatomía
   ANAT1_U2: { materiaId: 'mat-anat1', unidad: 2 },   // Célula y tejidos
   ANAT1_U4: { materiaId: 'mat-anat1', unidad: 4 },   // Osteología
   ANAT1_U5: { materiaId: 'mat-anat1', unidad: 5 },   // Artrología
@@ -103,6 +104,7 @@ export const D = {
   LABD_U4: { materiaId: 'mat-anat-descriptiva', unidad: 4 },  // Respiratorio
   LABD_U5: { materiaId: 'mat-anat-descriptiva', unidad: 5 },  // Urinario
   LABD_U6: { materiaId: 'mat-anat-descriptiva', unidad: 6 },  // Digestivo
+  LABF_U1: { materiaId: 'mat-anat-fisiologica', unidad: 1 },  // Introducción a la fisiología
   LABF_U2: { materiaId: 'mat-anat-fisiologica', unidad: 2 },  // Fisiología celular y de membrana
   LABF_U3: { materiaId: 'mat-anat-fisiologica', unidad: 3 },  // Urinario
   LABF_U4: { materiaId: 'mat-anat-fisiologica', unidad: 4 },  // Digestivo
@@ -115,6 +117,7 @@ export const D = {
   HEM_U4: { materiaId: 'mat-ahf-normales', unidad: 4 },   // Respiratorio
   HEM_U5: { materiaId: 'mat-ahf-normales', unidad: 5 },   // Urinario
   HEM_U6: { materiaId: 'mat-ahf-normales', unidad: 6 },   // Digestivo
+  HEM_U7: { materiaId: 'mat-ahf-normales', unidad: 7 },   // Introducción a la fisiología
   HEM_U8: { materiaId: 'mat-ahf-normales', unidad: 8 },   // Fisiología celular y de membrana
   HEM_U9: { materiaId: 'mat-ahf-normales', unidad: 9 },   // Urinario (fisiológica)
   HEM_U10: { materiaId: 'mat-ahf-normales', unidad: 10 }, // Digestivo (fisiológica)
