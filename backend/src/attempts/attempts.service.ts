@@ -8,7 +8,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { StartAttemptDto } from './dto/start-attempt.dto';
 import { AnswerAttemptDto } from './dto/answer-attempt.dto';
-import { Role } from '@prisma/client';
+import { EstadoPregunta, Role } from '@prisma/client';
 
 @Injectable()
 export class AttemptsService {
@@ -32,6 +32,8 @@ export class AttemptsService {
         materias: {
           some: {
             materiaId,
+            // Los borradores de esa materia esperan revisión docente: no entran.
+            estado: EstadoPregunta.APROBADA,
             ...(unidad > 0 ? { unidad } : {}),
           },
         },

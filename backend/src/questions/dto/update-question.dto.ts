@@ -9,7 +9,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { Formato } from '@prisma/client';
+import { EstadoPregunta, Formato } from '@prisma/client';
 import { QuestionMateriaDto } from './create-question.dto';
 
 export class UpdateQuestionDto {
@@ -35,6 +35,22 @@ export class UpdateQuestionDto {
   @IsOptional()
   @IsEnum(Formato)
   formato?: Formato;
+
+  @IsOptional()
+  @IsString()
+  tema?: string;
+
+  // Aprobar / pasar a borrador, en las materias del usuario (un docente solo en
+  // las de sus carreras; el ADMIN en todas — ver QuestionsService.revisar).
+  // Se envía solo, sin otros campos.
+  @IsOptional()
+  @IsEnum(EstadoPregunta)
+  estado?: EstadoPregunta;
+
+  // Opcional junto con `estado`: limitar el cambio a una sola materia.
+  @IsOptional()
+  @IsString()
+  materiaId?: string;
 
   @IsOptional()
   @IsArray()

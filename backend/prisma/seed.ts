@@ -95,7 +95,7 @@ async function main() {
   console.log('\nSeeding usuarios...');
   for (const u of usuarios) {
     const passwordHash = await bcrypt.hash(u.password, 10);
-    await prisma.user.upsert({
+    const user = await prisma.user.upsert({
       where: { email: u.email },
       update: {},
       create: {
@@ -104,11 +104,17 @@ async function main() {
         passwordHash,
         role: u.role,
         estado: 'ACTIVO',
-        ...(u.carreraId ? {
-          carreras: { create: [{ carreraId: u.carreraId }] },
-        } : {}),
       },
     });
+    // La carrera se asegura también en usuarios que ya existían: define las
+    // materias del alumno y las que un docente puede revisar.
+    if (u.carreraId) {
+      await prisma.userCarrera.upsert({
+        where: { userId_carreraId: { userId: user.id, carreraId: u.carreraId } },
+        update: {},
+        create: { userId: user.id, carreraId: u.carreraId },
+      });
+    }
     console.log(`  ✓ ${u.role.padEnd(10)} ${u.email}`);
   }
 
@@ -186,6 +192,12 @@ async function main() {
 
   for (const p of preguntas) {
     const { materiaId, ...data } = p;
+    // Idempotente: no duplica las preguntas de ejemplo al volver a correr el seed.
+    const existe = await prisma.question.findFirst({
+      where: { texto: data.texto, materias: { some: { materiaId } } },
+      select: { id: true },
+    });
+    if (existe) continue;
     const q = await prisma.question.create({
       data: {
         ...data,

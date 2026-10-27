@@ -20,6 +20,15 @@ enum EstadoUsuario {
   ACTIVO
 }
 
+// Estado editorial de una pregunta EN UNA MATERIA (QuestionMateria.estado). Solo
+// las APROBADA llegan a los alumnos de esa materia (intentos y listado de
+// unidades); las BORRADOR esperan revisión. Un docente aprueba solo en las
+// materias de sus carreras; el administrador, en todas.
+enum EstadoPregunta {
+  BORRADOR
+  APROBADA
+}
+
 enum Formato {
   MULTIPLE
   TRUEFALSE
@@ -40,9 +49,10 @@ model User {
   activationCode String?       @unique
   createdAt      DateTime      @default(now())
 
-  carreras  UserCarrera[]
-  attempts  Attempt[]
-  questions Question[]
+  carreras           UserCarrera[]
+  attempts           Attempt[]
+  questions          Question[]        @relation("PreguntaAutor")
+  preguntasAprobadas QuestionMateria[] @relation("PreguntaAprobadaPor")
 }
 
 model UserCarrera {
@@ -61,7 +71,7 @@ model Carrera {
   label String
 
   users    UserCarrera[]
-  materias Materia[] @relation("CarreraMaterias")
+  materias Materia[]     @relation("CarreraMaterias")
 }
 
 model Materia {
@@ -87,10 +97,17 @@ model Question {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  autor            User              @relation(fields: [autorId], references: [id])
+  // Tema transversal (p. ej. "circulatorio.hemostasia"): una pregunta se redacta
+  // por tema y se asocia a varias materias/unidades vía QuestionMateria, que es
+  // donde vive su estado de aprobación.
+  tema String?
+
+  autor            User              @relation("PreguntaAutor", fields: [autorId], references: [id])
   materias         QuestionMateria[]
   answerLogs       AnswerLog[]
   attemptQuestions AttemptQuestion[]
+
+  @@index([tema])
 }
 
 // Tabla pivot: Question ↔ Materia con campo unidad
@@ -100,10 +117,18 @@ model QuestionMateria {
   materiaId  String
   unidad     Int    @default(0)
 
-  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  materia  Materia  @relation(fields: [materiaId], references: [id], onDelete: Cascade)
+  // Aprobación por materia: los docentes de esa materia (o un administrador) la
+  // aprueban. Las preguntas ya existentes quedan APROBADA; el banco nuevo, BORRADOR.
+  estado        EstadoPregunta @default(APROBADA)
+  aprobadaAt    DateTime?
+  aprobadaPorId String?
+
+  question    Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  materia     Materia  @relation(fields: [materiaId], references: [id], onDelete: Cascade)
+  aprobadaPor User?    @relation("PreguntaAprobadaPor", fields: [aprobadaPorId], references: [id], onDelete: SetNull)
 
   @@id([questionId, materiaId])
+  @@index([estado])
 }
 
 // ─── Intento (snapshot completo de la sesión) ────────────────────────────────

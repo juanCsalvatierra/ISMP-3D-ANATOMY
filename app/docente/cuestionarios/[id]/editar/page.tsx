@@ -36,6 +36,10 @@ function EditarView({ id }: { id: string }) {
 
   const [materias, setMaterias] = useState<MateriaOption[]>([]);
   const [materiaId, setMateriaId] = useState("");
+  // Una pregunta puede servir a varias materias/unidades. Esta pantalla edita solo
+  // el primer destino: se recuerda el original y los demás para no pisarlos.
+  const [destinoOriginal, setDestinoOriginal] = useState<{ materiaId: string; unidad: number } | null>(null);
+  const [otrosDestinos, setOtrosDestinos] = useState<{ materiaId: string; unidad: number }[]>([]);
   const [unidadesCache, setUnidadesCache] = useState<{ materiaId: string; values: number[] } | null>(null);
   const [unidadSel, setUnidadSel] = useState<{ materiaId: string; value: number | "nueva" } | null>(null);
   const [unidadNueva, setUnidadNueva] = useState<number | "">(1);
@@ -80,6 +84,8 @@ function EditarView({ id }: { id: string }) {
 
         setMateriaId(mId);
         setUnidadSel({ materiaId: mId, value: uVal });
+        setDestinoOriginal({ materiaId: mId, unidad: uVal });
+        setOtrosDestinos(question.materias.slice(1).map((m) => ({ materiaId: m.materiaId, unidad: m.unidad })));
       })
       .catch((err) => {
         if (err instanceof ApiError && err.status === 404) setNotFound(true);
@@ -122,7 +128,15 @@ function EditarView({ id }: { id: string }) {
         correct: correct!,
         explanation: explicacion.trim() || undefined,
         formato,
-        materias: [{ materiaId, unidad: unidadFinal! }],
+        // Solo se tocan los destinos si cambió el primero; los demás se conservan.
+        ...(destinoOriginal?.materiaId === materiaId && destinoOriginal.unidad === unidadFinal
+          ? {}
+          : {
+              materias: [
+                ...otrosDestinos.filter((o) => o.materiaId !== materiaId),
+                { materiaId, unidad: unidadFinal! },
+              ],
+            }),
       });
       router.push("/docente");
     } catch (err) {

@@ -25,7 +25,7 @@ interface Question {
   id: string;
   texto: string;
   formato: string;
-  materias: { materiaId: string; unidad: number; materia: { label: string } }[];
+  materias: { materiaId: string; unidad: number; estado?: "BORRADOR" | "APROBADA"; materia: { label: string } }[];
   autor: { id: string; name: string };
 }
 
@@ -63,6 +63,10 @@ function EditModal({ questionId, materias, onClose, onSaved }: EditModalProps) {
   const [saving, setSaving] = useState(false);
 
   const [materiaId, setMateriaId] = useState("");
+  // Una pregunta puede servir a varias materias/unidades. Este modal edita solo el
+  // primer destino: se recuerda el original y los demás para no pisarlos al guardar.
+  const [destinoOriginal, setDestinoOriginal] = useState<{ materiaId: string; unidad: number } | null>(null);
+  const [otrosDestinos, setOtrosDestinos] = useState<{ materiaId: string; unidad: number }[]>([]);
   const [unidadesCache, setUnidadesCache] = useState<{ materiaId: string; values: number[] } | null>(null);
   const [unidadSel, setUnidadSel] = useState<{ materiaId: string; value: number | "nueva" } | null>(null);
   const [unidadNueva, setUnidadNueva] = useState<number | "">(1);
@@ -89,6 +93,8 @@ function EditModal({ questionId, materias, onClose, onSaved }: EditModalProps) {
         setOpciones(padded);
         setMateriaId(mId);
         setUnidadSel({ materiaId: mId, value: uVal });
+        setDestinoOriginal({ materiaId: mId, unidad: uVal });
+        setOtrosDestinos(q.materias.slice(1).map((m) => ({ materiaId: m.materiaId, unidad: m.unidad })));
       })
       .catch((err) => setError(err instanceof ApiError ? err.message : "Error al cargar."))
       .finally(() => setLoading(false));
@@ -134,7 +140,15 @@ function EditModal({ questionId, materias, onClose, onSaved }: EditModalProps) {
         correct: correct!,
         explanation: explicacion.trim() || undefined,
         formato,
-        materias: [{ materiaId, unidad: unidadFinal! }],
+        // Solo se tocan los destinos si cambió el primero; los demás se conservan.
+        ...(destinoOriginal?.materiaId === materiaId && destinoOriginal.unidad === unidadFinal
+          ? {}
+          : {
+              materias: [
+                ...otrosDestinos.filter((o) => o.materiaId !== materiaId),
+                { materiaId, unidad: unidadFinal! },
+              ],
+            }),
       });
       onSaved();
       onClose();
@@ -411,9 +425,14 @@ function DocenteDashboard() {
               Hola {currentUser.name}, gestioná el banco de preguntas y seguí el progreso de tus alumnos.
             </p>
           </div>
-          <Link href="/docente/cuestionarios/nuevo" className="btn-primary">
-            + Agregar pregunta
-          </Link>
+          <div className="flex flex-wrap gap-2">
+            <Link href="/docente/revision" className="btn-secondary">
+              Revisar banco
+            </Link>
+            <Link href="/docente/cuestionarios/nuevo" className="btn-primary">
+              + Agregar pregunta
+            </Link>
+          </div>
         </div>
 
         {/* Stats */}
@@ -463,6 +482,8 @@ function DocenteDashboard() {
                       </p>
                       <p className="text-xs mt-0.5" style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}>
                         {mat?.materia.label ?? "—"} · {mat?.unidad === 0 ? "Toda la materia" : `Unidad ${mat?.unidad}`} · {q.formato.toLowerCase()}
+                        {q.materias.length > 1 ? ` · +${q.materias.length - 1} materias` : ""}
+                        {q.materias.some((m) => m.estado === "BORRADOR") ? " · BORRADOR" : ""}
                       </p>
                     </div>
                     <div className="flex gap-2 shrink-0">

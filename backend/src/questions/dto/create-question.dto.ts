@@ -40,6 +40,10 @@ export class CreateQuestionDto {
   @IsEnum(Formato)
   formato!: Formato;
 
+  @IsOptional()
+  @IsString()
+  tema?: string;
+
   @IsArray()
   @ArrayMinSize(1)
   @ValidateNested({ each: true })

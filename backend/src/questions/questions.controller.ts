@@ -23,18 +23,48 @@ import { Role } from '@prisma/client';
 export class QuestionsController {
   constructor(private readonly questionsService: QuestionsService) {}
 
-  // GET /questions?materiaId=xxx&unidad=2&formato=MULTIPLE
+  // GET /questions?materiaId=xxx&unidad=2&formato=MULTIPLE&estado=BORRADOR&tema=circulatorio
   @Get()
   findAll(
     @Query('materiaId') materiaId?: string,
     @Query('unidad') unidad?: string,
     @Query('formato') formato?: string,
+    @Query('estado') estado?: string,
+    @Query('tema') tema?: string,
   ) {
     return this.questionsService.findAll(
       materiaId,
       unidad !== undefined ? parseInt(unidad) : undefined,
       formato,
+      estado,
+      tema,
     );
+  }
+
+  // GET /questions/revision/materias  → materias en las que el usuario puede revisar
+  @Roles(Role.DOCENTE, Role.ADMIN)
+  @Get('revision/materias')
+  materiasRevisables(@CurrentUser() user: { sub: string; role: Role }) {
+    return this.questionsService.materiasRevisables(user.sub, user.role);
+  }
+
+  // GET /questions/revision?estado=BORRADOR&materiaId=..&unidad=..&tema=..
+  // Cola de revisión acotada a las materias del usuario (ADMIN: todas).
+  @Roles(Role.DOCENTE, Role.ADMIN)
+  @Get('revision')
+  revision(
+    @CurrentUser() user: { sub: string; role: Role },
+    @Query('estado') estado?: string,
+    @Query('materiaId') materiaId?: string,
+    @Query('unidad') unidad?: string,
+    @Query('tema') tema?: string,
+  ) {
+    return this.questionsService.revision(user.sub, user.role, {
+      estado,
+      materiaId,
+      unidad: unidad !== undefined ? parseInt(unidad) : undefined,
+      tema,
+    });
   }
 
   // GET /questions/:id
@@ -48,9 +78,9 @@ export class QuestionsController {
   @Post()
   create(
     @Body() dto: CreateQuestionDto,
-    @CurrentUser() user: { sub: string },
+    @CurrentUser() user: { sub: string; role: Role },
   ) {
-    return this.questionsService.create(dto, user.sub);
+    return this.questionsService.create(dto, user.sub, user.role);
   }
 
   // PATCH /questions/:id  → solo DOCENTE o ADMIN

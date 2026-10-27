@@ -24,7 +24,8 @@ export class CatalogService {
 
   async unidades(materiaId: string) {
     const rows = await this.prisma.questionMateria.findMany({
-      where: { materiaId },
+      // Una unidad con solo borradores no se ofrece a los alumnos todavía.
+      where: { materiaId, estado: 'APROBADA' },
       select: { unidad: true },
       distinct: ['unidad'],
       orderBy: { unidad: 'asc' },
