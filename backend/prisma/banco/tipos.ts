@@ -77,6 +77,7 @@ export const D = {
   ANAT2_U3: { materiaId: 'mat-anat2', unidad: 3 },    // Circulatorio y sangre
   ANAT2_U4: { materiaId: 'mat-anat2', unidad: 4 },    // Cabeza y cuello
   ANAT2_U5: { materiaId: 'mat-anat2', unidad: 5 },    // Urinario
+  ANAT3_U1: { materiaId: 'mat-anat3', unidad: 1 },    // Tórax
   ANAT3_U2: { materiaId: 'mat-anat3', unidad: 2 },    // Respiratorio
   ANAT3_U3: { materiaId: 'mat-anat3', unidad: 3 },    // Cardiovascular
   ANAT3_U4: { materiaId: 'mat-anat3', unidad: 4 },    // Abdomen y peritoneo
