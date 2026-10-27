@@ -49,8 +49,8 @@ const ANAT1: Unidad[] = [
       "Niveles de organización de la materia",
       "Generalidades de osteología, artrología y miología",
     ],
-    sistemas3D: [],
-    nota3D: "Conceptual; sin modelo propio.",
+    sistemas3D: ["skin"],
+    nota3D: "Conceptual; las regiones corporales se ven sobre el modelo de piel.",
     origen: RAD_IQ,
   },
   {
@@ -76,8 +76,8 @@ const ANAT1: Unidad[] = [
       "Cicatrización de heridas epidérmicas y profundas",
       "Líneas de Langer: características e importancia quirúrgica",
     ],
-    sistemas3D: [],
-    nota3D: "skin.glb existe pero aún no está registrado en el visor.",
+    sistemas3D: ["skin"],
+    nota3D: "El modelo de piel muestra regiones de superficie; no incluye capas (epidermis, dermis) ni Líneas de Langer.",
     origen: IQ,
   },
   {
@@ -132,7 +132,7 @@ const ANAT1: Unidad[] = [
       "Radiología normal e imagenología",
     ],
     sistemas3D: ["skeleton", "joints", "muscles"],
-    nota3D: "Filtrar por miembro superior (categorías regionales, paso 2).",
+    nota3D: "Categorías: Miembro superior (esqueleto); Hombro, Codo, Muñeca y mano (articulaciones); Brazo, Antebrazo, Mano (músculos).",
     origen: RAD_IQ,
   },
   {
@@ -147,7 +147,7 @@ const ANAT1: Unidad[] = [
       "Radiología normal",
     ],
     sistemas3D: ["skeleton", "joints", "muscles"],
-    nota3D: "Filtrar por miembro inferior (categorías regionales, paso 2).",
+    nota3D: "Categorías: Pelvis y Miembro inferior (esqueleto); Cadera, Rodilla, Tobillo y pie (articulaciones); Muslo, Pierna, Pie (músculos).",
     origen: RAD_IQ,
   },
   {
@@ -258,7 +258,7 @@ const ANAT2: Unidad[] = [
       "Cortes anatómicos e imagenología normal",
     ],
     sistemas3D: ["skeleton", "joints", "muscles", "nervous", "cardiovascular", "lymphatic"],
-    nota3D: "Filtrar por cabeza y cuello (categorías regionales, paso 2).",
+    nota3D: "Categorías: Cráneo y cara (esqueleto); Cabeza y cuello (articulaciones); Cara y cabeza, Cuello, Laringe y faringe (músculos).",
     origen: RAD,
   },
   {
@@ -391,8 +391,8 @@ const ANAT3: Unidad[] = [
       "Cavidad peritoneal: descripción y topografía general",
       "Espacios supracólico (supramesocólico) e infracólico (inframesocólico)",
     ],
-    sistemas3D: ["organs"],
-    nota3D: "Peritoneo parcial: solo mesocolon y epiplones mayor y menor.",
+    sistemas3D: ["organs", "skin"],
+    nota3D: "Peritoneo parcial: solo mesocolon y epiplones mayor y menor. Regiones y cuadrantes abdominales: modelo de piel.",
   },
   {
     n: 5,

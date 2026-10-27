@@ -250,6 +250,20 @@ const lymphaticMaterial: ApplyMaterial = (child, resolvedName) => {
   });
 };
 
+// Piel: translúcida para poder combinarla con esqueleto, músculos y vísceras
+// sin taparlos (no escribe profundidad, igual que la fascia).
+const skinMaterial: ApplyMaterial = (child) => {
+  child.material = new THREE.MeshStandardMaterial({
+    color: "#E8B89A",
+    transparent: true,
+    opacity: 0.4,
+    roughness: 0.7,
+    metalness: 0,
+    depthWrite: false,
+  });
+  child.renderOrder = 1;
+};
+
 export const SYSTEM_MATERIALS: Record<SystemId, ApplyMaterial> = {
   skeleton: skeletonMaterial,
   muscles: musclesMaterial,
@@ -258,4 +272,5 @@ export const SYSTEM_MATERIALS: Record<SystemId, ApplyMaterial> = {
   nervous: nervousMaterial,
   cardiovascular: cardiovascularMaterial,
   lymphatic: lymphaticMaterial,
+  skin: skinMaterial,
 };
