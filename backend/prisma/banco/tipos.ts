@@ -84,6 +84,7 @@ export const D = {
   ANAT3_U5: { materiaId: 'mat-anat3', unidad: 5 },    // Urinario
   ANAT4_U1: { materiaId: 'mat-anat4', unidad: 1 },    // Digestivo
   ANAT4_U2: { materiaId: 'mat-anat4', unidad: 2 },    // Glándulas anexas
+  ANAT4_U3: { materiaId: 'mat-anat4', unidad: 3 },    // Motilidad y secreción digestivas
   ANAT4_U5: { materiaId: 'mat-anat4', unidad: 5 },    // Circulatorio
   LABD_U3: { materiaId: 'mat-anat-descriptiva', unidad: 3 },  // Circulatorio
   LABD_U4: { materiaId: 'mat-anat-descriptiva', unidad: 4 },  // Respiratorio

@@ -3,6 +3,7 @@ import { PREGUNTAS_CIRCULATORIO } from './circulatorio';
 import { PREGUNTAS_RESPIRATORIO } from './respiratorio';
 import { PREGUNTAS_URINARIO } from './urinario';
 import { PREGUNTAS_DIGESTIVO_ANATOMIA } from './digestivo-anatomia';
+import { PREGUNTAS_DIGESTIVO_FISIOLOGIA } from './digestivo-fisiologia';
 
 // Un archivo por tema transversal. Orden de los lotes (ver propuesta del paso 4):
 // circulatorio → respiratorio → urinario → digestivo → osteo/artro/miología →
@@ -12,4 +13,5 @@ export const BANCO: PreguntaBanco[] = [
   ...PREGUNTAS_RESPIRATORIO,
   ...PREGUNTAS_URINARIO,
   ...PREGUNTAS_DIGESTIVO_ANATOMIA,
+  ...PREGUNTAS_DIGESTIVO_FISIOLOGIA,
 ];
