@@ -82,6 +82,9 @@ export const D = {
   ANAT2_U3: { materiaId: 'mat-anat2', unidad: 3 },    // Circulatorio y sangre
   ANAT2_U4: { materiaId: 'mat-anat2', unidad: 4 },    // Cabeza y cuello
   ANAT2_U5: { materiaId: 'mat-anat2', unidad: 5 },    // Urinario
+  ANAT2_U6: { materiaId: 'mat-anat2', unidad: 6 },    // Aparato reproductor
+  ANAT2_U7: { materiaId: 'mat-anat2', unidad: 7 },    // Sistema endocrino
+  ANAT2_U8: { materiaId: 'mat-anat2', unidad: 8 },    // Genética y células madre
   ANAT2_U9: { materiaId: 'mat-anat2', unidad: 9 },    // Órganos de los sentidos
   ANAT3_U1: { materiaId: 'mat-anat3', unidad: 1 },    // Tórax
   ANAT3_U2: { materiaId: 'mat-anat3', unidad: 2 },    // Respiratorio
@@ -91,6 +94,7 @@ export const D = {
   ANAT4_U1: { materiaId: 'mat-anat4', unidad: 1 },    // Digestivo
   ANAT4_U2: { materiaId: 'mat-anat4', unidad: 2 },    // Glándulas anexas
   ANAT4_U3: { materiaId: 'mat-anat4', unidad: 3 },    // Motilidad y secreción digestivas
+  ANAT4_U4: { materiaId: 'mat-anat4', unidad: 4 },    // Reproductor femenino y fisiología
   ANAT4_U5: { materiaId: 'mat-anat4', unidad: 5 },    // Circulatorio
   LABD_U2: { materiaId: 'mat-anat-descriptiva', unidad: 2 },  // Histología: tejidos
   LABD_U3: { materiaId: 'mat-anat-descriptiva', unidad: 3 },  // Circulatorio
