@@ -301,8 +301,9 @@ const ANAT2: Unidad[] = [
       "Principales patologías biopsicosociales de la esfera genital",
       "Aplicación quirúrgica",
     ],
-    sistemas3D: ["organs"],
-    nota3D: "Masculino cubierto. Femenino y mama: sin modelo 3D (a incorporar).",
+    sistemas3D: ["organs", "female"],
+    nota3D:
+      "Masculino: sistema Vísceras. Femenino y mama: sistema Reproductor femenino (útero, ovarios, trompas y mama); vagina, vulva y periné sin modelo.",
     origen: IQ,
   },
   {
@@ -477,8 +478,9 @@ const ANAT4: Unidad[] = [
       "Sistema regulador hipotálamo-hipófisis-ovarios y hormonas",
       "Ciclo ovárico, uterino y endometrial",
     ],
-    sistemas3D: [],
-    nota3D: "Sin modelo 3D femenino (a incorporar).",
+    sistemas3D: ["female"],
+    nota3D:
+      "Útero, ovarios, trompas uterinas y mama (Human Reference Atlas, ubicados sobre el cuerpo masculino de Z-Anatomy). Vagina, vulva y periné: sin modelo.",
   },
   {
     n: 5,

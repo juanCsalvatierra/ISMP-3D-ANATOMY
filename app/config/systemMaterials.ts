@@ -118,6 +118,45 @@ const organsMaterial: ApplyMaterial = (child, resolvedName) => {
   });
 };
 
+// Reproductor femenino y mama. El tejido graso de la mama es translúcido para
+// ver lóbulos y conductos por dentro (no escribe profundidad, igual que la fascia).
+const femaleMaterial: ApplyMaterial = (child, resolvedName) => {
+  const name = resolvedName.toLowerCase();
+
+  if (name.startsWith("breast")) {
+    child.material = new THREE.MeshStandardMaterial({
+      color: "#F3D5C0",
+      transparent: true,
+      opacity: 0.3,
+      roughness: 0.7,
+      metalness: 0,
+      depthWrite: false,
+    });
+    child.renderOrder = 1;
+    return;
+  }
+
+  const byKeyword: [string[], string][] = [
+    [["lobes"], "#E8C27A"],
+    [["lactiferous"], "#F2B84B"],
+    [["nipple", "areola"], "#C98B7A"],
+    [["suspensory"], "#EDE6D6"],
+    [["ovary"], "#E3B88F"],
+    [["fallopian"], "#D98A86"],
+    [["cervix"], "#B85C5C"],
+    [["uterus"], "#C9706A"],
+  ];
+
+  for (const [keywords, color] of byKeyword) {
+    if (keywords.some((kw) => name.includes(kw))) {
+      child.material = new THREE.MeshStandardMaterial({ color, roughness: 0.55, metalness: 0 });
+      return;
+    }
+  }
+
+  child.material = new THREE.MeshStandardMaterial({ color: "#C9706A", roughness: 0.55, metalness: 0 });
+};
+
 const nervousMaterial: ApplyMaterial = (child, resolvedName) => {
   const name = resolvedName.toLowerCase();
 
@@ -269,6 +308,7 @@ export const SYSTEM_MATERIALS: Record<SystemId, ApplyMaterial> = {
   muscles: musclesMaterial,
   joints: jointsMaterial,
   organs: organsMaterial,
+  female: femaleMaterial,
   nervous: nervousMaterial,
   cardiovascular: cardiovascularMaterial,
   lymphatic: lymphaticMaterial,

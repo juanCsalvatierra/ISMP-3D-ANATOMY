@@ -10,7 +10,7 @@
 
 import type { CarreraId } from "../domain/academic";
 
-export type SystemId = "skeleton" | "muscles" | "joints" | "organs" | "nervous" | "cardiovascular" | "lymphatic" | "skin";
+export type SystemId = "skeleton" | "muscles" | "joints" | "organs" | "female" | "nervous" | "cardiovascular" | "lymphatic" | "skin";
 
 export type DatasetId = "skeleton" | "builded";
 
@@ -224,6 +224,22 @@ const ORGANS_CATEGORY_ORDER = [
   "Otros",
 ];
 
+// Aparato reproductor femenino y mama. Las claves son las del dataset: útero,
+// ovario, trompa y mama existen en anatomy.final.builded.json; cérvix, lóbulos,
+// senos galactóforos y ligamentos suspensorios, en anatomy.female.json.
+const FEMALE_CATEGORY_RULES: CategoryRule[] = [
+  { category: "Mama", keywords: ["breast", "mammary", "nipple", "areola", "lactiferous"] },
+  { category: "Ovarios y trompas", keywords: ["ovary", "fallopian_tube"] },
+  { category: "Útero y cuello uterino", keywords: ["uterus", "cervix"] },
+];
+
+const FEMALE_CATEGORY_ORDER = [
+  "Útero y cuello uterino",
+  "Ovarios y trompas",
+  "Mama",
+  "Otros",
+];
+
 const SKIN_CATEGORY_RULES: CategoryRule[] = [
   { category: "Oído externo", keywords: ["auric", "antihelix", "antitragus", "tragus", "helix", "concha", "cymba", "scapha", "triangular_fossa", "fossa_antihelica", "intertragic"] },
   { category: "Periné y genitales", keywords: ["anal_region", "urogenital", "pubic", "perine"] },
@@ -310,6 +326,21 @@ export const SYSTEMS: Record<SystemId, AnatomySystem> = {
     categoryOrder: ORGANS_CATEGORY_ORDER,
     carreras: TODAS_LAS_CARRERAS,
   },
+  female: {
+    id: "female",
+    label: "Aparato reproductor femenino y mama",
+    shortLabel: "Reproductor ♀",
+    tagline: "Útero, ovarios, trompas uterinas y mama",
+    glb: "/models/female.glb",
+    dataset: "builded",
+    count: "12 estructuras",
+    swatch: "#D98BA0",
+    weightMB: 6.6,
+    status: "ready",
+    categoryRules: FEMALE_CATEGORY_RULES,
+    categoryOrder: FEMALE_CATEGORY_ORDER,
+    carreras: ["carrera-rad", "carrera-iq"],
+  },
   nervous: {
     id: "nervous",
     label: "Sistema nervioso",
@@ -373,7 +404,7 @@ export const SYSTEMS: Record<SystemId, AnatomySystem> = {
 };
 
 /** Orden de aparición en nav / galería. */
-export const SYSTEM_ORDER: SystemId[] = ["skeleton", "muscles", "joints", "organs", "nervous", "cardiovascular", "lymphatic", "skin"];
+export const SYSTEM_ORDER: SystemId[] = ["skeleton", "muscles", "joints", "organs", "female", "nervous", "cardiovascular", "lymphatic", "skin"];
 
 export const SYSTEM_LIST: AnatomySystem[] = SYSTEM_ORDER.map((id) => SYSTEMS[id]);
 

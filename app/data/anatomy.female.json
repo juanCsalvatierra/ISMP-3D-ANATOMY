@@ -1,0 +1,65 @@
+{
+  "cervix_of_uterus": {
+    "name": "Cuello uterino (cérvix)",
+    "english_name": ["cervix_of_uterus"],
+    "source": "",
+    "sections": [
+      {
+        "title": "Introducción",
+        "level": 2,
+        "content": "El cuello uterino o cérvix es la porción inferior y estrecha del útero, de unos 2,5 a 3 cm de longitud. Se continúa hacia arriba con el cuerpo del útero a través del istmo y hacia abajo se proyecta en la vagina. Su canal comunica la cavidad uterina con la vagina por medio de dos orificios: el orificio cervical interno y el orificio cervical externo."
+      },
+      {
+        "title": "Relevancia clínica",
+        "level": 2,
+        "content": "El epitelio cilíndrico del endocérvix se une con el epitelio plano estratificado del exocérvix en la zona de transformación, sitio donde se originan la mayoría de las lesiones precancerosas y los cánceres de cuello uterino, casi siempre asociados al virus del papiloma humano. La citología cervical (Papanicolaou) toma muestras de esta zona."
+      }
+    ]
+  },
+  "mammary_lobes": {
+    "name": "Lóbulos mamarios",
+    "english_name": ["mammary_lobes"],
+    "source": "",
+    "sections": [
+      {
+        "title": "Introducción",
+        "level": 2,
+        "content": "Los lóbulos mamarios son las unidades glandulares de la mama: entre 15 y 20 lóbulos por mama, cada uno formado por lobulillos con alvéolos secretores de leche. Cada lóbulo drena por un conducto galactóforo que desemboca en el pezón."
+      },
+      {
+        "title": "Relevancia clínica",
+        "level": 2,
+        "content": "La mayoría de los cánceres de mama se originan en el epitelio de los conductos o de los lobulillos (carcinomas ductal y lobulillar)."
+      }
+    ]
+  },
+  "lactiferous_sinus": {
+    "name": "Senos galactóforos",
+    "english_name": ["lactiferous_sinus"],
+    "source": "",
+    "sections": [
+      {
+        "title": "Introducción",
+        "level": 2,
+        "content": "Los senos galactóforos son dilataciones de los conductos galactóforos principales situadas justo por debajo de la areola, donde se acumula la leche antes de salir por el pezón durante la lactancia."
+      }
+    ]
+  },
+  "suspensory_ligaments_of_breast": {
+    "name": "Ligamentos suspensorios de la mama (de Cooper)",
+    "english_name": ["suspensory_ligaments_of_breast"],
+    "source": "",
+    "sections": [
+      {
+        "title": "Introducción",
+        "level": 2,
+        "content": "Los ligamentos suspensorios de la mama, o ligamentos de Cooper, son bandas de tejido conectivo que van desde la dermis hasta la fascia pectoral y atraviesan el tejido mamario. Sostienen la mama y le dan forma."
+      },
+      {
+        "title": "Relevancia clínica",
+        "level": 2,
+        "content": "Un tumor que infiltra estos ligamentos los acorta y retrae la piel (hoyuelo o signo de la piel de naranja). Con la edad y los cambios hormonales los ligamentos se distienden y la mama pierde firmeza."
+      }
+    ]
+  }
+}

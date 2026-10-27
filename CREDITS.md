@@ -27,6 +27,7 @@ cubre únicamente el **contenido** incorporado desde fuentes externas.
 | `lymph.glb` | Sistema linfático |
 | `joints.glb` | Articulaciones y ligamentos |
 | `skin.glb` | Piel / regiones de superficie |
+| `female.glb` | Aparato reproductor femenino y mama (fuente distinta: ver Human Reference Atlas) |
 
 ### Fuente primaria: Z-Anatomy
 
@@ -62,6 +63,37 @@ anatómicos 3D del cuerpo humano.
   > Mitsuhashi N, Fujieda K, Tamura T, Kawamoto S, Takagi T, Okubo K.
   > *BodyParts3D: 3D structure database for anatomical concepts.*
   > Nucleic Acids Research. 2009 Jan;37(Database issue):D782-5.
+
+### Fuente adicional: Human Reference Atlas (HuBMAP) — `female.glb`
+
+Z-Anatomy es un modelo masculino, por eso el aparato reproductor femenino y la mama
+provienen de otra fuente:
+
+- **Proyecto:** Human Reference Atlas (HRA) / HuBMAP — librería de objetos 3D de
+  referencia, construida sobre el *Visible Human Female* de la Biblioteca Nacional de
+  Medicina de EE. UU.
+- **Sitio:** <https://humanatlas.io> · repositorio de publicaciones:
+  <https://github.com/hubmapconsortium/ccf-releases>
+- **Objetos usados (v2.0, `cdn.humanatlas.io/digital-objects/ref-organ/`):**
+  `3d-vh-f-uterus`, `3d-vh-f-ovary-l`, `3d-vh-f-ovary-r`,
+  `3d-vh-f-fallopian-tube-l`, `3d-vh-f-fallopian-tube-r`,
+  `3d-vh-f-mammary-gland-l`, `3d-vh-f-mammary-gland-r` (descargados el 2026-10-27).
+- **Licencia:** **Creative Commons Attribution 4.0 International (CC BY 4.0)** — figura
+  en el metadato `dct:license` de cada objeto digital.
+  <https://creativecommons.org/licenses/by/4.0/>
+- **Modificaciones:** fusionados en un único `female.glb`, mallas renombradas a los
+  nombres de Z-Anatomy, vértices soldados y mallas decimadas (las mamas, de ~860 mil a
+  ~51 mil triángulos), normales recalculadas y objetos trasladados al sistema de
+  coordenadas de Z-Anatomy (pelvis y mama con ajustes independientes, porque el cuerpo
+  de Z-Anatomy es masculino). La posición es aproximada y **no** es una reconstrucción
+  anatómica de una paciente concreta.
+- **Texto de las estructuras que no existen en el dataset original** (cérvix, lóbulos
+  mamarios, senos galactóforos, ligamentos de Cooper): redactado por el equipo del ISMP
+  (`app/data/anatomy.female.json`).
+
+> Modelos del aparato reproductor femenino y la mama: Human Reference Atlas / HuBMAP
+> (CC BY 4.0, https://humanatlas.io), derivados del Visible Human Female. Modificados
+> para ISMP Anatomy.
 
 ### Texto de atribución recomendado (UI / "Acerca de")
 

@@ -3,7 +3,7 @@ ISMP Anatomy — Modelos 3D (public/models/*.glb)
 
 Archivos cubiertos por este aviso:
   skeleton.glb, muscles.glb, muscular_insertions.glb, organs.glb,
-  nervous.glb, cardiovascular.glb, lymph.glb, joints.glb, skin.glb
+  nervous.glb, cardiovascular.glb, lymph.glb, joints.glb, skin.glb, female.glb
 
 
 ORIGEN
@@ -36,6 +36,25 @@ Z-Anatomy deriva a su vez su geometría de BodyParts3D:
                   Okubo K. "BodyParts3D: 3D structure database for
                   anatomical concepts." Nucleic Acids Research.
                   2009 Jan;37(Database issue):D782-5.
+
+
+ORIGEN ADICIONAL (solo female.glb)
+----------------------------------
+female.glb (aparato reproductor femenino y mama) NO deriva de Z-Anatomy, que es
+un modelo masculino. Deriva de la librería de objetos 3D de referencia del
+Human Reference Atlas (HRA / HuBMAP), construida sobre el Visible Human Female:
+
+  Human Reference Atlas ... https://humanatlas.io
+  Objetos ................. 3d-vh-f-uterus, 3d-vh-f-ovary-l/r,
+                            3d-vh-f-fallopian-tube-l/r, 3d-vh-f-mammary-gland-l/r
+  Licencia ................ Creative Commons Attribution 4.0 International
+                            (CC BY 4.0), https://creativecommons.org/licenses/by/4.0/
+
+Se modificó: fusión en un único archivo, renombrado de mallas, soldado de
+vértices, decimación de las mamas, recálculo de normales y traslación al
+sistema de coordenadas de Z-Anatomy. Se distribuye bajo CC BY 4.0 (la
+condición ShareAlike del resto de los modelos no aplica a este archivo, pero
+el conjunto se distribuye bajo CC BY-SA 4.0 sin conflicto).
 
 
 CONDICIONES DE USO (CC BY-SA)
