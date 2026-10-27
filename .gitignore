@@ -49,6 +49,8 @@ coverage/
 # ===== Base de datos =====
 .env.database
 *.sql
+# Las migraciones de Prisma SÍ se versionan: sin ellas otra máquina no puede armar el schema.
+!backend/prisma/migrations/**/*.sql
 /data/
 
 # ===== Uploads =====
