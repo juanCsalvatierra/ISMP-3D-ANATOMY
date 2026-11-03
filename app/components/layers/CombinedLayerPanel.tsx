@@ -64,7 +64,7 @@ export function CombinedLayerPanel() {
     setVisibility(Object.fromEntries(keys.map((k) => [k, value])));
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col lg:h-full">
       {categoryFilter && (
         <div
           className="px-4 py-2 flex items-center justify-between gap-2 shrink-0 text-xs"
@@ -113,7 +113,7 @@ export function CombinedLayerPanel() {
           )}
         </div>
 
-        <div className="flex flex-col gap-1">
+        <div className="grid grid-cols-2 gap-1 lg:flex lg:flex-col">
           {visibleSystems.map((sys) => {
             const enabled = enabledSystems.includes(sys.id);
             const sysGroups = groupsBySystem.get(sys.id) ?? [];
@@ -135,7 +135,7 @@ export function CombinedLayerPanel() {
                   }}
                 />
                 <span
-                  className="text-sm flex-1"
+                  className="text-sm flex-1 min-w-0 truncate"
                   style={{
                     fontFamily: "var(--font-ibm-plex-sans)",
                     color: enabled ? "var(--text-primary)" : "var(--text-muted)",
@@ -156,7 +156,9 @@ export function CombinedLayerPanel() {
       </div>
 
       {/* ── Estructuras por sistema ──────────────────────────── */}
-      <div className="flex-1 overflow-y-auto ui-scrollbar scrollbar scrollbar-thumb-muted scrollbar-track-panel px-2 py-2">
+      {/* En pantallas chicas el panel entero se desplaza (lo hace ViewerRightPanel);
+          el scroll propio de esta lista solo tiene sentido con el panel a alto completo. */}
+      <div className="lg:flex-1 lg:overflow-y-auto ui-scrollbar scrollbar scrollbar-thumb-muted scrollbar-track-panel px-2 py-2">
         {enabledSystems
           .map((id) => SYSTEMS[id])
           .filter((sys) => (groupsBySystem.get(sys.id)?.length ?? 0) > 0)

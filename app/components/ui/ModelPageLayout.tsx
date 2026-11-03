@@ -27,12 +27,14 @@ export function ModelPageLayout({ breadcrumbItems, children }: Props) {
       </div>
 
       {/* Main 2-column layout */}
-      <div className="flex flex-col lg:flex-row w-full" style={{ height: "calc(100vh - 48px - 33px)" }}>
+      {/* Alto = pantalla - barra global (48px) - breadcrumb (33px). dvh descuenta la
+          barra del navegador en celulares; 100vh queda de respaldo. */}
+      <div className="flex flex-col lg:flex-row w-full h-[calc(100vh-81px)] supports-[height:100dvh]:h-[calc(100dvh-81px)]">
 
         {/* Canvas Zone */}
         <div
           id="canvas-container"
-          className="relative w-full h-[50vh] lg:w-[65%] lg:h-full"
+          className="relative w-full h-[42%] shrink-0 lg:w-[65%] lg:h-full"
           style={{ background: "var(--bg-canvas)" }}
         >
           <SceneCanvas background="var(--bg-canvas)">
@@ -45,7 +47,7 @@ export function ModelPageLayout({ breadcrumbItems, children }: Props) {
 
         {/* Right Panel */}
         <div
-          className="w-full lg:w-[35%] h-[50vh] lg:h-full overflow-hidden flex flex-col"
+          className="w-full lg:w-[35%] flex-1 min-h-0 lg:h-full overflow-hidden flex flex-col"
           style={{ borderLeft: "1px solid var(--border-subtle)" }}
         >
           <ViewerRightPanel />
