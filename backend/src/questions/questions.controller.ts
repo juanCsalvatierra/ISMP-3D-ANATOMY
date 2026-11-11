@@ -18,6 +18,10 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser } from '../auth/decorators/user.decorator';
 import { Role } from '@prisma/client';
 
+// Todo el banco es de uso docente: sus endpoints devuelven la respuesta correcta,
+// así que un estudiante no debe poder leerlo (los alumnos reciben las preguntas
+// por AttemptsModule, que no incluye `correct` hasta que responden).
+@Roles(Role.DOCENTE, Role.ADMIN)
 @UseGuards(JwtGuard, RolesGuard)
 @Controller('questions')
 export class QuestionsController {
@@ -41,8 +45,13 @@ export class QuestionsController {
     );
   }
 
+  // GET /questions/resumen  → conteo de preguntas por materia, unidad y estado
+  @Get('resumen')
+  resumen(@CurrentUser() user: { sub: string; role: Role }) {
+    return this.questionsService.resumen(user.sub, user.role);
+  }
+
   // GET /questions/revision/materias  → materias en las que el usuario puede revisar
-  @Roles(Role.DOCENTE, Role.ADMIN)
   @Get('revision/materias')
   materiasRevisables(@CurrentUser() user: { sub: string; role: Role }) {
     return this.questionsService.materiasRevisables(user.sub, user.role);
@@ -50,7 +59,6 @@ export class QuestionsController {
 
   // GET /questions/revision?estado=BORRADOR&materiaId=..&unidad=..&tema=..
   // Cola de revisión acotada a las materias del usuario (ADMIN: todas).
-  @Roles(Role.DOCENTE, Role.ADMIN)
   @Get('revision')
   revision(
     @CurrentUser() user: { sub: string; role: Role },
@@ -74,7 +82,6 @@ export class QuestionsController {
   }
 
   // POST /questions  → solo DOCENTE o ADMIN
-  @Roles(Role.DOCENTE, Role.ADMIN)
   @Post()
   create(
     @Body() dto: CreateQuestionDto,
@@ -84,7 +91,6 @@ export class QuestionsController {
   }
 
   // PATCH /questions/:id  → solo DOCENTE o ADMIN
-  @Roles(Role.DOCENTE, Role.ADMIN)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -95,7 +101,6 @@ export class QuestionsController {
   }
 
   // DELETE /questions/:id  → solo DOCENTE o ADMIN
-  @Roles(Role.DOCENTE, Role.ADMIN)
   @Delete(':id')
   remove(
     @Param('id') id: string,

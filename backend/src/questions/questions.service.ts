@@ -52,6 +52,38 @@ export class QuestionsService {
     });
   }
 
+  // ─── Resumen del banco: cantidad de preguntas por materia, unidad y estado ──
+  // Alimenta los menús del banco docente sin bajar todas las preguntas. Cada fila es
+  // un destino (pregunta × materia); `preguntas` cuenta las preguntas distintas, ya
+  // que una misma pregunta puede servir a varias materias. Un docente ve las materias
+  // de sus carreras más los destinos de las preguntas que él mismo redactó; el ADMIN, todo.
+  async resumen(userId: string, role: Role) {
+    const alcance = await this.alcanceRevision(userId, role);
+    const propias: Prisma.QuestionMateriaWhereInput = { question: { autorId: userId } };
+    const destinos: Prisma.QuestionMateriaWhereInput =
+      alcance === 'todas' ? {} : { OR: [{ materiaId: { in: alcance } }, propias] };
+
+    const [filas, preguntas] = await Promise.all([
+      this.prisma.questionMateria.groupBy({
+        by: ['materiaId', 'unidad', 'estado'],
+        where: destinos,
+        _count: { _all: true },
+        orderBy: [{ materiaId: 'asc' }, { unidad: 'asc' }],
+      }),
+      this.prisma.question.count({ where: { materias: { some: destinos } } }),
+    ]);
+
+    return {
+      preguntas,
+      filas: filas.map((f) => ({
+        materiaId: f.materiaId,
+        unidad: f.unidad,
+        estado: f.estado,
+        total: f._count._all,
+      })),
+    };
+  }
+
   // ─── Listar preguntas del banco ──────────────────────────────────────────
   // Filtros opcionales: materiaId, unidad, formato, estado (de la materia), tema
   findAll(materiaId?: string, unidad?: number, formato?: string, estado?: string, tema?: string) {

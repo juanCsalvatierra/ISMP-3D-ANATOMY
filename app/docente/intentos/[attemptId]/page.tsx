@@ -60,7 +60,7 @@ function DetalleView({ attemptId }: { attemptId: string }) {
           <p className="text-base font-semibold mb-4" style={{ color: "var(--text-primary)", fontFamily: "var(--font-ibm-plex-sans)" }}>
             {error ?? "Intento no encontrado"}
           </p>
-          <Link href="/docente" className="btn-primary inline-flex">Volver al panel</Link>
+          <Link href="/docente/resultados" className="btn-primary inline-flex">Volver a resultados</Link>
         </div>
       </main>
     );
@@ -74,7 +74,8 @@ function DetalleView({ attemptId }: { attemptId: string }) {
       <div style={{ borderBottom: "1px solid var(--border-subtle)" }}>
         <Breadcrumb items={[
           { label: "Inicio", href: "/" },
-          { label: "Docente", href: "/docente" },
+          { label: "Panel docente", href: "/docente" },
+          { label: "Resultados de alumnos", href: "/docente/resultados" },
           { label: "Detalle de intento" },
         ]} />
       </div>
@@ -92,7 +93,7 @@ function DetalleView({ attemptId }: { attemptId: string }) {
                 {attempt.user?.email}
               </p>
             </div>
-            <Link href="/docente" className="btn-secondary shrink-0">← Volver al panel</Link>
+            <Link href="/docente/resultados" className="btn-secondary shrink-0">← Volver a resultados</Link>
           </div>
 
           {/* Stats */}
