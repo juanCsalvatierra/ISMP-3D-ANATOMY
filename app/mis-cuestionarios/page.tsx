@@ -1,13 +1,22 @@
 "use client";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { RoleGate } from "@/app/components/auth/RoleGate";
-import { useUserStore } from "@/app/store/userStore";
-import { useCuestionarioHistoryStore } from "@/app/store/cuestionarioHistoryStore";
-import { useCuestionarioBankStore, FORMATO_LABELS } from "@/app/store/cuestionarioBankStore";
-import { MATERIAS } from "@/app/domain/academic";
-import { useHydrated } from "@/app/store/useHydrated";
+import { api, ApiError } from "@/app/lib/api";
 
-function formatDate(iso: string) {
+// Intento completado tal como lo devuelve GET /attempts/me.
+type Intento = {
+  id: string;
+  materiaId: string;
+  unidad: number;
+  cantidad: number;
+  nota: number | null;
+  completedAt: string | null;
+  materia: { id: string; slug: string; label: string };
+};
+
+function formatDate(iso: string | null) {
+  if (!iso) return "—";
   try {
     return new Date(iso).toLocaleString("es-AR", {
       day: "2-digit",
@@ -21,35 +30,44 @@ function formatDate(iso: string) {
   }
 }
 
-function scoreColor(score: number, total: number) {
-  const ratio = total ? score / total : 0;
-  if (ratio >= 0.9) return "rgb(34,197,94)";
-  if (ratio >= 0.7) return "rgb(234,179,8)";
+function scoreColor(nota: number) {
+  if (nota >= 90) return "rgb(34,197,94)";
+  if (nota >= 70) return "rgb(234,179,8)";
   return "var(--accent)";
 }
 
+function unidadLabel(unidad: number) {
+  return unidad > 0 ? `Unidad ${unidad}` : "Toda la materia";
+}
+
 function HistoryView() {
-  const currentUser = useUserStore((s) => s.currentUser);
-  const attempts = useCuestionarioHistoryStore((s) => s.attempts);
-  const cuestionarios = useCuestionarioBankStore((s) => s.cuestionarios);
-  const hydrated = useHydrated();
+  const [intentos, setIntentos] = useState<Intento[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const mine = hydrated && currentUser
-    ? attempts.filter((a) => a.userId === currentUser.id)
-    : [];
+  useEffect(() => {
+    let cancelled = false;
+    api
+      .get<Intento[]>("/attempts/me")
+      .then((data) => {
+        if (!cancelled) setIntentos(data);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        // El backend responde 404 cuando el alumno todavía no completó ninguno.
+        if (err instanceof ApiError && err.status === 404) setIntentos([]);
+        else setError(err instanceof ApiError ? err.message : "No se pudo cargar tu historial.");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
+  const loading = intentos === null && error === null;
+  const mine = intentos ?? [];
   const totalAttempts = mine.length;
   const avgScore = totalAttempts
-    ? Math.round(
-      (mine.reduce((acc, a) => acc + (a.total ? a.score / a.total : 0), 0) /
-        totalAttempts) *
-      100
-    )
+    ? Math.round(mine.reduce((acc, a) => acc + (a.nota ?? 0), 0) / totalAttempts)
     : 0;
-
-  const titleFor = (cuestionarioId: string) =>
-    cuestionarios.find((c) => c.id === cuestionarioId)?.titulo ??
-    "(cuestionario eliminado)";
 
   return (
     <main style={{ background: "var(--bg-page)", minHeight: "calc(100vh - 48px)" }}>
@@ -114,7 +132,26 @@ function HistoryView() {
           </div>
         </div>
 
-        {totalAttempts === 0 ? (
+        {loading ? (
+          <p
+            className="text-sm text-center py-10"
+            style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
+          >
+            Cargando…
+          </p>
+        ) : error ? (
+          <div
+            className="ui-panel rounded-2xl p-10 text-center"
+            style={{ border: "1px dashed var(--border-subtle)" }}
+          >
+            <p
+              className="text-base"
+              style={{ fontFamily: "var(--font-ibm-plex-sans)", color: "var(--text-primary)" }}
+            >
+              {error}
+            </p>
+          </div>
+        ) : totalAttempts === 0 ? (
           <div
             className="ui-panel rounded-2xl p-10 text-center"
             style={{ border: "1px dashed var(--border-subtle)" }}
@@ -138,7 +175,10 @@ function HistoryView() {
         ) : (
           <div className="flex flex-col gap-3">
             {mine.map((a) => {
-              const color = scoreColor(a.score, a.total);
+              const nota = a.nota ?? 0;
+              // nota = round(correctas / cantidad × 100) y cantidad ≤ 30, así que se recupera exacta.
+              const correctas = Math.round((nota * a.cantidad) / 100);
+              const color = scoreColor(nota);
               return (
                 <div
                   key={a.id}
@@ -156,7 +196,7 @@ function HistoryView() {
                       className="text-sm font-bold"
                       style={{ fontFamily: "var(--font-ibm-plex-mono)", color }}
                     >
-                      {a.score}/{a.total}
+                      {nota}%
                     </span>
                   </div>
                   <div className="flex-1 min-w-45">
@@ -164,16 +204,19 @@ function HistoryView() {
                       className="text-base"
                       style={{ fontFamily: "var(--font-ibm-plex-sans)", color: "var(--text-primary)", fontWeight: 500 }}
                     >
-                      {titleFor(a.cuestionarioId)}
+                      {a.materia.label}
                     </p>
                     <p
                       className="text-xs"
                       style={{ fontFamily: "var(--font-ibm-plex-mono)", color: "var(--text-muted)" }}
                     >
-                      {MATERIAS[a.materiaId].label} · {FORMATO_LABELS[a.format as keyof typeof FORMATO_LABELS] ?? a.format} · {formatDate(a.completedAt)}
+                      {unidadLabel(a.unidad)} · {correctas}/{a.cantidad} correctas · {formatDate(a.completedAt)}
                     </p>
                   </div>
-                  <Link href={`/cuestionarios/${a.cuestionarioId}`} className="btn-secondary">
+                  <Link
+                    href={`/cuestionarios/generar?materiaId=${encodeURIComponent(a.materiaId)}&unidad=${a.unidad}`}
+                    className="btn-secondary"
+                  >
                     Repetir
                   </Link>
                 </div>
