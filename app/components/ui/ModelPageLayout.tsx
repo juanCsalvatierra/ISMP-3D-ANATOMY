@@ -1,5 +1,6 @@
 "use client";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
+import { lockPageScroll } from "../../utils/scrollLock";
 import { SceneCanvas } from "../scene/SceneCanvas";
 import { Breadcrumb } from "./Breadcrumb";
 import { ViewerRightPanel } from "./ViewerRightPanel";
@@ -16,6 +17,11 @@ type Props = {
 };
 
 export function ModelPageLayout({ breadcrumbItems, children }: Props) {
+  // El visor ocupa exactamente la pantalla (barra + breadcrumb + visor), así que la
+  // página no debe desplazarse: solo el panel derecho. Sin esto, en el celular el
+  // gesto sobre el panel arrastra toda la pantalla.
+  useEffect(() => lockPageScroll(), []);
+
   return (
     <div className="w-full flex flex-col" style={{ background: "var(--bg-page)", color: "var(--text-primary)" }}>
       {/* Breadcrumb bar */}

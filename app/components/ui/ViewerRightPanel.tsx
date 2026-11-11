@@ -33,7 +33,8 @@ export function ViewerRightPanel() {
         <TabStrip tabs={tabs} activeTab={activeTab} onTabChange={setChosenTab} />
       </div>
 
-      <div className="flex-1 overflow-y-auto ui-scrollbar scrollbar scrollbar-thumb-muted scrollbar-track-panel">
+      {/* overscroll-contain: al llegar al final de la lista el gesto no se le pasa a la página. */}
+      <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain ui-scrollbar scrollbar scrollbar-thumb-muted scrollbar-track-panel">
         {activeTab === "unit" && <UnitPanel />}
         {activeTab === "info" && (
           <div className="p-4">

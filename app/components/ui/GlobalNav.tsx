@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { UserMenu } from "./UserMenu";
 import { useUserStore, ROLE_LABELS } from "@/app/store/userStore";
 import { READY_SYSTEMS } from "@/app/config/systems";
+import { lockPageScroll } from "@/app/utils/scrollLock";
 
 const NAV_LINKS = [
   { label: "Mis materias", href: "/materias" },
@@ -27,6 +28,12 @@ export function GlobalNav() {
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
+
+  // Con el menú abierto, la página de atrás no debe desplazarse.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    return lockPageScroll();
+  }, [mobileOpen]);
 
   // La pantalla de login tiene su propio encabezado de marca, sin menú de navegación.
   if (pathname === "/login") return null;
@@ -237,14 +244,16 @@ export function GlobalNav() {
 
       {/* Mobile Drawer — slide in from right, below header */}
       <div
-        className={`fixed inset-0 z-40 md:hidden transition-opacity duration-200 ${
+        className={`fixed inset-0 z-40 md:hidden overscroll-none transition-opacity duration-200 ${
           mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         style={{ top: "48px", background: "rgba(0,0,0,0.4)" }}
         onClick={() => setMobileOpen(false)}
       >
+        {/* overflow-y-auto + overscroll-contain: si la lista es más alta que la pantalla,
+            se desplaza el menú (no la página de atrás). */}
         <div
-          className={`absolute top-0 right-0 h-full w-72 max-w-[85vw] flex flex-col transition-transform duration-300 ease-out ${
+          className={`absolute top-0 right-0 h-full w-72 max-w-[85vw] flex flex-col overflow-y-auto overscroll-contain transition-transform duration-300 ease-out ${
             mobileOpen ? "translate-x-0" : "translate-x-full"
           }`}
           style={{
@@ -254,7 +263,7 @@ export function GlobalNav() {
           onClick={(e) => e.stopPropagation()}
         >
           {/* Nav links */}
-          <nav className="flex flex-col px-4 pt-4">
+          <nav className="flex flex-col px-4 pt-4 shrink-0">
             {/* Modelos 3D */}
             <Link
               href="/modelos"
@@ -335,7 +344,7 @@ export function GlobalNav() {
 
           {/* User section */}
           <div
-            className="flex flex-col gap-1 px-4 pt-4 mt-auto pb-6"
+            className="flex flex-col gap-1 px-4 pt-4 mt-auto pb-6 shrink-0"
             style={{ borderTop: "1px solid var(--border-subtle)" }}
           >
             {currentUser ? (
